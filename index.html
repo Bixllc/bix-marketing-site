@@ -8,6 +8,146 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<style>
+/* ── PROCESS SCROLL ANIMATION ── */
+.process-scroll-section { padding-top: 100px; padding-bottom: 0; }
+
+.process-scroll-inner {
+  position: relative;
+  height: 400vh;
+}
+
+.process-sticky {
+  position: sticky;
+  top: 100px;
+  padding-bottom: 80px;
+}
+
+/* Circles row */
+.ps-circles {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 560px;
+  margin: 56px auto 48px;
+}
+
+.ps-track {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2px;
+  background: rgba(14,10,26,0.10);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ps-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--purple);
+  border-radius: 2px;
+  transition: width 0.5s var(--ease-out);
+}
+
+.ps-circle {
+  position: relative;
+  z-index: 2;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 3px solid rgba(14,10,26,0.12);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.4s var(--ease-out), background 0.4s var(--ease-out);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ps-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--purple);
+  transform: scale(0);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.ps-circle.is-active {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 6px rgba(68,32,97,0.08);
+}
+
+.ps-circle.is-active .ps-dot { transform: scale(1); }
+
+.ps-circle.is-done {
+  border-color: var(--purple);
+  background: var(--purple);
+}
+
+.ps-circle.is-done .ps-dot {
+  background: #fff;
+  transform: scale(0.6);
+}
+
+/* Cards */
+.ps-cards {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 180px;
+}
+
+.ps-card {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+  pointer-events: none;
+}
+
+.ps-card.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.ps-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--purple);
+  display: block;
+  margin-bottom: 14px;
+}
+
+.ps-card h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
+  margin-bottom: 14px;
+}
+
+.ps-card p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 700px) {
+  .ps-circles { max-width: 100%; padding: 0 8px; }
+  .ps-circle { width: 40px; height: 40px; }
+  .ps-dot { width: 14px; height: 14px; }
+}
+</style>
 </head>
 <body>
 
@@ -692,7 +832,7 @@
 </section>
 
 <!-- ====== PROCESS ====== -->
-<section class="process wrap" id="process" data-screen-label="05 Process">
+<section class="process-scroll-section wrap" id="process">
   <div class="section-head reveal">
     <div>
       <h2 style="margin-top:16px;">
@@ -706,37 +846,48 @@
     </div>
   </div>
 
-  <div class="process-track reveal">
-    <span class="process-line"></span>
-    <div class="process-step">
-      <div class="process-node">01</div>
-      <span class="pn-num">PHASE 01</span>
-      <h4>Audit + Strategy</h4>
-      <p>Map the current state, the business model, and the unit economics. Decide what to build, in what order, and why.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-node">02</div>
-      <span class="pn-num">PHASE 02</span>
-      <h4>UX Design</h4>
-      <p>Site architecture, user flows, and interface design — every screen designed for a job, not a vibe.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-node">03</div>
-      <span class="pn-num">PHASE 03</span>
-      <h4>System Architecture</h4>
-      <p>Schema, integrations, automation logic. The non-visible scaffolding that makes the front end actually run.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-node">04</div>
-      <span class="pn-num">PHASE 04</span>
-      <h4>Build + Integrations</h4>
-      <p>We write the code, wire the services, and instrument the events. You see weekly progress in a shared portal.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-node">05</div>
-      <span class="pn-num">PHASE 05</span>
-      <h4>Launch + Support</h4>
-      <p>Phased rollout, training, and an ongoing care plan — because launch is the start of the system, not the end.</p>
+  <div class="process-scroll-inner" id="processScrollInner">
+    <div class="process-sticky" id="processSticky">
+
+      <!-- Circle indicators -->
+      <div class="ps-circles">
+        <div class="ps-track"><div class="ps-fill" id="psFill"></div></div>
+        <div class="ps-circle is-active" data-step="0"><div class="ps-dot"></div></div>
+        <div class="ps-circle" data-step="1"><div class="ps-dot"></div></div>
+        <div class="ps-circle" data-step="2"><div class="ps-dot"></div></div>
+        <div class="ps-circle" data-step="3"><div class="ps-dot"></div></div>
+        <div class="ps-circle" data-step="4"><div class="ps-dot"></div></div>
+      </div>
+
+      <!-- Step cards -->
+      <div class="ps-cards">
+        <div class="ps-card is-active">
+          <span class="ps-phase">Phase 01</span>
+          <h4>Audit + Strategy</h4>
+          <p>Map the current state, the business model, and the unit economics. Decide what to build, in what order, and why.</p>
+        </div>
+        <div class="ps-card">
+          <span class="ps-phase">Phase 02</span>
+          <h4>UX Design</h4>
+          <p>Site architecture, user flows, and interface design — every screen designed for a job, not a vibe.</p>
+        </div>
+        <div class="ps-card">
+          <span class="ps-phase">Phase 03</span>
+          <h4>System Architecture</h4>
+          <p>Schema, integrations, automation logic. The non-visible scaffolding that makes the front end actually run.</p>
+        </div>
+        <div class="ps-card">
+          <span class="ps-phase">Phase 04</span>
+          <h4>Build + Integrations</h4>
+          <p>We write the code, wire the services, and instrument the events. You see weekly progress in a shared portal.</p>
+        </div>
+        <div class="ps-card">
+          <span class="ps-phase">Phase 05</span>
+          <h4>Launch + Support</h4>
+          <p>Phased rollout, training, and an ongoing care plan — because launch is the start of the system, not the end.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1109,6 +1260,48 @@
       el.setAttribute('pathLength', '100');
     });
   });
+
+  // Process scroll animation
+  (function processScroll() {
+    const inner = document.getElementById('processScrollInner');
+    const fill  = document.getElementById('psFill');
+    const circles = Array.from(document.querySelectorAll('.ps-circle'));
+    const cards   = Array.from(document.querySelectorAll('.ps-card'));
+    if (!inner || !circles.length) return;
+
+    const STEPS = circles.length;
+    let current = -1;
+
+    function setStep(i) {
+      if (i === current) return;
+      current = i;
+      circles.forEach((c, idx) => {
+        c.classList.toggle('is-active', idx === i);
+        c.classList.toggle('is-done',   idx < i);
+      });
+      cards.forEach((c, idx) => {
+        c.classList.toggle('is-active', idx === i);
+      });
+      // fill line: 0% at step 0, 100% at last step
+      const pct = STEPS > 1 ? (i / (STEPS - 1)) * 100 : 0;
+      fill.style.width = pct + '%';
+    }
+
+    // Click a circle to jump to that step
+    circles.forEach((c, i) => c.addEventListener('click', () => setStep(i)));
+
+    function onScroll() {
+      const rect   = inner.getBoundingClientRect();
+      const total  = inner.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const progress = Math.min(1, scrolled / total);
+      const step   = Math.min(STEPS - 1, Math.floor(progress * STEPS));
+      setStep(step);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
 
   // Hero trio — tick the dashboard numbers
   (function trioTick() {
