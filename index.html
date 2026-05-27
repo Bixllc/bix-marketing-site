@@ -1,938 +1,1241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ── SEO ── -->
-  <title>Bix LLC | Custom Software & Web Development — Fort Lauderdale, FL</title>
-  <meta name="description" content="Bix LLC builds custom software, web apps, mobile apps, and automation tools for businesses in Fort Lauderdale and South Florida. From MVPs to enterprise systems — we build it all." />
-  <meta name="keywords" content="custom software development Fort Lauderdale, web development South Florida, mobile app development Broward County, software engineer Fort Lauderdale, full stack developer Fort Lauderdale, Bix LLC" />
-  <meta name="robots" content="index, follow" />
-  <meta name="author" content="Bix LLC" />
-  <link rel="canonical" href="https://www.bixllc.net/" />
-
-  <!-- ── Open Graph ── -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.bixllc.net/" />
-  <meta property="og:title" content="Bix LLC | Custom Software & Web Development — Fort Lauderdale, FL" />
-  <meta property="og:description" content="From a landing page to a full enterprise platform — Bix LLC engineers custom software solutions for South Florida businesses." />
-  <meta property="og:site_name" content="Bix LLC" />
-
-  <!-- ── Local Business Schema ── -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Bix LLC",
-    "description": "Custom software and web development studio serving Fort Lauderdale and South Florida.",
-    "url": "https://www.bixllc.net",
-    "areaServed": [
-      {"@type": "City", "name": "Fort Lauderdale"},
-      {"@type": "City", "name": "Miami"},
-      {"@type": "State", "name": "Florida"}
-    ],
-    "serviceType": ["Custom Software Development", "Web Development", "Mobile App Development", "Automation", "API Development"],
-    "priceRange": "$$"
-  }
-  </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #050a0e;
-      --surface: #0c1520;
-      --surface2: #101d2b;
-      --border: rgba(0,200,255,0.12);
-      --accent: #00c8ff;
-      --accent2: #00ff9d;
-      --text: #e0eaf2;
-      --muted: #5a7a90;
-      --heading: #ffffff;
-      --mono: 'Space Mono', monospace;
-      --sans: 'Syne', sans-serif;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ── GRID NOISE OVERLAY ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.2rem 4rem;
-      background: rgba(5,10,14,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      font-family: var(--mono);
-      font-size: 1.1rem;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: 0.06em;
-    }
-    .nav-logo span { color: var(--accent2); }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--accent); }
-
-    .nav-cta {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.5rem 1.2rem;
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: background 0.2s, color 0.2s;
-    }
-    .nav-cta:hover { background: var(--accent); color: var(--bg); }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 10rem 4rem 6rem;
-      overflow: hidden;
-    }
-
-    .hero-glow {
-      position: absolute;
-      width: 700px;
-      height: 700px;
-      top: -100px;
-      right: -150px;
-      background: radial-gradient(circle, rgba(0,200,255,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-glow2 {
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      bottom: 0;
-      left: 10%;
-      background: radial-gradient(circle, rgba(0,255,157,0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-content { position: relative; z-index: 1; max-width: 780px; }
-
-    .hero-eyebrow {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 32px;
-      height: 1px;
-      background: var(--accent);
-    }
-
-    .hero h1 {
-      font-family: var(--sans);
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      font-weight: 800;
-      color: var(--heading);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 .accent { color: var(--accent); }
-    .hero h1 .accent2 { color: var(--accent2); }
-
-    .hero-sub {
-      font-size: 1.1rem;
-      color: var(--muted);
-      max-width: 520px;
-      margin-bottom: 2.5rem;
-      line-height: 1.7;
-    }
-
-    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-    .btn-primary {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--bg);
-      background: var(--accent);
-      padding: 0.9rem 2rem;
-      text-decoration: none;
-      transition: opacity 0.2s, transform 0.2s;
-      display: inline-block;
-    }
-    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
-
-    .btn-ghost {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      border: 1px solid var(--accent2);
-      padding: 0.9rem 2rem;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-      display: inline-block;
-    }
-    .btn-ghost:hover { background: var(--accent2); color: var(--bg); }
-
-    .hero-stats {
-      display: flex;
-      gap: 3rem;
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-    }
-    .stat-num {
-      font-family: var(--mono);
-      font-size: 2rem;
-      color: var(--heading);
-      font-weight: 700;
-    }
-    .stat-num span { color: var(--accent); }
-    .stat-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    /* ── TICKER ── */
-    .ticker-wrap {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      padding: 0.75rem 0;
-      background: var(--surface);
-    }
-    .ticker {
-      display: flex;
-      gap: 3rem;
-      animation: ticker 25s linear infinite;
-      white-space: nowrap;
-    }
-    .ticker-item {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      flex-shrink: 0;
-    }
-    .ticker-item span { color: var(--accent); margin-right: 3rem; }
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-
-    /* ── SECTIONS ── */
-    section { position: relative; z-index: 1; }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .section-label::before {
-      content: '//';
-      color: var(--accent2);
-    }
-
-    .section-title {
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 800;
-      color: var(--heading);
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 1rem;
-    }
-
-    .section-desc {
-      font-size: 1rem;
-      color: var(--muted);
-      max-width: 500px;
-      line-height: 1.7;
-    }
-
-    /* ── SERVICES ── */
-    #services {
-      padding: 7rem 4rem;
-    }
-
-    .services-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: end;
-      margin-bottom: 4rem;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .service-card {
-      background: var(--surface);
-      padding: 2.5rem;
-      transition: background 0.25s;
-      position: relative;
-      overflow: hidden;
-    }
-    .service-card:hover { background: var(--surface2); }
-
-    .service-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent);
-      transition: width 0.3s ease;
-    }
-    .service-card:hover::after { width: 100%; }
-
-    .service-icon {
-      font-size: 1.5rem;
-      margin-bottom: 1.25rem;
-      display: block;
-    }
-
-    .service-num {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      color: var(--accent2);
-      letter-spacing: 0.15em;
-      margin-bottom: 0.75rem;
-    }
-
-    .service-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--heading);
-      margin-bottom: 0.75rem;
-    }
-
-    .service-desc {
-      font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ── PROCESS ── */
-    #process {
-      padding: 7rem 4rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .process-inner {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 6rem;
-      align-items: start;
-    }
-
-    .process-steps { display: flex; flex-direction: column; gap: 0; }
-
-    .step {
-      padding: 2rem 0;
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 3rem 1fr;
-      gap: 1.5rem;
-      align-items: start;
-      cursor: default;
-      transition: padding 0.2s;
-    }
-    .step:first-child { padding-top: 0; }
-    .step:last-child { border-bottom: none; }
-
-    .step-num {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      padding-top: 4px;
-    }
-
-    .step-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--heading);
-      margin-bottom: 0.4rem;
-    }
-
-    .step-body {
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ── WHY BIX ── */
-    #why {
-      padding: 7rem 4rem;
-    }
-
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      margin-top: 4rem;
-    }
-
-    .why-card {
-      padding: 2rem;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      transition: border-color 0.2s;
-    }
-    .why-card:hover { border-color: var(--accent); }
-
-    .why-card-head {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .why-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,200,255,0.08);
-      border: 1px solid var(--border);
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .why-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--heading);
-    }
-
-    .why-desc {
-      font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ── STACK ── */
-    #stack {
-      padding: 5rem 4rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stack-header {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      margin-bottom: 3rem;
-    }
-
-    .stack-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-
-    .pill {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 0.4rem 0.9rem;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .pill:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── CTA ── */
-    #contact {
-      padding: 9rem 4rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    #contact::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(0,200,255,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-tag {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-bottom: 1.5rem;
-    }
-
-    #contact h2 {
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      font-weight: 800;
-      color: var(--heading);
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
-    }
-
-    #contact p {
-      font-size: 1rem;
-      color: var(--muted);
-      max-width: 480px;
-      margin: 0 auto 2.5rem;
-    }
-
-    .cta-meta {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-top: 1.5rem;
-    }
-    .cta-meta a { color: var(--accent); text-decoration: none; }
-    .cta-meta a:hover { text-decoration: underline; }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 2.5rem 4rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .footer-logo {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .footer-copy {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-    }
-
-    .footer-location {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .footer-location::before { content: '📍'; font-size: 0.8rem; }
-
-    /* ── CURSOR GLOW ── */
-    .cursor-glow {
-      position: fixed;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,200,255,0.05) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: left 0.08s, top 0.08s;
-    }
-
-    /* ── ANIMATIONS ── */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    @media (max-width: 900px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-      .hero { padding: 8rem 1.5rem 4rem; }
-      #services, #process, #why, #stack, #contact, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
-      .services-header { grid-template-columns: 1fr; gap: 1.5rem; }
-      .services-grid { grid-template-columns: 1fr; }
-      .process-inner { grid-template-columns: 1fr; gap: 3rem; }
-      .why-grid { grid-template-columns: 1fr; }
-      .stack-header { flex-direction: column; align-items: start; gap: 1rem; }
-      footer { flex-direction: column; gap: 1rem; text-align: center; }
-      .hero-stats { flex-direction: column; gap: 1.5rem; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bix LLC — Premium Systems Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <div class="cursor-glow" id="cursor"></div>
-
-  <!-- NAV -->
-  <nav>
-    <a class="nav-logo" href="#">BIX<span>_</span>LLC</a>
-    <ul class="nav-links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#process">Process</a></li>
-      <li><a href="#why">Why Bix</a></li>
-      <li><a href="#stack">Stack</a></li>
-    </ul>
-    <a class="nav-cta" href="#contact">Start a Project</a>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-glow2"></div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">Fort Lauderdale, FL · Full-Stack Software Studio</div>
-      <h1>
-        We build software<br/>
-        from a <span class="accent">pin</span><br/>
-        to an <span class="accent2">anchor.</span>
-      </h1>
-      <p class="hero-sub">
-        Bix LLC engineers custom software for South Florida businesses — from landing pages and web apps to mobile apps, APIs, automation pipelines, and full enterprise systems.
-      </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="#contact">Start Your Project</a>
-        <a class="btn-ghost" href="#services">See What We Build</a>
+<!-- ====== NAVBAR ====== -->
+<div class="nav-shell" id="navShell">
+  <nav class="nav" aria-label="Primary">
+    <a href="index.html" class="nav-logo" aria-label="Bix LLC home">
+      <span class="nav-mark" aria-hidden="true"></span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-item nav-item--has-dropdown">
+        <button class="nav-link nav-link-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Solutions
+          <svg class="nav-caret" width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="dot"></span>
+        </button>
+        <div class="nav-dropdown" role="menu">
+          <a class="nav-dd-item" href="services.html" role="menuitem">
+            <span class="nav-dd-i">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 7h15" stroke="currentColor" stroke-width="1.3"/></svg>
+            </span>
+            <span class="nav-dd-text">
+              <strong>Services</strong>
+              <small>Web, apps, and custom system solutions</small>
+            </span>
+          </a>
+          <a class="nav-dd-item" href="products.html" role="menuitem">
+            <span class="nav-dd-i">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 6l7-3 7 3-7 3-7-3z M3 6v8l7 3 7-3V6 M10 9v8" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="nav-dd-text">
+              <strong>Products</strong>
+              <small>BIX Booking and other Bix‑built platforms</small>
+            </span>
+          </a>
+        </div>
       </div>
-      <div class="hero-stats">
-        <div>
-          <div class="stat-num">100<span>%</span></div>
-          <div class="stat-label">Custom Built</div>
+      <a class="nav-link" href="index.html#work">Projects<span class="dot"></span></a>
+      <a class="nav-link" href="index.html#about">About<span class="dot"></span></a>
+    </div>
+    <a href="index.html#contact" class="nav-cta">
+      Start a Project
+      <svg class="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </nav>
+</div>
+
+<a id="top"></a>
+
+<!-- ====== HERO ====== -->
+<section class="hero-lander" data-screen-label="01 Hero">
+  <div class="hero-bg" aria-hidden="true" style="display:none"></div>
+  <div class="wrap hero-lander-inner reveal">
+    <h1 class="hero-lander-h1 hero-lander-h1-trio">
+      Systems that help businesses
+      <span class="italic-line">run more efficiently.</span>
+    </h1>
+    <p class="hero-lander-sub">
+      We design and build the digital infrastructure ambitious brands run on — premium sites, custom apps, and the operating systems behind them.
+    </p>
+    <div class="hero-lander-cta">
+      <a class="btn btn-primary btn-lg" href="#contact">
+        Book A Free Call Now
+        <svg class="arrow" width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <!-- ===== HERO TRIO CARDS ===== -->
+    <div class="hero-trio" aria-hidden="true">
+
+      <!-- Card 1 — Websites (Smoove Skin Studio — screenshot) -->
+      <article class="trio-card trio-card--web">
+        <img src="smoove-screenshot.png" alt="Smoove Skin Studio website" class="trio-shot" />
+      </article>
+
+      <!-- Card 2 — Apps (Amavi screenshot) -->
+      <article class="trio-card trio-card--app">
+        <img src="amavi-screenshot.png" alt="Amavi nightlife app" class="trio-shot trio-shot--app" />
+      </article>
+
+      <!-- Card 3 — Custom Systems (dashboard) -->
+      <article class="trio-card trio-card--sys">
+        <div class="mock-dash">
+          <div class="md-stats">
+            <div class="md-stat">
+              <span class="md-lbl">REVENUE</span>
+              <span class="md-v" data-tick="84.2">$<span class="md-tick">84.2</span>k</span>
+              <span class="md-delta md-delta-up">↗ 22.4%</span>
+            </div>
+            <div class="md-stat">
+              <span class="md-lbl">BOOKED</span>
+              <span class="md-v"><span class="md-tick md-tick-int">38</span></span>
+              <span class="md-delta md-delta-up">↗ 8 today</span>
+            </div>
+          </div>
+          <div class="md-chart">
+            <svg viewBox="0 0 240 90" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="mdArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#C49669" stop-opacity="0.32"/>
+                  <stop offset="100%" stop-color="#C49669" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="mdLine" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#8B7B65"/>
+                  <stop offset="100%" stop-color="#C49669"/>
+                </linearGradient>
+              </defs>
+              <g class="md-grid" stroke="rgba(196, 150, 105, 0.16)" stroke-width="0.5">
+                <line x1="0" y1="22" x2="240" y2="22"/>
+                <line x1="0" y1="44" x2="240" y2="44"/>
+                <line x1="0" y1="66" x2="240" y2="66"/>
+              </g>
+              <path class="md-area" d="M0 70 L24 60 L48 64 L72 44 L96 50 L120 30 L144 38 L168 26 L192 32 L216 16 L240 22 L240 90 L0 90 Z" fill="url(#mdArea)"/>
+              <path class="md-line" d="M0 70 L24 60 L48 64 L72 44 L96 50 L120 30 L144 38 L168 26 L192 32 L216 16 L240 22" stroke="url(#mdLine)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle class="md-dot" cx="216" cy="16" r="3.2" fill="#C49669"/>
+              <circle class="md-pulse" cx="216" cy="16" r="3.2" fill="#C49669"/>
+            </svg>
+          </div>
+          <div class="md-rows">
+            <div class="md-row">
+              <span class="md-row-dot md-row-dot-1"></span>
+              <span class="md-row-t">Lead → Atlas Studio</span>
+              <span class="md-row-v">+$12.4k</span>
+            </div>
+            <div class="md-row">
+              <span class="md-row-dot md-row-dot-2"></span>
+              <span class="md-row-t">Booking confirmed</span>
+              <span class="md-row-v">10:30</span>
+            </div>
+            <div class="md-row">
+              <span class="md-row-dot md-row-dot-3"></span>
+              <span class="md-row-t">Invoice sent</span>
+              <span class="md-row-v">$4.8k</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <div class="stat-num">1<span>x</span></div>
-          <div class="stat-label">Dedicated Engineer</div>
+      </article>
+
+    </div>
+
+    <!-- ===== LEGACY HERO GRAPHIC (kept hidden for asset reference) ===== -->
+    <div class="hero-graphic" aria-hidden="true" style="display:none">
+      <!-- Floating accent: lead notification (top-left) -->
+      <div class="hg-float hg-float-tl">
+        <div class="hg-icon hg-icon-purple">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5l1.6 3.3 3.6.5-2.6 2.5.6 3.6L7 9.7 3.8 11.4l.6-3.6L1.8 5.3l3.6-.5L7 1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
         </div>
-        <div>
-          <div class="stat-num">FL<span>→</span>∞</div>
-          <div class="stat-label">Built Local, Scales Global</div>
+        <div class="hg-body">
+          <div class="hg-title">New lead · Marisol K.</div>
+          <div class="hg-meta">Referral · just now</div>
+        </div>
+        <span class="hg-badge hg-badge-emerald">Hot</span>
+      </div>
+
+      <!-- Floating accent: payment (top-right) -->
+      <div class="hg-float hg-float-tr">
+        <div class="hg-icon hg-icon-blue">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.2" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 6h11" stroke="currentColor" stroke-width="1.3"/></svg>
+        </div>
+        <div class="hg-body">
+          <div class="hg-title">Deposit received</div>
+          <div class="hg-meta hg-mono">$ 1,400.00</div>
+        </div>
+        <span class="hg-badge hg-badge-blue">Stripe</span>
+      </div>
+
+      <!-- Floating accent: booking (bottom-left) -->
+      <div class="hg-float hg-float-bl">
+        <div class="hg-icon hg-icon-purple">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.2" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 1.5v3M9.5 1.5v3M1.5 6h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="hg-body">
+          <div class="hg-title">Booking confirmed</div>
+          <div class="hg-meta">Thu, Jun 18 · 2:30 PM</div>
+        </div>
+        <span class="hg-badge hg-badge-purple">Booked</span>
+      </div>
+
+      <!-- Floating accent: progress (bottom-right) -->
+      <div class="hg-float hg-float-br">
+        <div class="hg-body" style="flex:1">
+          <div class="hg-title">Onboarding</div>
+          <div class="hg-progress"><span></span></div>
+          <div class="hg-meta">4 of 5 complete</div>
+        </div>
+      </div>
+
+      <!-- Central dashboard card -->
+      <div class="hg-main">
+        <div class="hg-main-head">
+          <div class="hg-main-head-l">
+            <div class="hg-dot"></div>
+            <div class="hg-dot" style="background:#e5c84b"></div>
+            <div class="hg-dot" style="background:#4caf6a"></div>
+            <span class="hg-main-title">bix · operations</span>
+          </div>
+          <div class="hg-main-head-r mono">live</div>
+        </div>
+        <div class="hg-main-body">
+          <div class="hg-stat-grid">
+            <div class="hg-stat">
+              <div class="hg-stat-lbl">PIPELINE</div>
+              <div class="hg-stat-v">$84.2k</div>
+              <div class="hg-stat-delta up">↗ 22.4%</div>
+            </div>
+            <div class="hg-stat">
+              <div class="hg-stat-lbl">BOOKINGS</div>
+              <div class="hg-stat-v">38</div>
+              <div class="hg-stat-delta up">↗ 8 today</div>
+            </div>
+            <div class="hg-stat">
+              <div class="hg-stat-lbl">CONVERSION</div>
+              <div class="hg-stat-v">12.6<span class="hg-stat-unit">%</span></div>
+              <div class="hg-stat-delta">last 7 days</div>
+            </div>
+          </div>
+          <div class="hg-chart">
+            <div class="hg-chart-grid"></div>
+            <svg class="hg-chart-svg" viewBox="0 0 400 120" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="hgArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#442061" stop-opacity="0.30"/>
+                  <stop offset="100%" stop-color="#442061" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="hgArea2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2E89E6" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#2E89E6" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0 95 L40 80 L80 85 L120 60 L160 65 L200 40 L240 50 L280 28 L320 38 L360 18 L400 22 L400 120 L0 120 Z" fill="url(#hgArea)"/>
+              <path d="M0 95 L40 80 L80 85 L120 60 L160 65 L200 40 L240 50 L280 28 L320 38 L360 18 L400 22" stroke="#442061" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M0 100 L40 92 L80 88 L120 80 L160 72 L200 70 L240 60 L280 55 L320 48 L360 42 L400 36 L400 120 L0 120 Z" fill="url(#hgArea2)"/>
+              <path d="M0 100 L40 92 L80 88 L120 80 L160 72 L200 70 L240 60 L280 55 L320 48 L360 42 L400 36" stroke="#2E89E6" stroke-width="1.6" stroke-dasharray="4 4" fill="none" stroke-linecap="round"/>
+              <circle cx="360" cy="18" r="4" fill="#442061"/>
+              <circle cx="360" cy="18" r="8" fill="#442061" fill-opacity="0.15"/>
+            </svg>
+            <div class="hg-chart-flag">
+              <span class="hg-flag-v">$ 14,820</span>
+              <span class="hg-flag-l">Fri · peak</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- TICKER -->
-  <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker">
-      <span class="ticker-item">Web Apps <span>✦</span></span>
-      <span class="ticker-item">Mobile Apps <span>✦</span></span>
-      <span class="ticker-item">APIs & Integrations <span>✦</span></span>
-      <span class="ticker-item">Automation <span>✦</span></span>
-      <span class="ticker-item">E-Commerce <span>✦</span></span>
-      <span class="ticker-item">SaaS Platforms <span>✦</span></span>
-      <span class="ticker-item">Custom CMS <span>✦</span></span>
-      <span class="ticker-item">Dashboards <span>✦</span></span>
-      <span class="ticker-item">Fort Lauderdale, FL <span>✦</span></span>
-      <span class="ticker-item">Web Apps <span>✦</span></span>
-      <span class="ticker-item">Mobile Apps <span>✦</span></span>
-      <span class="ticker-item">APIs & Integrations <span>✦</span></span>
-      <span class="ticker-item">Automation <span>✦</span></span>
-      <span class="ticker-item">E-Commerce <span>✦</span></span>
-      <span class="ticker-item">SaaS Platforms <span>✦</span></span>
-      <span class="ticker-item">Custom CMS <span>✦</span></span>
-      <span class="ticker-item">Dashboards <span>✦</span></span>
-      <span class="ticker-item">Fort Lauderdale, FL <span>✦</span></span>
+    <div class="hero-trust">
+      <span class="hero-trust-label">Trusted by ambitious brands around the world</span>
+      <div class="hero-logos">
+        <div class="hero-logo">
+          <svg width="118" height="22" viewBox="0 0 118 22" fill="currentColor"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="11" cy="11" r="2.5" fill="currentColor"/><text x="26" y="15" font-family="Poppins,sans-serif" font-weight="600" font-size="13" letter-spacing="0.04em" fill="currentColor">ROCKET BOYZ</text></svg>
+        </div>
+        <div class="hero-logo">
+          <svg width="102" height="22" viewBox="0 0 102 22" fill="currentColor"><path d="M3 11l5-5 5 5-5 5z" fill="currentColor"/><text x="20" y="15" font-family="Poppins,sans-serif" font-weight="600" font-size="13" letter-spacing="0.04em" fill="currentColor">PON DI RIO</text></svg>
+        </div>
+        <div class="hero-logo">
+          <svg width="82" height="22" viewBox="0 0 82 22" fill="currentColor"><path d="M3 4l5 7-5 7M11 4l5 7-5 7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="22" y="15" font-family="Poppins,sans-serif" font-weight="600" font-size="13" letter-spacing="0.04em" fill="currentColor">LYVWEL</text></svg>
+        </div>
+        <div class="hero-logo">
+          <svg width="118" height="22" viewBox="0 0 118 22" fill="currentColor"><rect x="3" y="4" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 11h6M10 8v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><text x="24" y="15" font-family="Poppins,sans-serif" font-weight="600" font-size="13" letter-spacing="0.04em" fill="currentColor">BIG CADI VIP</text></svg>
+        </div>
+        <div class="hero-logo">
+          <svg width="78" height="22" viewBox="0 0 78 22" fill="currentColor"><path d="M3 6h6a5 5 0 010 10H3V6z" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="18" y="15" font-family="Poppins,sans-serif" font-weight="600" font-size="13" letter-spacing="0.04em" fill="currentColor">DUFFLE</text></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CAPABILITY MARQUEE ====== -->
+<section class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-row">
+      <span class="m-item">Conversion Websites</span><span class="m-dot"></span>
+      <span class="m-item">Client Portals</span><span class="m-dot"></span>
+      <span class="m-item">Booking Systems</span><span class="m-dot"></span>
+      <span class="m-item">Ecommerce</span><span class="m-dot"></span>
+      <span class="m-item">Payment Flows</span><span class="m-dot"></span>
+      <span class="m-item">Admin Dashboards</span><span class="m-dot"></span>
+      <span class="m-item">Email Automation</span><span class="m-dot"></span>
+      <span class="m-item">Custom Tools</span><span class="m-dot"></span>
+      <span class="m-item">Integrations Layer</span><span class="m-dot"></span>
+      <span class="m-item">Analytics &amp; Reporting</span><span class="m-dot"></span>
+    </div>
+    <div class="marquee-row" aria-hidden="true">
+      <span class="m-item">Conversion Websites</span><span class="m-dot"></span>
+      <span class="m-item">Client Portals</span><span class="m-dot"></span>
+      <span class="m-item">Booking Systems</span><span class="m-dot"></span>
+      <span class="m-item">Ecommerce</span><span class="m-dot"></span>
+      <span class="m-item">Payment Flows</span><span class="m-dot"></span>
+      <span class="m-item">Admin Dashboards</span><span class="m-dot"></span>
+      <span class="m-item">Email Automation</span><span class="m-dot"></span>
+      <span class="m-item">Custom Tools</span><span class="m-dot"></span>
+      <span class="m-item">Integrations Layer</span><span class="m-dot"></span>
+      <span class="m-item">Analytics &amp; Reporting</span><span class="m-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ====== HIDDEN: old centered hero (kept for reference) ====== -->
+<div style="display:none" aria-hidden="true">
+  <div class="hero-cards">
+    <!-- Card 1: Pipeline -->
+    <article class="hc hc-pipeline">
+      <span class="hc-script">Bix©</span>
+      <div>
+        <div class="hc-stat">$84k</div>
+        <div class="hc-label">in pipeline this week</div>
+      </div>
+      <div class="hc-chips">
+        <div class="hc-chip"><span class="d"></span>New lead · Marisol K. <span class="amt">2m</span></div>
+        <div class="hc-chip"><span class="d" style="background:var(--blue)"></span>Proposal sent · PRO-0428 <span class="amt">$4,200</span></div>
+        <div class="hc-chip"><span class="d" style="background:var(--emerald)"></span>Deposit received <span class="amt">+$1,400</span></div>
+      </div>
+    </article>
+
+    <!-- Card 2: Features -->
+    <article class="hc hc-features">
+      <div class="hc-sheet">
+        <div class="hc-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 6.5a3 3 0 016 0v3a3 3 0 11-6 0v-3z" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="6" r="0.8" fill="currentColor"/></svg>
+          <span class="lbl">One-click integrations</span>
+          <span class="tick">✓</span>
+        </div>
+        <div class="hc-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 7.5a2 2 0 014 0M6 9.5h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span class="lbl">Personalized automation</span>
+          <span class="tick">✓</span>
+        </div>
+        <div class="hc-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="4" rx="5" ry="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M3 4v8c0 .9 2.2 1.6 5 1.6s5-.7 5-1.6V4M3 8c0 .9 2.2 1.6 5 1.6s5-.7 5-1.6" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span class="lbl">Complete data sync</span>
+          <span class="tick">✓</span>
+        </div>
+        <div class="hc-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 9a3 3 0 016 0v2a2 2 0 11-4 0V8M11 11v0a2 2 0 11-4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 9V8a5 5 0 0110 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span class="lbl">24/7 expert support</span>
+          <span class="tick">✓</span>
+        </div>
+        <div class="hc-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h7m0 0L7 5m3 3l-3 3M11 4v8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="lbl">Easy migration</span>
+          <span class="tick">✓</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 3: Analytics -->
+    <article class="hc hc-analytics">
+      <div class="hc-head">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12l4-4 3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Analytics + Conversion Goals
+      </div>
+      <div class="hc-big">
+        <span class="v">2.5M</span>
+        <span class="delta">+88.4%</span>
+      </div>
+      <div class="hc-chart">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar peak"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="hc-floor"></div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<!-- ====== HIDDEN: legacy hero OS (kept for animations of brand language) ====== -->
+<div style="display:none" aria-hidden="true">
+  <div class="os">
+      <svg class="os-svg" viewBox="0 0 600 620" preserveAspectRatio="none">
+        <path d="M150 70 C 260 90, 320 110, 460 140" />
+        <path d="M460 140 C 380 200, 280 220, 200 260" />
+        <path d="M200 260 C 320 290, 400 320, 470 350" />
+        <path d="M470 350 C 360 400, 260 420, 180 450" />
+        <path d="M180 450 C 280 480, 360 510, 450 540" />
+        <circle class="dot" cx="150" cy="70" r="3" />
+        <circle class="dot" cx="460" cy="140" r="3" />
+        <circle class="dot" cx="200" cy="260" r="3" />
+        <circle class="dot" cx="470" cy="350" r="3" />
+        <circle class="dot" cx="180" cy="450" r="3" />
+        <circle class="dot" cx="450" cy="540" r="3" />
+      </svg>
+
+      <div class="os-card c-lead" style="--d:80ms">
+        <div class="row">
+          <div class="icon i-emerald">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5l1.6 3.3 3.6.5-2.6 2.5.6 3.6L7 9.7 3.8 11.4l.6-3.6L1.8 5.3l3.6-.5L7 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div class="title">New lead — Marisol K.</div>
+            <div class="meta">Source: Referral · 2 min ago</div>
+          </div>
+          <span class="badge b-emerald">Hot</span>
+        </div>
+      </div>
+
+      <div class="os-card c-proposal" style="--d:240ms">
+        <div class="row">
+          <div class="icon i-dark">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2.5" y="1.5" width="9" height="11" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h4M5 7h4M5 9h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="title">Proposal sent</div>
+            <div class="meta">PRO-0428 · Awaiting signature</div>
+          </div>
+          <span class="badge b-gold">Sent</span>
+        </div>
+        <div class="os-progress" style="--p:62%"></div>
+      </div>
+
+      <div class="os-card c-booking" style="--d:400ms">
+        <div class="row">
+          <div class="icon i-lavender">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 1.5v3M9.5 1.5v3M1.5 6h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="title">Booking confirmed</div>
+            <div class="meta">Thu, Jun 18 · 2:30 PM</div>
+          </div>
+          <span class="badge b-lavender">Booked</span>
+        </div>
+      </div>
+
+      <div class="os-card c-payment" style="--d:560ms">
+        <div class="row">
+          <div class="icon i-gold">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 6h11M4 9h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="title">Payment pending</div>
+            <div class="meta mono">$ 4,200.00 · Stripe</div>
+          </div>
+          <span class="badge b-gold">3 days</span>
+        </div>
+      </div>
+
+      <div class="os-card c-onboard" style="--d:720ms">
+        <div class="row">
+          <div class="icon i-emerald">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3 3 6-6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="flex:1">
+            <div class="title">Onboarding</div>
+            <div class="meta">4 of 5 steps complete</div>
+          </div>
+          <span class="badge b-emerald">80%</span>
+        </div>
+        <div class="os-list">
+          <div class="os-li"><span class="check">✓</span>Kickoff scheduled</div>
+          <div class="os-li"><span class="check">✓</span>Brand assets received</div>
+          <div class="os-li pending"><span class="check"></span>Content review</div>
+        </div>
+      </div>
+
+      <div class="os-card c-email" style="--d:880ms">
+        <div class="row">
+          <div class="icon i-gray">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="title">Reminder scheduled</div>
+            <div class="meta">Tomorrow · 9:00 AM</div>
+          </div>
+          <span class="badge b-gray">Auto</span>
+        </div>
+      </div>
+  </div>
+</div>
+
+<!-- ====== PROBLEM ====== -->
+<section class="section wrap" id="problem" data-screen-label="02 The Problem">
+  <div class="problem-grid reveal">
+    <div>
+      <span class="section-index">02 / The Problem</span>
+      <h2 class="problem-h" style="margin-top:16px;">
+        Most websites <span class="strike">look good.</span><br/>
+        Few actually <span class="gold-text">work</span> for<br/>
+        the business behind them.
+      </h2>
+      <p class="problem-aside">
+        Beauty without infrastructure is decoration. A site should
+        capture leads, route them, collect payment, schedule the work,
+        and report on every step — without you in the loop.
+      </p>
+    </div>
+    <div class="issue-stack">
+      <div class="issue-card reveal delay-1">
+        <span class="num">/01</span>
+        <div>
+          <h4>Leads get lost.</h4>
+          <p>Forms send to a single inbox, follow-ups are manual, and nothing tells you which sources convert.</p>
+        </div>
+        <div class="issue-vis iv-lost"></div>
+      </div>
+      <div class="issue-card reveal delay-2">
+        <span class="num">/02</span>
+        <div>
+          <h4>Payments take too long.</h4>
+          <p>Invoices live in PDFs, deposits are chased over text, and revenue waits on a human in the middle.</p>
+        </div>
+        <div class="issue-vis iv-slow"><span class="ring"></span></div>
+      </div>
+      <div class="issue-card reveal delay-3">
+        <span class="num">/03</span>
+        <div>
+          <h4>Operations stay manual.</h4>
+          <p>Spreadsheets, group chats, and gut feel — the business runs on tribal knowledge instead of a system.</p>
+        </div>
+        <div class="issue-vis iv-manual"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== WHAT WE BUILD ====== -->
+<section class="section wrap" id="systems" data-screen-label="03 What We Build">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-index">03 / What We Build</span>
+      <h2 style="margin-top:16px;">
+        Websites with<br/>
+        <span class="gold-text">systems</span> built in.
+      </h2>
+    </div>
+    <div class="right-col">
+      Every deliverable is a piece of operational infrastructure. We design
+      front-end experiences and the back-end mechanics that make them
+      actually run — strategy, UX, build, and integration in one studio.
     </div>
   </div>
 
-  <!-- SERVICES -->
-  <section id="services">
-    <div class="services-header fade-in">
+  <div class="build-grid">
+    <!-- Asymmetrical layout: row 1 (5/7), row 2 (4/4/4), row 3 (7/5), row 4 (4/4/4) -->
+    <div class="svc span-5 reveal delay-1">
+      <span class="svc-num">/01</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2.5 4.5h15v11h-15z M2.5 8h15M5.5 11h4M5.5 13h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Conversion Websites</h3>
+      <p>Editorial marketing sites engineered to move visitors through a deliberate path — qualification, trust, action.</p>
+      <span class="svc-tag">→ Lead-optimized · CMS-ready</span>
+    </div>
+    <div class="svc span-7 reveal delay-2">
+      <span class="svc-num">/02</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 7h15M5.5 11h4M5.5 13h7M14 11h2M14 13h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Client Portals</h3>
+      <p>Branded logged-in spaces where clients see status, sign documents, upload files, and message you in one place — without inbox sprawl.</p>
+      <span class="svc-tag">→ SSO · Permissions · Real-time updates</span>
+    </div>
+
+    <div class="svc span-4 reveal delay-1">
+      <span class="svc-num">/03</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="4" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M6 2.5v3M14 2.5v3M2.5 8h15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="12" r="1" fill="currentColor"/><circle cx="13" cy="12" r="1" fill="currentColor"/></svg>
+      </div>
+      <h3>Booking Systems</h3>
+      <p>Smart availability, buffer rules, reminders, and intake — built into the flow, not bolted on.</p>
+      <span class="svc-tag">→ Calendar sync · SMS reminders</span>
+    </div>
+    <div class="svc span-4 reveal delay-2">
+      <span class="svc-num">/04</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h2l1.5 8.5h9L17 7H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="17" r="1.3" stroke="currentColor" stroke-width="1.3"/><circle cx="14" cy="17" r="1.3" stroke="currentColor" stroke-width="1.3"/></svg>
+      </div>
+      <h3>Ecommerce Systems</h3>
+      <p>Catalog, checkout, fulfilment and analytics designed for repeat purchase — not just first transactions.</p>
+      <span class="svc-tag">→ Stripe / Shopify / Headless</span>
+    </div>
+    <div class="svc span-4 reveal delay-3">
+      <span class="svc-num">/05</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2.5l7 4-7 4-7-4 7-4zM3 11.5l7 4 7-4M3 9l7 4 7-4" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Payment Flows</h3>
+      <p>Deposits, milestones, recurring revenue. Quotes that become invoices that become receipts — all on rails.</p>
+      <span class="svc-tag">→ ACH · Cards · Subscriptions</span>
+    </div>
+
+    <div class="svc span-7 reveal delay-1">
+      <span class="svc-num">/06</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3" width="15" height="14" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 7h15M6 11l2 2 3-3M13 12h2.5M13 14h2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Admin Dashboards</h3>
+      <p>The view of the business you wish you had — leads, revenue, capacity, and operational health surfaced where decisions get made.</p>
+      <span class="svc-tag">→ Real-time · Role-based · Exportable</span>
+    </div>
+    <div class="svc span-5 reveal delay-2">
+      <span class="svc-num">/07</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5l7 6 7-6M3 5v10h14V5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Automated Email Workflows</h3>
+      <p>Nurture sequences and lifecycle messages tied to real events — booked, paid, onboarded, dormant.</p>
+      <span class="svc-tag">→ Event-driven · Brand-consistent</span>
+    </div>
+
+    <div class="svc span-4 reveal delay-1">
+      <span class="svc-num">/08</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Custom Business Tools</h3>
+      <p>Internal calculators, quote builders, inventory views. The off-the-shelf SaaS that doesn't fit, built to fit.</p>
+      <span class="svc-tag">→ Bespoke · Maintainable</span>
+    </div>
+    <div class="svc span-4 reveal delay-2">
+      <span class="svc-num">/09</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+      </div>
+      <h3>Integrations Layer</h3>
+      <p>The wiring between your CRM, accounting, comms, and storefront — so data moves without humans copy-pasting.</p>
+      <span class="svc-tag">→ API · Webhooks · Zapier / Make</span>
+    </div>
+    <div class="svc span-4 reveal delay-3">
+      <span class="svc-num">/10</span>
+      <div class="svc-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 16V8M10 16V4M16 16V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Analytics & Reporting</h3>
+      <p>Define the metric, instrument the event, surface the insight. Measurement designed before the build.</p>
+      <span class="svc-tag">→ GA4 · PostHog · Custom</span>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FEATURED SYSTEMS ====== -->
+<section class="section wrap" data-screen-label="04 Featured Systems">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-index">04 / Featured Systems</span>
+      <h2 style="margin-top:16px;">
+        Choose the <span class="gold-text">system</span><br/>
+        your business needs.
+      </h2>
+    </div>
+    <div class="right-col">
+      Four core systems we build end-to-end. Hover any card to see a
+      live preview of the workflow your customers — and your team — will move through.
+    </div>
+  </div>
+
+  <div class="fs-grid">
+    <!-- A. Lead to Payment -->
+    <article class="fs-card reveal delay-1">
+      <div class="fs-card-head">
+        <span class="fs-letter">A · Revenue System</span>
+      </div>
       <div>
-        <div class="section-label">Services</div>
-        <h2 class="section-title">Whatever you need built, we build it.</h2>
+        <h3>Lead-to-Payment System.</h3>
+        <p class="fs-desc">From qualified lead through signed proposal to received deposit — one continuous flow, no spreadsheets in between.</p>
       </div>
-      <p class="section-desc">No templates. No page-builders. Every project is engineered from scratch to solve your specific problem and scale with your business.</p>
-    </div>
+      <div class="fs-preview" aria-hidden="true">
+        <div class="pv-flow">
+          <div class="pv-step"><span class="d"></span>Lead captured <span class="amt">/ qualified</span></div>
+          <div class="pv-step"><span class="d" style="background:var(--lavender)"></span>Proposal sent <span class="amt">PRO-0428</span></div>
+          <div class="pv-step"><span class="d" style="background:var(--emerald)"></span>Deposit received <span class="amt">$1,400</span></div>
+          <div class="pv-step"><span class="d" style="background:var(--charcoal)"></span>Project active <span class="amt">→</span></div>
+        </div>
+      </div>
+      <div class="fs-card-foot">
+        <div class="fs-tags">
+          <span class="fs-tag">Forms</span>
+          <span class="fs-tag">Proposals</span>
+          <span class="fs-tag">Stripe</span>
+          <span class="fs-tag">CRM</span>
+        </div>
+        <div class="fs-arrow">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </article>
 
-    <div class="services-grid fade-in">
-      <div class="service-card">
-        <span class="service-icon">🌐</span>
-        <div class="service-num">01</div>
-        <div class="service-title">Web Development</div>
-        <p class="service-desc">High-performance websites and web apps — marketing sites, landing pages, customer portals, SaaS dashboards. Built to convert and built to last.</p>
+    <!-- B. Booking + Availability -->
+    <article class="fs-card reveal delay-2">
+      <div class="fs-card-head">
+        <span class="fs-letter">B · Scheduling System</span>
       </div>
-      <div class="service-card">
-        <span class="service-icon">📱</span>
-        <div class="service-num">02</div>
-        <div class="service-title">Mobile Apps</div>
-        <p class="service-desc">iOS and Android apps — from consumer-facing products to internal business tools. Native performance, great UX, deployed to the App Store and Play Store.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">⚙️</span>
-        <div class="service-num">03</div>
-        <div class="service-title">APIs & Integrations</div>
-        <p class="service-desc">Custom REST and GraphQL APIs. Third-party integrations with Stripe, Twilio, QuickBooks, Salesforce, and virtually any platform you use.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">🤖</span>
-        <div class="service-num">04</div>
-        <div class="service-title">Automation & AI</div>
-        <p class="service-desc">Cut manual work with smart automation. From simple scheduled tasks to AI-powered workflows — we wire up the logic so your team can focus on what matters.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">🛒</span>
-        <div class="service-num">05</div>
-        <div class="service-title">E-Commerce</div>
-        <p class="service-desc">Custom storefronts, headless commerce, inventory systems, and order management. Beyond Shopify templates — built for your exact catalog and flow.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">🏗️</span>
-        <div class="service-num">06</div>
-        <div class="service-title">Full-Scale Platforms</div>
-        <p class="service-desc">Multi-tenant SaaS products, enterprise dashboards, internal tools. Got a complex product idea? We scope it, architect it, and ship it.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROCESS -->
-  <section id="process">
-    <div class="process-inner">
-      <div class="fade-in">
-        <div class="section-label">Process</div>
-        <h2 class="section-title">How we go from idea to shipped.</h2>
-        <p class="section-desc" style="margin-top:1rem;">No hand-holding required. We ask the right questions upfront so we can move fast and keep you in the loop without wasting your time.</p>
-      </div>
-      <div class="process-steps fade-in">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div>
-            <div class="step-title">Discovery Call</div>
-            <p class="step-body">We talk through your idea, your users, your timeline, and your budget. 30 minutes — no slides, no pitch deck.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div>
-            <div class="step-title">Scope & Proposal</div>
-            <p class="step-body">We document exactly what we're building, how long it takes, and what it costs. No surprises.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div>
-            <div class="step-title">Design & Architecture</div>
-            <p class="step-body">UI mockups and technical architecture before a single line of production code is written. We get alignment early.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">04</div>
-          <div>
-            <div class="step-title">Build & Iterate</div>
-            <p class="step-body">We ship in stages. You see real progress weekly — not a 3-month black box. Feedback is welcome at every step.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">05</div>
-          <div>
-            <div class="step-title">Launch & Support</div>
-            <p class="step-body">Deployment, testing, and handoff. We stay on for post-launch support so nothing is left hanging.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHY BIX -->
-  <section id="why">
-    <div class="fade-in">
-      <div class="section-label">Why Bix</div>
-      <h2 class="section-title">You're not hiring an agency.<br/>You're hiring an engineer.</h2>
-    </div>
-    <div class="why-grid fade-in">
-      <div class="why-card">
-        <div class="why-card-head">
-          <div class="why-icon">🎯</div>
-          <div class="why-title">Direct Access</div>
-        </div>
-        <p class="why-desc">You talk directly to the person building your product. No account managers, no hand-offs, no broken telephone. What you say is what gets built.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-card-head">
-          <div class="why-icon">🔩</div>
-          <div class="why-title">Full-Stack Capability</div>
-        </div>
-        <p class="why-desc">Front-end, back-end, mobile, infrastructure, integrations — we cover the whole stack. You don't need to hire four different specialists.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-card-head">
-          <div class="why-icon">📍</div>
-          <div class="why-title">Local to South Florida</div>
-        </div>
-        <p class="why-desc">Based in Fort Lauderdale — we can meet in person, work on your timezone, and actually understand the South Florida market and its business landscape.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-card-head">
-          <div class="why-icon">⚡</div>
-          <div class="why-title">Fast & Transparent</div>
-        </div>
-        <p class="why-desc">No bloated timelines or mystery billing. Clear scopes, weekly updates, and honest conversations when something changes.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- STACK -->
-  <section id="stack">
-    <div class="stack-header fade-in">
       <div>
-        <div class="section-label">Tech Stack</div>
-        <h2 class="section-title">Tools we reach for.</h2>
+        <h3>Booking + Availability System.</h3>
+        <p class="fs-desc">Live capacity, automatic buffers, branded intake forms, and reminders that show up on time — every time.</p>
+      </div>
+      <div class="fs-preview" aria-hidden="true">
+        <div class="pv-cal">
+          <div class="pv-cal-head">
+            <span>JUNE 2026</span>
+            <span>4 OPEN</span>
+          </div>
+          <div class="pv-cal-grid">
+            <div class="d">1</div><div class="d booked">2</div><div class="d">3</div><div class="d booked">4</div><div class="d">5</div><div class="d">6</div><div class="d">7</div>
+            <div class="d booked">8</div><div class="d">9</div><div class="d today">10</div><div class="d">11</div><div class="d booked">12</div><div class="d">13</div><div class="d">14</div>
+            <div class="d">15</div><div class="d booked">16</div><div class="d">17</div><div class="d">18</div><div class="d">19</div><div class="d booked">20</div><div class="d">21</div>
+          </div>
+        </div>
+      </div>
+      <div class="fs-card-foot">
+        <div class="fs-tags">
+          <span class="fs-tag">Calendar</span>
+          <span class="fs-tag">SMS</span>
+          <span class="fs-tag">Intake</span>
+          <span class="fs-tag">Buffers</span>
+        </div>
+        <div class="fs-arrow">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </article>
+
+    <!-- C. Ecommerce -->
+    <article class="fs-card reveal delay-3">
+      <div class="fs-card-head">
+        <span class="fs-letter">C · Commerce System</span>
+      </div>
+      <div>
+        <h3>Ecommerce Growth System.</h3>
+        <p class="fs-desc">A storefront, but operational — abandoned carts, restock alerts, returning customer segmentation, and a revenue feed that's actually readable.</p>
+      </div>
+      <div class="fs-preview" aria-hidden="true">
+        <div class="pv-revenue">
+          Today <span class="v">+ $2,840</span>
+        </div>
+        <div class="pv-shop">
+          <div class="pv-prod"><div class="img"></div><div class="name">Signal Coat — Sand</div><div class="price">$ 248</div></div>
+          <div class="pv-prod"><div class="img" style="background:linear-gradient(135deg,#e8e2d4,#f4efe5)"></div><div class="name">Field Trouser</div><div class="price">$ 168</div></div>
+        </div>
+      </div>
+      <div class="fs-card-foot">
+        <div class="fs-tags">
+          <span class="fs-tag">Catalog</span>
+          <span class="fs-tag">Checkout</span>
+          <span class="fs-tag">Segments</span>
+          <span class="fs-tag">Analytics</span>
+        </div>
+        <div class="fs-arrow">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </article>
+
+    <!-- D. Client Operations Portal -->
+    <article class="fs-card reveal delay-4">
+      <div class="fs-card-head">
+        <span class="fs-letter">D · Operations System</span>
+      </div>
+      <div>
+        <h3>Client Operations Portal.</h3>
+        <p class="fs-desc">Every active client sees the same source of truth you do — schedule, files, invoices, decisions pending. Less email. More clarity.</p>
+      </div>
+      <div class="fs-preview" aria-hidden="true">
+        <div class="pv-portal">
+          <div class="pv-head"><span class="label">Onboarding · Marisol K.</span><span class="pct">72%</span></div>
+          <div class="pv-bar"></div>
+          <div class="pv-task"><span class="c">✓</span>Kickoff scheduled</div>
+          <div class="pv-task"><span class="c">✓</span>Brand assets received</div>
+          <div class="pv-task"><span class="c">✓</span>Content workshop</div>
+          <div class="pv-task todo"><span class="c"></span>Final approval</div>
+        </div>
+      </div>
+      <div class="fs-card-foot">
+        <div class="fs-tags">
+          <span class="fs-tag">Dashboard</span>
+          <span class="fs-tag">Files</span>
+          <span class="fs-tag">Messaging</span>
+          <span class="fs-tag">Billing</span>
+        </div>
+        <div class="fs-arrow">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ====== PROCESS ====== -->
+<section class="process wrap" id="process" data-screen-label="05 Process">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-index">05 / Process</span>
+      <h2 style="margin-top:16px;">
+        Built with strategy.<br/>
+        Launched with <span class="gold-text">structure.</span>
+      </h2>
+    </div>
+    <div class="right-col">
+      Five phases, one continuous engagement. Most projects ship in 4–8
+      weeks — slower means deeper discovery, faster means a narrower scope.
+    </div>
+  </div>
+
+  <div class="process-track reveal">
+    <span class="process-line"></span>
+    <div class="process-step">
+      <div class="process-node">01</div>
+      <span class="pn-num">PHASE 01</span>
+      <h4>Audit + Strategy</h4>
+      <p>Map the current state, the business model, and the unit economics. Decide what to build, in what order, and why.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-node">02</div>
+      <span class="pn-num">PHASE 02</span>
+      <h4>UX Design</h4>
+      <p>Site architecture, user flows, and interface design — every screen designed for a job, not a vibe.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-node">03</div>
+      <span class="pn-num">PHASE 03</span>
+      <h4>System Architecture</h4>
+      <p>Schema, integrations, automation logic. The non-visible scaffolding that makes the front end actually run.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-node">04</div>
+      <span class="pn-num">PHASE 04</span>
+      <h4>Build + Integrations</h4>
+      <p>We write the code, wire the services, and instrument the events. You see weekly progress in a shared portal.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-node">05</div>
+      <span class="pn-num">PHASE 05</span>
+      <h4>Launch + Support</h4>
+      <p>Phased rollout, training, and an ongoing care plan — because launch is the start of the system, not the end.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== WORK (carousel) ====== -->
+<section class="work-carousel-section" id="work" data-screen-label="06 Work">
+  <div class="wcs-bg" aria-hidden="true"></div>
+  <div class="wrap wcs-head reveal">
+    <div>
+      <span class="section-index">06 / Selected Work</span>
+      <h2 style="margin-top:16px;">
+        Systems we've<br/>
+        <span class="gold-text">shipped.</span>
+      </h2>
+    </div>
+    <div class="right-col">
+      A cross-section of recent engagements — from automotive to
+      hospitality to lifestyle commerce. Each one a different vertical;
+      each one the same underlying philosophy.
+    </div>
+  </div>
+
+  <div class="wc-stage" role="region" aria-label="Project carousel">
+    <div class="wc-track" id="wcTrack">
+      <!-- 5 slides — JS positions them -->
+      <article class="wc-slide" data-industry="Automotive" data-result="+ 2.8× LEADS">
+        <div class="wc-vis wc-vis--rb">
+          <div class="wc-vis-eyebrow">RB / 01</div>
+          <div class="wc-vis-art">
+            <div class="wc-bars">
+              <span style="--h:32%"></span>
+              <span style="--h:54%"></span>
+              <span style="--h:78%"></span>
+              <span style="--h:46%"></span>
+              <span style="--h:68%"></span>
+              <span style="--h:90%"></span>
+              <span style="--h:52%"></span>
+            </div>
+            <div class="wc-stat">$18,420<span>↗ 22%</span></div>
+          </div>
+        </div>
+        <div class="wc-meta">
+          <span class="wc-tag">Automotive</span>
+          <h4>Rocket Boyz</h4>
+          <p>Inventory site + lead‑to‑deposit pipeline + fleet dashboard.</p>
+        </div>
+      </article>
+
+      <article class="wc-slide" data-industry="Hospitality" data-result="- 70% NO-SHOWS">
+        <div class="wc-vis wc-vis--pdr">
+          <div class="wc-vis-eyebrow">PDR / 02</div>
+          <div class="wc-vis-art">
+            <div class="wc-bigstat">94<span>/128 covers</span></div>
+            <div class="wc-pillrow">
+              <span class="wc-pill is-warm">Patio</span>
+              <span class="wc-pill">Birthday</span>
+              <span class="wc-pill">8:30 PM</span>
+            </div>
+          </div>
+        </div>
+        <div class="wc-meta">
+          <span class="wc-tag">Hospitality</span>
+          <h4>Pon Di Rio</h4>
+          <p>Reservation site + deposit booking + nightly capacity board.</p>
+        </div>
+      </article>
+
+      <article class="wc-slide" data-industry="Wellness" data-result="MEMBERS UP 3×">
+        <div class="wc-vis wc-vis--lw">
+          <div class="wc-vis-eyebrow">LW / 03</div>
+          <div class="wc-vis-art">
+            <div class="wc-member">
+              <div class="wc-avatar"></div>
+              <div>
+                <div class="wc-mname">Wellness Plan</div>
+                <div class="wc-mmeta">Active · Renews Jul 12</div>
+              </div>
+            </div>
+            <div class="wc-ring"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" stroke="currentColor" stroke-opacity=".15" stroke-width="4" fill="none"/><circle cx="30" cy="30" r="24" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="150" stroke-dashoffset="30" stroke-linecap="round" transform="rotate(-90 30 30)"/></svg><span>84%</span></div>
+          </div>
+        </div>
+        <div class="wc-meta">
+          <span class="wc-tag">Health &amp; Wellness</span>
+          <h4>LyvWel</h4>
+          <p>Member portal + recurring billing + appointment system.</p>
+        </div>
+      </article>
+
+      <article class="wc-slide" data-industry="Concierge" data-result="ON-TIME 99%">
+        <div class="wc-vis wc-vis--bcv">
+          <div class="wc-vis-eyebrow">BCV / 04</div>
+          <div class="wc-vis-art">
+            <div class="wc-vip">CONCIERGE</div>
+            <div class="wc-route">
+              <span>LAX</span>
+              <svg width="36" height="8" viewBox="0 0 36 8" fill="none"><path d="M0 4h32m0 0l-4-3m4 3l-4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              <span>BH</span>
+            </div>
+            <div class="wc-vip-sub">Fri 9:40 PM · Escalade</div>
+          </div>
+        </div>
+        <div class="wc-meta">
+          <span class="wc-tag">Concierge &amp; Transport</span>
+          <h4>Big Cadi VIP</h4>
+          <p>Booking + dispatch + client invoice portal.</p>
+        </div>
+      </article>
+
+      <article class="wc-slide" data-industry="Lifestyle / DTC" data-result="REPEAT 31%">
+        <div class="wc-vis wc-vis--df">
+          <div class="wc-vis-eyebrow">DF / 05</div>
+          <div class="wc-vis-art">
+            <div class="wc-prod">
+              <div class="wc-prod-img"></div>
+              <div class="wc-prod-name">Heritage Duffle</div>
+              <div class="wc-prod-price">$ 248</div>
+            </div>
+            <div class="wc-prod-stat">REPEAT RATE <strong>31%</strong></div>
+          </div>
+        </div>
+        <div class="wc-meta">
+          <span class="wc-tag">Lifestyle / DTC</span>
+          <h4>Duffle</h4>
+          <p>Ecommerce growth system + cart engine + loyalty.</p>
+        </div>
+      </article>
+    </div>
+
+    <button class="wc-nav wc-prev" aria-label="Previous project">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="wc-nav wc-next" aria-label="Next project">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="wc-dots" id="wcDots" aria-hidden="true"></div>
+</section>
+
+<!-- ====== FINAL CTA ====== -->
+<section class="cta wrap" id="contact" data-screen-label="07 Contact">
+  <div class="cta-orb o3"></div>
+  <div class="cta-orb o2"></div>
+  <div class="cta-orb"></div>
+  <div class="inner reveal">
+    <span class="eyebrow" style="margin-bottom:24px;">Bix LLC — Premium Systems Studio</span>
+    <h2 style="margin-top:24px;">
+      Ready for a website<br/>
+      that does more<br/>
+      than <span class="gold-text">sit online?</span>
+    </h2>
+    <p>
+      Let's build the system your business should have had from the start.
+      Tell us what you're running and where it breaks — we'll come back with
+      a plan, a scope, and a number.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="mailto:hello@bixllc.net">
+        Start a Project
+        <svg class="arrow" width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="#systems">Browse Systems</a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer" id="about">
+  <div class="wrap">
+    <div class="footer-row">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="nav-mark" aria-hidden="true"></span>
+          <span style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;">Bix LLC</span>
+        </div>
+        <p>A premium systems studio building functional websites, portals, and operational infrastructure for businesses ready to scale on rails.</p>
+      </div>
+      <div>
+        <h5>Studio</h5>
+        <div class="footer-links">
+          <a href="#systems">Systems</a>
+          <a href="#work">Selected Work</a>
+          <a href="#process">Process</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <div class="footer-links">
+          <a href="#systems">Websites</a>
+          <a href="#systems">Client Portals</a>
+          <a href="#systems">Booking Systems</a>
+          <a href="#systems">Ecommerce</a>
+          <a href="#systems">Automation</a>
+        </div>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <div class="footer-links">
+          <a href="mailto:hello@bixllc.net">hello@bixllc.net</a>
+          <a href="#">Book a discovery call</a>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+        </div>
       </div>
     </div>
-    <div class="stack-pills fade-in">
-      <span class="pill">React</span>
-      <span class="pill">Next.js</span>
-      <span class="pill">React Native</span>
-      <span class="pill">Node.js</span>
-      <span class="pill">TypeScript</span>
-      <span class="pill">Python</span>
-      <span class="pill">PostgreSQL</span>
-      <span class="pill">MongoDB</span>
-      <span class="pill">Supabase</span>
-      <span class="pill">Firebase</span>
-      <span class="pill">AWS</span>
-      <span class="pill">Vercel</span>
-      <span class="pill">Docker</span>
-      <span class="pill">Stripe</span>
-      <span class="pill">Twilio</span>
-      <span class="pill">OpenAI</span>
-      <span class="pill">GraphQL</span>
-      <span class="pill">REST APIs</span>
-      <span class="pill">Tailwind CSS</span>
-      <span class="pill">Figma</span>
+    <div class="footer-base">
+      <span>© 2026 Bix LLC · All rights reserved.</span>
+      <span>Built as a system, not a website.</span>
     </div>
-  </section>
+  </div>
+</footer>
 
-  <!-- CTA -->
-  <section id="contact">
-    <p class="cta-tag">Fort Lauderdale · South Florida · Remote-Friendly</p>
-    <h2>Got something to build?</h2>
-    <p>Tell us about your project — we'll respond within one business day with honest thoughts and a path forward.</p>
-    <a class="btn-primary" href="mailto:hello@bixllc.net">Email Us to Start</a>
-    <div class="cta-meta">
-      Or reach us at <a href="mailto:hello@bixllc.net">hello@bixllc.net</a> &nbsp;·&nbsp; Fort Lauderdale, FL
-    </div>
-  </section>
+<script>
+  // Navbar scrolled state
+  const navShell = document.getElementById('navShell');
+  let scrolledState = false;
+  function onScroll() {
+    const shouldBeScrolled = window.scrollY > 24;
+    if (shouldBeScrolled !== scrolledState) {
+      scrolledState = shouldBeScrolled;
+      navShell.classList.toggle('scrolled', scrolledState);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
-  <!-- FOOTER -->
-  <footer>
-    <a class="footer-logo" href="#">BIX_LLC</a>
-    <div class="footer-location">Fort Lauderdale, FL 33301</div>
-    <div class="footer-copy">© 2025 Bix LLC. All rights reserved.</div>
-  </footer>
-
-  <script>
-    // Cursor glow
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
+  // Reveal-on-scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
     });
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
 
-    // Fade-in on scroll
-    const fadeEls = document.querySelectorAll('.fade-in');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('visible'), i * 80);
-        }
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Safety: reveal anything already in viewport on load (covers above-the-fold + IO race)
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) {
+        el.classList.add('in');
+      }
+    });
+  });
+
+  // Smooth scroll for nav anchors
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if (!id || id === '#' || id === '#top') {
+        if (id === '#top') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        return;
+      }
+      const el = document.querySelector(id);
+      if (el) {
+        e.preventDefault();
+        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Subtle parallax for hero cards
+  const heroCards = document.querySelectorAll('.hero-cards .hc');
+  let raf = null;
+  document.addEventListener('mousemove', (e) => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      const cx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const cy = (e.clientY / window.innerHeight - 0.5) * 2;
+      heroCards.forEach((card, i) => {
+        const depth = (i + 1) * 2;
+        card.style.transform = `translate(${cx * depth * -0.5}px, ${cy * depth * -0.5}px)`;
       });
-    }, { threshold: 0.12 });
-    fadeEls.forEach(el => observer.observe(el));
-
-    // Nav scroll effect
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-      nav.style.borderBottomColor = window.scrollY > 50
-        ? 'rgba(0,200,255,0.2)'
-        : 'rgba(0,200,255,0.12)';
+      raf = null;
     });
-  </script>
+  });
+
+  // Nav dropdown toggle (click + outside-click + Esc)
+  document.querySelectorAll('.nav-item--has-dropdown').forEach(item => {
+    const trigger = item.querySelector('.nav-link-trigger');
+    if (!trigger) return;
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = item.classList.toggle('nav-item--open');
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-item--open').forEach(item => {
+      if (!item.contains(e.target)) {
+        item.classList.remove('nav-item--open');
+        const t = item.querySelector('.nav-link-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.nav-item--open').forEach(item => {
+        item.classList.remove('nav-item--open');
+        const t = item.querySelector('.nav-link-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+
+  // Work carousel — auto-advance with prev/active/next/prev-2/next-2 classes
+  (function workCarousel() {
+    const track = document.getElementById('wcTrack');
+    const dotsHost = document.getElementById('wcDots');
+    const prev = document.querySelector('.wc-prev');
+    const next = document.querySelector('.wc-next');
+    if (!track) return;
+    const slides = Array.from(track.querySelectorAll('.wc-slide'));
+    const total = slides.length;
+    if (!total) return;
+    let active = 0;
+    let timer = null;
+
+    slides.forEach((_, i) => {
+      const b = document.createElement('button');
+      b.className = 'wc-dot';
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Show project ' + (i + 1));
+      b.addEventListener('click', () => { active = i; render(); restart(); });
+      dotsHost.appendChild(b);
+    });
+    const dots = Array.from(dotsHost.children);
+
+    function render() {
+      slides.forEach((s, i) => {
+        s.classList.remove('is-active', 'is-prev', 'is-next', 'is-prev-2', 'is-next-2');
+        const offset = ((i - active) % total + total) % total;
+        if (offset === 0) s.classList.add('is-active');
+        else if (offset === 1) s.classList.add('is-next');
+        else if (offset === total - 1) s.classList.add('is-prev');
+        else if (offset === 2) s.classList.add('is-next-2');
+        else if (offset === total - 2) s.classList.add('is-prev-2');
+      });
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === active));
+    }
+    function goto(d) { active = (active + d + total) % total; render(); }
+    function restart() {
+      clearInterval(timer);
+      timer = setInterval(() => goto(1), 4500);
+    }
+    prev.addEventListener('click', () => { goto(-1); restart(); });
+    next.addEventListener('click', () => { goto(1); restart(); });
+    slides.forEach((s, i) => {
+      s.addEventListener('click', () => {
+        if (i !== active) { active = i; render(); restart(); }
+      });
+    });
+    const stage = document.querySelector('.wc-stage');
+    if (stage) {
+      stage.addEventListener('mouseenter', () => clearInterval(timer));
+      stage.addEventListener('mouseleave', restart);
+    }
+    render();
+    restart();
+  })();
+
+  // Service icons — normalize stroke length so CSS draw animation works for every shape
+  document.querySelectorAll('.svc-icon svg').forEach(svg => {
+    svg.querySelectorAll('path, rect, circle, line, polyline, polygon').forEach(el => {
+      el.setAttribute('pathLength', '100');
+    });
+  });
+
+  // Hero trio — tick the dashboard numbers
+  (function trioTick() {
+    const pipeEl = document.querySelector('.trio-card--sys .md-tick:not(.md-tick-int)');
+    const bookEl = document.querySelector('.trio-card--sys .md-tick-int');
+    if (!pipeEl || !bookEl) return;
+    const animate = (el, from, to, dur, fmt) => {
+      const start = performance.now();
+      const step = (now) => {
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = fmt(from + (to - from) * eased);
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const run = () => {
+      animate(pipeEl, 0, 84.2, 2200, v => v.toFixed(1));
+      animate(bookEl, 0, 38, 1800, v => Math.round(v).toString());
+    };
+    // run once mounted
+    setTimeout(run, 1400);
+    // loop every 8s
+    setInterval(() => {
+      pipeEl.textContent = '0.0';
+      bookEl.textContent = '0';
+      setTimeout(run, 200);
+    }, 8000);
+  })();
+</script>
+
 </body>
 </html>
