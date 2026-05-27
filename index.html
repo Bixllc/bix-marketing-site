@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── SEO ── -->
+  <title>Bix LLC | Custom Software & Web Development — Fort Lauderdale, FL</title>
+  <meta name="description" content="Bix LLC builds custom software, web apps, mobile apps, and automation tools for businesses in Fort Lauderdale and South Florida. From MVPs to enterprise systems — we build it all." />
+  <meta name="keywords" content="custom software development Fort Lauderdale, web development South Florida, mobile app development Broward County, software engineer Fort Lauderdale, full stack developer Fort Lauderdale, Bix LLC" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Bix LLC" />
+  <link rel="canonical" href="https://www.bixllc.net/" />
+
+  <!-- ── Open Graph ── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.bixllc.net/" />
+  <meta property="og:title" content="Bix LLC | Custom Software & Web Development — Fort Lauderdale, FL" />
+  <meta property="og:description" content="From a landing page to a full enterprise platform — Bix LLC engineers custom software solutions for South Florida businesses." />
+  <meta property="og:site_name" content="Bix LLC" />
+
+  <!-- ── Local Business Schema ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Bix LLC",
+    "description": "Custom software and web development studio serving Fort Lauderdale and South Florida.",
+    "url": "https://www.bixllc.net",
+    "areaServed": [
+      {"@type": "City", "name": "Fort Lauderdale"},
+      {"@type": "City", "name": "Miami"},
+      {"@type": "State", "name": "Florida"}
+    ],
+    "serviceType": ["Custom Software Development", "Web Development", "Mobile App Development", "Automation", "API Development"],
+    "priceRange": "$$"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050a0e;
+      --surface: #0c1520;
+      --surface2: #101d2b;
+      --border: rgba(0,200,255,0.12);
+      --accent: #00c8ff;
+      --accent2: #00ff9d;
+      --text: #e0eaf2;
+      --muted: #5a7a90;
+      --heading: #ffffff;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(5,10,14,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+    .nav-logo span { color: var(--accent2); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.5rem 1.2rem;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 10rem 4rem 6rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      top: -100px;
+      right: -150px;
+      background: radial-gradient(circle, rgba(0,200,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      bottom: 0;
+      left: 10%;
+      background: radial-gradient(circle, rgba(0,255,157,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 780px; }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-family: var(--sans);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800;
+      color: var(--heading);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .accent { color: var(--accent); }
+    .hero h1 .accent2 { color: var(--accent2); }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .btn-ghost {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { background: var(--accent2); color: var(--bg); }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2rem;
+      color: var(--heading);
+      font-weight: 700;
+    }
+    .stat-num span { color: var(--accent); }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 0.75rem 0;
+      background: var(--surface);
+    }
+    .ticker {
+      display: flex;
+      gap: 3rem;
+      animation: ticker 25s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .ticker-item span { color: var(--accent); margin-right: 3rem; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-label::before {
+      content: '//';
+      color: var(--accent2);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.7;
+    }
+
+    /* ── SERVICES ── */
+    #services {
+      padding: 7rem 4rem;
+    }
+
+    .services-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: end;
+      margin-bottom: 4rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .service-card {
+      background: var(--surface);
+      padding: 2.5rem;
+      transition: background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card:hover { background: var(--surface2); }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .service-card:hover::after { width: 100%; }
+
+    .service-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .service-num {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--accent2);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.75rem;
+    }
+
+    .service-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.75rem;
+    }
+
+    .service-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── PROCESS ── */
+    #process {
+      padding: 7rem 4rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .process-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+
+    .step {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      cursor: default;
+      transition: padding 0.2s;
+    }
+    .step:first-child { padding-top: 0; }
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      padding-top: 4px;
+    }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.4rem;
+    }
+
+    .step-body {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── WHY BIX ── */
+    #why {
+      padding: 7rem 4rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .why-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color 0.2s;
+    }
+    .why-card:hover { border-color: var(--accent); }
+
+    .why-card-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .why-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,200,255,0.08);
+      border: 1px solid var(--border);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .why-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--heading);
+    }
+
+    .why-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── STACK ── */
+    #stack {
+      padding: 5rem 4rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stack-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+    }
+
+    .stack-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .pill {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CTA ── */
+    #contact {
+      padding: 9rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #contact::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(0,200,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-tag {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 1.5rem;
+    }
+
+    #contact h2 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+
+    #contact p {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .cta-meta {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-top: 1.5rem;
+    }
+    .cta-meta a { color: var(--accent); text-decoration: none; }
+    .cta-meta a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-location {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .footer-location::before { content: '📍'; font-size: 0.8rem; }
+
+    /* ── CURSOR GLOW ── */
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,200,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: left 0.08s, top 0.08s;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      #services, #process, #why, #stack, #contact, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .services-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .process-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .why-grid { grid-template-columns: 1fr; }
+      .stack-header { flex-direction: column; align-items: start; gap: 1rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .hero-stats { flex-direction: column; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor-glow" id="cursor"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">BIX<span>_</span>LLC</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#why">Why Bix</a></li>
+      <li><a href="#stack">Stack</a></li>
+    </ul>
+    <a class="nav-cta" href="#contact">Start a Project</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Fort Lauderdale, FL · Full-Stack Software Studio</div>
+      <h1>
+        We build software<br/>
+        from a <span class="accent">pin</span><br/>
+        to an <span class="accent2">anchor.</span>
+      </h1>
+      <p class="hero-sub">
+        Bix LLC engineers custom software for South Florida businesses — from landing pages and web apps to mobile apps, APIs, automation pipelines, and full enterprise systems.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#contact">Start Your Project</a>
+        <a class="btn-ghost" href="#services">See What We Build</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">100<span>%</span></div>
+          <div class="stat-label">Custom Built</div>
+        </div>
+        <div>
+          <div class="stat-num">1<span>x</span></div>
+          <div class="stat-label">Dedicated Engineer</div>
+        </div>
+        <div>
+          <div class="stat-num">FL<span>→</span>∞</div>
+          <div class="stat-label">Built Local, Scales Global</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker">
+      <span class="ticker-item">Web Apps <span>✦</span></span>
+      <span class="ticker-item">Mobile Apps <span>✦</span></span>
+      <span class="ticker-item">APIs & Integrations <span>✦</span></span>
+      <span class="ticker-item">Automation <span>✦</span></span>
+      <span class="ticker-item">E-Commerce <span>✦</span></span>
+      <span class="ticker-item">SaaS Platforms <span>✦</span></span>
+      <span class="ticker-item">Custom CMS <span>✦</span></span>
+      <span class="ticker-item">Dashboards <span>✦</span></span>
+      <span class="ticker-item">Fort Lauderdale, FL <span>✦</span></span>
+      <span class="ticker-item">Web Apps <span>✦</span></span>
+      <span class="ticker-item">Mobile Apps <span>✦</span></span>
+      <span class="ticker-item">APIs & Integrations <span>✦</span></span>
+      <span class="ticker-item">Automation <span>✦</span></span>
+      <span class="ticker-item">E-Commerce <span>✦</span></span>
+      <span class="ticker-item">SaaS Platforms <span>✦</span></span>
+      <span class="ticker-item">Custom CMS <span>✦</span></span>
+      <span class="ticker-item">Dashboards <span>✦</span></span>
+      <span class="ticker-item">Fort Lauderdale, FL <span>✦</span></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="services-header fade-in">
+      <div>
+        <div class="section-label">Services</div>
+        <h2 class="section-title">Whatever you need built, we build it.</h2>
+      </div>
+      <p class="section-desc">No templates. No page-builders. Every project is engineered from scratch to solve your specific problem and scale with your business.</p>
+    </div>
+
+    <div class="services-grid fade-in">
+      <div class="service-card">
+        <span class="service-icon">🌐</span>
+        <div class="service-num">01</div>
+        <div class="service-title">Web Development</div>
+        <p class="service-desc">High-performance websites and web apps — marketing sites, landing pages, customer portals, SaaS dashboards. Built to convert and built to last.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📱</span>
+        <div class="service-num">02</div>
+        <div class="service-title">Mobile Apps</div>
+        <p class="service-desc">iOS and Android apps — from consumer-facing products to internal business tools. Native performance, great UX, deployed to the App Store and Play Store.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">⚙️</span>
+        <div class="service-num">03</div>
+        <div class="service-title">APIs & Integrations</div>
+        <p class="service-desc">Custom REST and GraphQL APIs. Third-party integrations with Stripe, Twilio, QuickBooks, Salesforce, and virtually any platform you use.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🤖</span>
+        <div class="service-num">04</div>
+        <div class="service-title">Automation & AI</div>
+        <p class="service-desc">Cut manual work with smart automation. From simple scheduled tasks to AI-powered workflows — we wire up the logic so your team can focus on what matters.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🛒</span>
+        <div class="service-num">05</div>
+        <div class="service-title">E-Commerce</div>
+        <p class="service-desc">Custom storefronts, headless commerce, inventory systems, and order management. Beyond Shopify templates — built for your exact catalog and flow.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🏗️</span>
+        <div class="service-num">06</div>
+        <div class="service-title">Full-Scale Platforms</div>
+        <p class="service-desc">Multi-tenant SaaS products, enterprise dashboards, internal tools. Got a complex product idea? We scope it, architect it, and ship it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="process-inner">
+      <div class="fade-in">
+        <div class="section-label">Process</div>
+        <h2 class="section-title">How we go from idea to shipped.</h2>
+        <p class="section-desc" style="margin-top:1rem;">No hand-holding required. We ask the right questions upfront so we can move fast and keep you in the loop without wasting your time.</p>
+      </div>
+      <div class="process-steps fade-in">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div>
+            <div class="step-title">Discovery Call</div>
+            <p class="step-body">We talk through your idea, your users, your timeline, and your budget. 30 minutes — no slides, no pitch deck.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div>
+            <div class="step-title">Scope & Proposal</div>
+            <p class="step-body">We document exactly what we're building, how long it takes, and what it costs. No surprises.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div>
+            <div class="step-title">Design & Architecture</div>
+            <p class="step-body">UI mockups and technical architecture before a single line of production code is written. We get alignment early.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div>
+            <div class="step-title">Build & Iterate</div>
+            <p class="step-body">We ship in stages. You see real progress weekly — not a 3-month black box. Feedback is welcome at every step.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div>
+            <div class="step-title">Launch & Support</div>
+            <p class="step-body">Deployment, testing, and handoff. We stay on for post-launch support so nothing is left hanging.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY BIX -->
+  <section id="why">
+    <div class="fade-in">
+      <div class="section-label">Why Bix</div>
+      <h2 class="section-title">You're not hiring an agency.<br/>You're hiring an engineer.</h2>
+    </div>
+    <div class="why-grid fade-in">
+      <div class="why-card">
+        <div class="why-card-head">
+          <div class="why-icon">🎯</div>
+          <div class="why-title">Direct Access</div>
+        </div>
+        <p class="why-desc">You talk directly to the person building your product. No account managers, no hand-offs, no broken telephone. What you say is what gets built.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-head">
+          <div class="why-icon">🔩</div>
+          <div class="why-title">Full-Stack Capability</div>
+        </div>
+        <p class="why-desc">Front-end, back-end, mobile, infrastructure, integrations — we cover the whole stack. You don't need to hire four different specialists.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-head">
+          <div class="why-icon">📍</div>
+          <div class="why-title">Local to South Florida</div>
+        </div>
+        <p class="why-desc">Based in Fort Lauderdale — we can meet in person, work on your timezone, and actually understand the South Florida market and its business landscape.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-head">
+          <div class="why-icon">⚡</div>
+          <div class="why-title">Fast & Transparent</div>
+        </div>
+        <p class="why-desc">No bloated timelines or mystery billing. Clear scopes, weekly updates, and honest conversations when something changes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="stack-header fade-in">
+      <div>
+        <div class="section-label">Tech Stack</div>
+        <h2 class="section-title">Tools we reach for.</h2>
+      </div>
+    </div>
+    <div class="stack-pills fade-in">
+      <span class="pill">React</span>
+      <span class="pill">Next.js</span>
+      <span class="pill">React Native</span>
+      <span class="pill">Node.js</span>
+      <span class="pill">TypeScript</span>
+      <span class="pill">Python</span>
+      <span class="pill">PostgreSQL</span>
+      <span class="pill">MongoDB</span>
+      <span class="pill">Supabase</span>
+      <span class="pill">Firebase</span>
+      <span class="pill">AWS</span>
+      <span class="pill">Vercel</span>
+      <span class="pill">Docker</span>
+      <span class="pill">Stripe</span>
+      <span class="pill">Twilio</span>
+      <span class="pill">OpenAI</span>
+      <span class="pill">GraphQL</span>
+      <span class="pill">REST APIs</span>
+      <span class="pill">Tailwind CSS</span>
+      <span class="pill">Figma</span>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="contact">
+    <p class="cta-tag">Fort Lauderdale · South Florida · Remote-Friendly</p>
+    <h2>Got something to build?</h2>
+    <p>Tell us about your project — we'll respond within one business day with honest thoughts and a path forward.</p>
+    <a class="btn-primary" href="mailto:hello@bixllc.net">Email Us to Start</a>
+    <div class="cta-meta">
+      Or reach us at <a href="mailto:hello@bixllc.net">hello@bixllc.net</a> &nbsp;·&nbsp; Fort Lauderdale, FL
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a class="footer-logo" href="#">BIX_LLC</a>
+    <div class="footer-location">Fort Lauderdale, FL 33301</div>
+    <div class="footer-copy">© 2025 Bix LLC. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Cursor glow
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    // Fade-in on scroll
+    const fadeEls = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.12 });
+    fadeEls.forEach(el => observer.observe(el));
+
+    // Nav scroll effect
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.borderBottomColor = window.scrollY > 50
+        ? 'rgba(0,200,255,0.2)'
+        : 'rgba(0,200,255,0.12)';
+    });
+  </script>
+</body>
+</html>
