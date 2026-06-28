@@ -234,6 +234,7 @@ section { position: relative; }
   align-items: center;
   gap: 5px;
   font: inherit;
+  font-size: 13px;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -372,6 +373,16 @@ section { position: relative; }
   background: #371851;
   transform: translateY(-1px);
   box-shadow: 0 12px 30px rgba(68,32,97,0.34);
+}
+.btn-secondary {
+  background: rgba(255,255,255,0.6);
+  color: var(--charcoal);
+  border-color: var(--hair);
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(0,0,0,0.14);
+  transform: translateY(-1px);
 }
 .btn-ghost {
   background: rgba(255,255,255,0.4);
@@ -1072,7 +1083,8 @@ section { position: relative; }
 .hero-lander-cta {
   margin-top: 36px;
   display: flex;
-  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .btn-lg {
   padding: 16px 26px;
@@ -1179,14 +1191,10 @@ section { position: relative; }
 
 /* card tints */
 .trio-card--web {
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.85), transparent 55%),
-    linear-gradient(180deg, #F4EEE3, #E7DCC8);
+  background: #ffffff;
 }
 .trio-card--app {
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgba(255,255,255,0.85), transparent 55%),
-    linear-gradient(180deg, #F4F1EC, #E8E2D6);
+  background: #ffffff;
   border-color: rgba(196, 150, 105, 0.18);
   display: flex;
   align-items: center;
@@ -1194,18 +1202,14 @@ section { position: relative; }
   padding: 0;
 }
 .trio-card--sys {
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgba(255,255,255,0.9), transparent 55%),
-    linear-gradient(180deg, #F4F1EC, #E8E2D6);
+  background: #ffffff;
   color: #2A241B;
   border-color: rgba(196, 150, 105, 0.18);
 }
 
 /* ===== Card 1 — Smoove Skin Studio (screenshot) ===== */
 .trio-card--web {
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.85), transparent 55%),
-    linear-gradient(180deg, #F4EEE3, #E7DCC8);
+  background: #ffffff;
   padding: 0;
   border-color: rgba(196, 150, 105, 0.18);
   overflow: hidden;
@@ -1275,7 +1279,7 @@ section { position: relative; }
 
 
 .trio-card--web {
-  background: #F7F4EE;
+  background: #ffffff;
   padding: 0;
   border-color: rgba(196, 150, 105, 0.18);
 }
