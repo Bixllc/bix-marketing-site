@@ -3298,6 +3298,14 @@ section { position: relative; }
 .wc-vis--lw { background: radial-gradient(120% 80% at 30% 80%, #2B2A4A, #0E0A1A); color: #FFFFFF; }
 .wc-vis--bcv { background: radial-gradient(120% 80% at 50% 50%, #1A1A1A, #050505); color: #FFFFFF; }
 .wc-vis--df { background: radial-gradient(120% 80% at 70% 30%, #2A2014, #0E0A1A); color: #FFFFFF; }
+.wc-vis--img { padding: 0; background: #f0f0f0; }
+.wc-screenshot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
 
 .wc-vis-eyebrow {
   font-family: 'JetBrains Mono', monospace;
