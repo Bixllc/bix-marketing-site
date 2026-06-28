@@ -672,6 +672,78 @@
 }());
 </script>
 
+<!-- ====== OUR PROCESS ====== -->
+<section class="op-section" id="process" aria-labelledby="opHeading">
+  <div class="op-inner">
+
+    <div class="op-head">
+      <h2 class="op-h2" id="opHeading">A clear path from problem to launch.</h2>
+      <p class="op-sub">No jargon, no black box. You always know what's happening and what's next.</p>
+    </div>
+
+    <div class="op-timeline" id="opTimeline">
+      <div class="op-line-track" aria-hidden="true">
+        <div class="op-line-fill"></div>
+      </div>
+
+      <ol class="op-list">
+        <li class="op-step">
+          <div class="op-node" aria-hidden="true">1</div>
+          <div class="op-body">
+            <h3 class="op-title">Discovery <span class="op-pill">we listen</span></h3>
+            <p class="op-desc">We learn how your business actually runs — and where the time goes.</p>
+          </div>
+        </li>
+        <li class="op-step">
+          <div class="op-node" aria-hidden="true">2</div>
+          <div class="op-body">
+            <h3 class="op-title">Design <span class="op-pill">we plan</span></h3>
+            <p class="op-desc">We design the system around your workflow, not a generic template.</p>
+          </div>
+        </li>
+        <li class="op-step">
+          <div class="op-node" aria-hidden="true">3</div>
+          <div class="op-body">
+            <h3 class="op-title">Build <span class="op-pill">we make</span></h3>
+            <p class="op-desc">We build your custom software and test it against real, everyday use.</p>
+          </div>
+        </li>
+        <li class="op-step">
+          <div class="op-node" aria-hidden="true">4</div>
+          <div class="op-body">
+            <h3 class="op-title">Launch <span class="op-pill">we ship</span></h3>
+            <p class="op-desc">We deploy it and train your team so day one feels easy.</p>
+          </div>
+        </li>
+        <li class="op-step">
+          <div class="op-node" aria-hidden="true">5</div>
+          <div class="op-body">
+            <h3 class="op-title">Improve <span class="op-pill">ongoing</span></h3>
+            <p class="op-desc">We keep refining as your business grows — the system grows with you.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var tl = document.getElementById('opTimeline');
+  if (!tl) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) { tl.classList.add('in'); return; }
+  var io = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) {
+      tl.classList.add('in');
+      io.disconnect();
+    }
+  }, { threshold: 0.12 });
+  io.observe(tl);
+}());
+</script>
+
 <!-- ====== WORK (carousel) ====== -->
 <section class="work-carousel-section" id="work" data-screen-label="06 Work">
   <div class="wcs-bg" aria-hidden="true"></div>
