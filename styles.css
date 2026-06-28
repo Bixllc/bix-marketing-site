@@ -2461,6 +2461,106 @@ section { position: relative; }
   background-position: center;
 }
 
+/* ====== WHY US ====== */
+.why-us {
+  background:
+    radial-gradient(ellipse 60% 70% at 95% 10%, rgba(106,47,151,0.35) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 5% 90%, rgba(46,137,230,0.12) 0%, transparent 60%),
+    #0e0c17;
+  padding: 110px 24px;
+}
+.why-us-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.why-grad {
+  background: linear-gradient(95deg, #b79be0 0%, #7db8f5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.why-h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 50px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 28px;
+}
+.why-lead {
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.62);
+  max-width: 480px;
+}
+.why-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.why-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+}
+.why-swap-line {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: clamp(20px, 2.4vw, 28px);
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 28px;
+}
+.why-swap-line #whySwap {
+  display: inline;
+  transition: opacity 220ms ease;
+}
+.why-list {
+  list-style: none;
+  padding: 0; margin: 0;
+}
+.why-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: rgba(255,255,255,0.42);
+  transition: color 300ms ease;
+}
+.why-row.act {
+  color: #fff;
+}
+.why-tile {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.45);
+  transition: background 300ms ease, color 300ms ease;
+}
+.why-row.act .why-tile {
+  background: linear-gradient(135deg, #6a2f97 0%, #2E89E6 100%);
+  color: #fff;
+}
+@media (max-width: 1080px) {
+  .why-us-inner { grid-template-columns: 1fr; gap: 48px; }
+  .why-lead { max-width: 100%; }
+}
+
 /* ====== FEATURED SYSTEMS ====== */
 .fs-grid {
   display: grid;
