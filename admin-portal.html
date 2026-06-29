@@ -643,18 +643,21 @@
       var company = document.getElementById('cf-company').value.trim();
       var email = document.getElementById('cf-email').value.trim();
 
-      var { error } = await sb.auth.signInWithOtp({
-        email: email,
-        options: {
-          data: { full_name: name, role: 'client', company: company },
-          emailRedirectTo: window.location.origin + '/client-portal.html'
-        }
+      var { data: { session } } = await sb.auth.getSession();
+      var res = await fetch(SUPA_URL + '/functions/v1/invite-client', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token
+        },
+        body: JSON.stringify({ email: email, full_name: name, company: company })
       });
+      var result = await res.json();
 
       label.textContent = 'Send Invite';
       document.getElementById('clientModal').hidden = true;
 
-      if (error) { toast('Error: ' + error.message); return; }
+      if (result.error) { toast('Error: ' + result.error); return; }
       toast('Invite sent to ' + email);
       setTimeout(loadData, 1000);
     });
