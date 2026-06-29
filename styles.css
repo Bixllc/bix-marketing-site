@@ -354,6 +354,12 @@ section { position: relative; }
   align-items: center;
   gap: 10px;
 }
+.nav-client-link {
+  display: flex;
+  align-items: center;
+  transition: opacity 200ms;
+}
+.nav-client-link:hover { opacity: 0.75; }
 .nav-client-icon {
   color: var(--charcoal);
   opacity: 0.55;
