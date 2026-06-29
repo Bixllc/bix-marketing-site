@@ -3205,7 +3205,7 @@ section { position: relative; }
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 .cs-nav {
   width: 40px; height: 40px;
@@ -3238,7 +3238,7 @@ section { position: relative; }
   gap: 40px;
   background: #f5f5f8;
   border-radius: 20px;
-  padding: 48px;
+  padding: 40px 48px 32px;
   align-items: center;
   opacity: 0;
   transform: translateY(10px);
