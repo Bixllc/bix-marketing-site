@@ -3199,32 +3199,37 @@ section { position: relative; }
   max-width: 520px;
 }
 
-/* Tabs */
-.cs-tabs {
+/* Slider controls */
+.cs-controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
 }
-.cs-tab {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  background: none;
+.cs-nav {
+  width: 40px; height: 40px;
+  border-radius: 50%;
   border: 1px solid var(--hair);
-  border-radius: 999px;
-  padding: 7px 16px;
+  background: #fff;
   cursor: pointer;
-  transition: background 200ms, color 200ms, border-color 200ms;
-  white-space: nowrap;
+  display: grid; place-items: center;
+  color: var(--charcoal);
+  transition: background 200ms, border-color 200ms;
+  flex-shrink: 0;
 }
-.cs-tab:hover { background: rgba(14,10,26,0.04); color: var(--charcoal); }
-.cs-tab.is-active {
-  background: var(--charcoal);
-  color: #fff;
-  border-color: var(--charcoal);
+.cs-nav:hover { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+.cs-dots { display: flex; gap: 6px; align-items: center; }
+.cs-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(14,10,26,0.15);
+  cursor: pointer;
+  padding: 0;
+  transition: background 200ms, transform 200ms;
 }
+.cs-dot.is-active { background: var(--charcoal); transform: scale(1.3); }
 
 /* Card */
 .cs-card {
@@ -3336,21 +3341,7 @@ section { position: relative; }
 .cs-right {
   position: relative;
 }
-.cs-live-pill {
-  position: absolute;
-  top: -14px;
-  left: 20px;
-  z-index: 2;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
-  background: #fff;
-  border: 1px solid var(--hair);
-  border-radius: 999px;
-  padding: 5px 14px;
-  color: var(--charcoal);
-  box-shadow: 0 2px 8px rgba(14,10,26,0.07);
-  white-space: nowrap;
-}
+
 .cs-browser {
   border-radius: 14px;
   overflow: hidden;
@@ -3387,12 +3378,9 @@ section { position: relative; }
 @media (max-width: 900px) {
   .cs-card { grid-template-columns: 1fr; padding: 32px 28px; }
   .cs-img { height: 220px; }
-  .cs-live-pill { top: -12px; }
 }
 @media (max-width: 600px) {
   .cs-compare { grid-template-columns: 1fr; }
-  .cs-tabs { gap: 6px; }
-  .cs-tab { font-size: 12px; padding: 6px 12px; }
 }
 
 /* ====== FINAL CTA ====== */
