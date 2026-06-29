@@ -3197,7 +3197,7 @@ section { position: relative; }
   margin-bottom: 64px;
 }
 .wcs-head .section-index { color: var(--muted); }
-.wcs-head h2 { color: var(--charcoal); }
+.wcs-head h2 { color: var(--charcoal); font-size: clamp(32px, 4.2vw, 64px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 500; }
 .wcs-head .gold-text {
   background: linear-gradient(90deg, #6a2f97, #2E89E6);
   -webkit-background-clip: text;
