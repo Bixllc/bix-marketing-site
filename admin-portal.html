@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal — Bix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    :root {
+      --purple: #442061;
+      --purple-dark: #2E1442;
+      --charcoal: #0E0A1A;
+      --muted: rgba(14,10,26,0.52);
+      --hair: rgba(14,10,26,0.08);
+      --bg: #f7f7fb;
+      --white: #fff;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --red: #c0392b;
+      --green: #1a8a5e;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--charcoal);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--hair);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .header-logo {
+      width: 32px; height: 32px;
+      background: var(--purple);
+      border-radius: 8px;
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .header-logo svg { display: block; }
+    .header-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+    .header-badge {
+      font-size: 10px;
+      font-weight: 500;
+      background: var(--hair);
+      color: var(--muted);
+      border-radius: 4px;
+      padding: 2px 8px;
+      letter-spacing: 0.06em;
+    }
+    .header-spacer { flex: 1; }
+    .header-user {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .btn-logout {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--hair);
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background 200ms, color 200ms;
+    }
+    .btn-logout:hover { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+
+    /* ── Main layout ── */
+    .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Page title row ── */
+    .page-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--hair);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+    .tab {
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 7px 20px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      background: none;
+      color: var(--muted);
+      transition: background 180ms, color 180ms;
+    }
+    .tab.is-active {
+      background: var(--white);
+      color: var(--charcoal);
+      box-shadow: 0 1px 3px rgba(14,10,26,0.1);
+    }
+
+    /* ── Primary button ── */
+    .btn-primary {
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 9px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 200ms, transform 150ms;
+    }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+
+    /* ── Card / table ── */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid var(--hair);
+      overflow: hidden;
+    }
+    .card-empty {
+      padding: 56px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .card-empty strong { display: block; font-size: 16px; font-weight: 500; color: var(--charcoal); margin-bottom: 6px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--hair);
+    }
+    tbody tr { border-bottom: 1px solid var(--hair); transition: background 150ms; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    td {
+      padding: 14px 20px;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .cell-name { font-weight: 500; }
+    .cell-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 500;
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+    .badge-discovery  { background: #eef0ff; color: #4a5adb; }
+    .badge-design     { background: #fff4e6; color: #c47a1e; }
+    .badge-development{ background: #e8f4fd; color: #2377c4; }
+    .badge-review     { background: #fff0f6; color: #c42b82; }
+    .badge-launched   { background: #e8f8f0; color: var(--green); }
+
+    /* ── Row actions ── */
+    .btn-sm {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--hair);
+      background: none;
+      cursor: pointer;
+      color: var(--charcoal);
+      transition: background 150ms;
+    }
+    .btn-sm:hover { background: var(--hair); }
+    .btn-sm.danger { color: var(--red); border-color: rgba(192,57,43,0.2); }
+    .btn-sm.danger:hover { background: rgba(192,57,43,0.08); }
+    .btn-row { display: flex; gap: 6px; }
+
+    /* ── Updates inline ── */
+    .updates-row td { padding: 0; }
+    .updates-panel {
+      padding: 16px 20px 20px;
+      background: #fafafa;
+      border-top: 1px solid var(--hair);
+    }
+    .updates-list { list-style: none; margin-bottom: 12px; }
+    .updates-list li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--hair);
+    }
+    .updates-list li:last-child { border-bottom: none; }
+    .update-time { color: var(--muted); font-size: 11.5px; white-space: nowrap; flex-shrink: 0; padding-top: 1px; }
+    .update-form { display: flex; gap: 8px; margin-top: 4px; }
+    .update-input {
+      flex: 1;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      border: 1px solid var(--hair);
+      border-radius: 8px;
+      outline: none;
+    }
+    .update-input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(68,32,97,0.1); }
+    .no-updates { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+    /* ── Modal ── */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(14,10,26,0.4);
+      display: grid; place-items: center;
+      z-index: 200;
+      padding: 16px;
+    }
+    .modal {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 24px 64px rgba(14,10,26,0.2);
+    }
+    .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 12px;
+      border: 1px solid var(--hair);
+      border-radius: 9px;
+      outline: none;
+      color: var(--charcoal);
+      background: var(--white);
+      transition: border-color 200ms, box-shadow 200ms;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(68,32,97,0.1);
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+    .btn-cancel {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: 9px;
+      border: 1px solid var(--hair);
+      background: none;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .btn-cancel:hover { background: var(--hair); }
+
+    /* ── Loading ── */
+    .loading {
+      padding: 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--charcoal);
+      color: #fff;
+      font-size: 13.5px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(14,10,26,0.2);
+      z-index: 300;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 250ms, transform 250ms;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="header-brand" aria-label="Back to site">
+      <div class="header-logo">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path d="M5 4h6a4 4 0 0 1 0 8H5V4z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M5 12h6.5a4 4 0 0 1 0 8H5v-8z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" opacity=".6"/>
+        </svg>
+      </div>
+      <span class="header-title">Bix</span>
+    </a>
+    <span class="header-badge">Admin</span>
+    <span class="header-spacer"></span>
+    <span class="header-user" id="headerEmail"></span>
+    <button class="btn-logout" id="logoutBtn">Log out</button>
+  </header>
+
+  <main class="main">
+    <div class="page-row">
+      <h1 class="page-title">Dashboard</h1>
+      <button class="btn-primary" id="addBtn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span id="addBtnLabel">Invite Client</span>
+      </button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab is-active" data-tab="clients">Clients</button>
+      <button class="tab" data-tab="projects">Projects</button>
+    </div>
+
+    <!-- Clients pane -->
+    <div id="paneClients">
+      <div class="card" id="clientsCard">
+        <div class="loading">Loading clients…</div>
+      </div>
+    </div>
+
+    <!-- Projects pane -->
+    <div id="paneProjects" hidden>
+      <div class="card" id="projectsCard">
+        <div class="loading">Loading projects…</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Invite Client Modal -->
+  <div class="modal-bg" id="clientModal" hidden>
+    <div class="modal">
+      <h2 class="modal-title">Invite Client</h2>
+      <form id="clientForm">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="cf-name" placeholder="Jane Smith" required />
+        </div>
+        <div class="field">
+          <label>Company</label>
+          <input type="text" id="cf-company" placeholder="Acme Inc." />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="cf-email" placeholder="jane@company.com" required />
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" id="clientModalClose">Cancel</button>
+          <button type="submit" class="btn-primary"><span id="clientSubmitLabel">Send Invite</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Project Modal -->
+  <div class="modal-bg" id="projectModal" hidden>
+    <div class="modal">
+      <h2 class="modal-title" id="projectModalTitle">Add Project</h2>
+      <form id="projectForm">
+        <input type="hidden" id="pf-id" />
+        <div class="field">
+          <label>Client</label>
+          <select id="pf-client" required>
+            <option value="">Select client…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Project Name</label>
+          <input type="text" id="pf-name" placeholder="Booking Platform" required />
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <textarea id="pf-desc" placeholder="What are we building?"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Status</label>
+            <select id="pf-status">
+              <option value="discovery">Discovery</option>
+              <option value="design">Design</option>
+              <option value="development">Development</option>
+              <option value="review">Review</option>
+              <option value="launched">Launched</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Due Date</label>
+            <input type="date" id="pf-due" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Live URL <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+          <input type="url" id="pf-url" placeholder="https://…" />
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" id="projectModalClose">Cancel</button>
+          <button type="submit" class="btn-primary"><span id="projectSubmitLabel">Save Project</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+  (function () {
+    const SUPA_URL = 'https://mvgyjeocdsngldirehlv.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12Z3lqZW9jZHNuZ2xkaXJlaGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTEwMjUsImV4cCI6MjA5ODMyNzAyNX0.zUzw9X-WPUZ454WU27TI-Svjcs6VycSITmxxZHBSBlQ';
+    const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    var currentTab = 'clients';
+    var allClients = [];
+    var allProjects = [];
+    var expandedProject = null;
+
+    // ── Auth guard ──
+    async function init() {
+      var { data: { session } } = await sb.auth.getSession();
+      if (!session) { window.location.href = 'login.html'; return; }
+
+      var { data: profile } = await sb.from('profiles').select('role').eq('id', session.user.id).single();
+      if (profile?.role !== 'admin') { window.location.href = 'client-portal.html'; return; }
+
+      document.getElementById('headerEmail').textContent = session.user.email;
+      loadData();
+    }
+
+    // ── Load all data ──
+    async function loadData() {
+      var [cp, pp] = await Promise.all([
+        sb.from('profiles').select('*').eq('role', 'client').order('created_at', { ascending: false }),
+        sb.from('projects').select('*, profiles(full_name, company)').order('created_at', { ascending: false })
+      ]);
+      allClients = cp.data || [];
+      allProjects = pp.data || [];
+      renderClients();
+      renderProjects();
+    }
+
+    // ── Tabs ──
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('is-active'); });
+        t.classList.add('is-active');
+        currentTab = t.dataset.tab;
+        document.getElementById('paneClients').hidden = currentTab !== 'clients';
+        document.getElementById('paneProjects').hidden = currentTab !== 'projects';
+        document.getElementById('addBtnLabel').textContent = currentTab === 'clients' ? 'Invite Client' : 'Add Project';
+      });
+    });
+
+    document.getElementById('addBtn').addEventListener('click', function () {
+      if (currentTab === 'clients') openClientModal();
+      else openProjectModal();
+    });
+
+    // ── Render clients ──
+    function renderClients() {
+      var el = document.getElementById('clientsCard');
+      if (!allClients.length) {
+        el.innerHTML = '<div class="card-empty"><strong>No clients yet</strong>Invite your first client to get started.</div>';
+        return;
+      }
+      var rows = allClients.map(function (c) {
+        var pCount = allProjects.filter(function (p) { return p.client_id === c.id; }).length;
+        return '<tr>' +
+          '<td><div class="cell-name">' + esc(c.full_name || '—') + '</div>' +
+               '<div class="cell-sub">' + esc(c.company || '') + '</div></td>' +
+          '<td>' + esc(c.id ? (allClients.find(function(x){return x.id===c.id;})?.email || '') : '') + '</td>' +
+          '<td>' + pCount + ' project' + (pCount !== 1 ? 's' : '') + '</td>' +
+          '<td>' + fmt(c.created_at) + '</td>' +
+          '<td><div class="btn-row">' +
+            '<button class="btn-sm" onclick="addProjectForClient(\'' + c.id + '\')">Add project</button>' +
+          '</div></td>' +
+        '</tr>';
+      }).join('');
+
+      el.innerHTML = '<table><thead><tr>' +
+        '<th>Name</th><th>Email</th><th>Projects</th><th>Since</th><th></th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table>';
+    }
+
+    // ── Render projects ──
+    function renderProjects() {
+      var el = document.getElementById('projectsCard');
+      if (!allProjects.length) {
+        el.innerHTML = '<div class="card-empty"><strong>No projects yet</strong>Add a project to get started.</div>';
+        return;
+      }
+
+      var rows = allProjects.map(function (p) {
+        var isExp = expandedProject === p.id;
+        return '<tr>' +
+          '<td><div class="cell-name">' + esc(p.name) + '</div>' +
+               '<div class="cell-sub">' + esc(p.profiles?.full_name || '—') + ' · ' + esc(p.profiles?.company || '') + '</div></td>' +
+          '<td><span class="badge badge-' + p.status + '">' + cap(p.status) + '</span></td>' +
+          '<td>' + (p.due_date ? fmt(p.due_date) : '—') + '</td>' +
+          '<td>' + (p.live_url ? '<a href="' + esc(p.live_url) + '" target="_blank" style="color:var(--purple);font-size:13px">View ↗</a>' : '—') + '</td>' +
+          '<td><div class="btn-row">' +
+            '<button class="btn-sm" onclick="toggleUpdates(\'' + p.id + '\')">Updates</button>' +
+            '<button class="btn-sm" onclick="openProjectModal(\'' + p.id + '\')">Edit</button>' +
+            '<button class="btn-sm danger" onclick="deleteProject(\'' + p.id + '\')">Delete</button>' +
+          '</div></td>' +
+        '</tr>' +
+        (isExp ? '<tr class="updates-row"><td colspan="5">' + renderUpdatesPanel(p.id) + '</td></tr>' : '');
+      }).join('');
+
+      el.innerHTML = '<table><thead><tr>' +
+        '<th>Project</th><th>Status</th><th>Due</th><th>Live URL</th><th></th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table>';
+    }
+
+    // ── Updates panel ──
+    var updatesCache = {};
+
+    function renderUpdatesPanel(projectId) {
+      var updates = updatesCache[projectId] || [];
+      var list = updates.length
+        ? '<ul class="updates-list">' + updates.map(function (u) {
+            return '<li><span class="update-time">' + fmtTime(u.created_at) + '</span><span>' + esc(u.message) + '</span></li>';
+          }).join('') + '</ul>'
+        : '<p class="no-updates">No updates posted yet.</p>';
+
+      return '<div class="updates-panel">' + list +
+        '<div class="update-form">' +
+        '<input class="update-input" id="upd-' + projectId + '" placeholder="Post an update to the client…" />' +
+        '<button class="btn-primary" style="flex-shrink:0" onclick="postUpdate(\'' + projectId + '\')">Post</button>' +
+        '</div></div>';
+    }
+
+    window.toggleUpdates = async function (projectId) {
+      if (expandedProject === projectId) {
+        expandedProject = null;
+      } else {
+        expandedProject = projectId;
+        var { data } = await sb.from('project_updates').select('*').eq('project_id', projectId).order('created_at', { ascending: false });
+        updatesCache[projectId] = data || [];
+      }
+      renderProjects();
+    };
+
+    window.postUpdate = async function (projectId) {
+      var input = document.getElementById('upd-' + projectId);
+      var msg = input.value.trim();
+      if (!msg) return;
+      input.disabled = true;
+      var { error } = await sb.from('project_updates').insert({ project_id: projectId, message: msg });
+      if (!error) {
+        toast('Update posted');
+        var { data } = await sb.from('project_updates').select('*').eq('project_id', projectId).order('created_at', { ascending: false });
+        updatesCache[projectId] = data || [];
+        renderProjects();
+      }
+    };
+
+    // ── Add project for specific client ──
+    window.addProjectForClient = function (clientId) {
+      openProjectModal();
+      setTimeout(function () {
+        document.getElementById('pf-client').value = clientId;
+      }, 50);
+    };
+
+    // ── Delete project ──
+    window.deleteProject = async function (id) {
+      if (!confirm('Delete this project? This cannot be undone.')) return;
+      await sb.from('projects').delete().eq('id', id);
+      toast('Project deleted');
+      loadData();
+    };
+
+    // ── Client Modal ──
+    function openClientModal() {
+      document.getElementById('cf-name').value = '';
+      document.getElementById('cf-company').value = '';
+      document.getElementById('cf-email').value = '';
+      document.getElementById('clientModal').hidden = false;
+    }
+    document.getElementById('clientModalClose').addEventListener('click', function () {
+      document.getElementById('clientModal').hidden = true;
+    });
+    document.getElementById('clientForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var label = document.getElementById('clientSubmitLabel');
+      label.textContent = 'Sending…';
+      var name = document.getElementById('cf-name').value.trim();
+      var company = document.getElementById('cf-company').value.trim();
+      var email = document.getElementById('cf-email').value.trim();
+
+      var { error } = await sb.auth.signInWithOtp({
+        email: email,
+        options: {
+          data: { full_name: name, role: 'client', company: company },
+          emailRedirectTo: window.location.origin + '/client-portal.html'
+        }
+      });
+
+      label.textContent = 'Send Invite';
+      document.getElementById('clientModal').hidden = true;
+
+      if (error) { toast('Error: ' + error.message); return; }
+      toast('Invite sent to ' + email);
+      setTimeout(loadData, 1000);
+    });
+
+    // ── Project Modal ──
+    window.openProjectModal = function (id) {
+      var p = id ? allProjects.find(function (x) { return x.id === id; }) : null;
+      document.getElementById('projectModalTitle').textContent = p ? 'Edit Project' : 'Add Project';
+      document.getElementById('projectSubmitLabel').textContent = p ? 'Save Changes' : 'Save Project';
+      document.getElementById('pf-id').value = p ? p.id : '';
+      document.getElementById('pf-name').value = p ? p.name : '';
+      document.getElementById('pf-desc').value = p ? (p.description || '') : '';
+      document.getElementById('pf-status').value = p ? p.status : 'discovery';
+      document.getElementById('pf-due').value = p ? (p.due_date || '') : '';
+      document.getElementById('pf-url').value = p ? (p.live_url || '') : '';
+
+      var sel = document.getElementById('pf-client');
+      sel.innerHTML = '<option value="">Select client…</option>' +
+        allClients.map(function (c) {
+          return '<option value="' + c.id + '"' + (p && p.client_id === c.id ? ' selected' : '') + '>' + esc(c.full_name || c.id) + (c.company ? ' (' + esc(c.company) + ')' : '') + '</option>';
+        }).join('');
+      if (p) sel.value = p.client_id;
+
+      document.getElementById('projectModal').hidden = false;
+    };
+    document.getElementById('projectModalClose').addEventListener('click', function () {
+      document.getElementById('projectModal').hidden = true;
+    });
+    document.getElementById('projectForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var label = document.getElementById('projectSubmitLabel');
+      label.textContent = 'Saving…';
+
+      var id = document.getElementById('pf-id').value;
+      var payload = {
+        client_id:   document.getElementById('pf-client').value,
+        name:        document.getElementById('pf-name').value.trim(),
+        description: document.getElementById('pf-desc').value.trim() || null,
+        status:      document.getElementById('pf-status').value,
+        due_date:    document.getElementById('pf-due').value || null,
+        live_url:    document.getElementById('pf-url').value.trim() || null
+      };
+
+      var error;
+      if (id) {
+        var r = await sb.from('projects').update(payload).eq('id', id);
+        error = r.error;
+      } else {
+        var r = await sb.from('projects').insert(payload);
+        error = r.error;
+      }
+
+      label.textContent = id ? 'Save Changes' : 'Save Project';
+      document.getElementById('projectModal').hidden = true;
+
+      if (error) { toast('Error: ' + error.message); return; }
+      toast(id ? 'Project updated' : 'Project added');
+      loadData();
+    });
+
+    // ── Logout ──
+    document.getElementById('logoutBtn').addEventListener('click', async function () {
+      await sb.auth.signOut();
+      window.location.href = 'login.html';
+    });
+
+    // ── Utilities ──
+    function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : s; }
+    function fmt(d) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+    function fmtTime(d) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''; }
+
+    var toastTimer;
+    function toast(msg) {
+      var el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { el.classList.remove('show'); }, 3000);
+    }
+
+    // Close modals on backdrop click
+    ['clientModal','projectModal'].forEach(function (id) {
+      document.getElementById(id).addEventListener('click', function (e) {
+        if (e.target === this) this.hidden = true;
+      });
+    });
+
+    init();
+  }());
+  </script>
+</body>
+</html>

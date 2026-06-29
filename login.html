@@ -294,8 +294,10 @@
         <a href="#" class="forgot">Forgot password?</a>
       </div>
 
+      <p id="loginError" style="display:none;font-size:13.5px;color:#c0392b;background:#fdf0ef;border:1px solid #f5c6c2;border-radius:8px;padding:10px 14px;margin-bottom:16px;"></p>
+
       <button type="submit" class="submit-btn">
-        Sign in
+        <span class="btn-label">Sign in</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -304,15 +306,56 @@
     </form>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    // Password visibility toggle
+    const SUPA_URL = 'https://mvgyjeocdsngldirehlv.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12Z3lqZW9jZHNuZ2xkaXJlaGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTEwMjUsImV4cCI6MjA5ODMyNzAyNX0.zUzw9X-WPUZ454WU27TI-Svjcs6VycSITmxxZHBSBlQ';
+    const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    // Redirect if already logged in
+    sb.auth.getSession().then(({ data: { session } }) => {
+      if (session) redirectByRole(session.user.id);
+    });
+
+    async function redirectByRole(uid) {
+      const { data } = await sb.from('profiles').select('role').eq('id', uid).single();
+      window.location.href = data?.role === 'admin' ? 'admin-portal.html' : 'client-portal.html';
+    }
+
+    // Password toggle
     var pwInput = document.getElementById('password');
-    var toggleBtn = document.getElementById('togglePw');
-    toggleBtn.addEventListener('click', function () {
-      var isHidden = pwInput.type === 'password';
-      pwInput.type = isHidden ? 'text' : 'password';
-      toggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
-      toggleBtn.querySelector('svg').style.opacity = isHidden ? '0.5' : '1';
+    document.getElementById('togglePw').addEventListener('click', function () {
+      var show = pwInput.type === 'password';
+      pwInput.type = show ? 'text' : 'password';
+      this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      this.querySelector('svg').style.opacity = show ? '0.5' : '1';
+    });
+
+    // Login
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var btn = this.querySelector('.submit-btn');
+      var label = btn.querySelector('.btn-label');
+      var err = document.getElementById('loginError');
+
+      err.style.display = 'none';
+      btn.disabled = true;
+      label.textContent = 'Signing in…';
+
+      var { data, error } = await sb.auth.signInWithPassword({
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+      });
+
+      if (error) {
+        err.textContent = 'Invalid email or password. Please try again.';
+        err.style.display = 'block';
+        btn.disabled = false;
+        label.textContent = 'Sign in';
+        return;
+      }
+
+      await redirectByRole(data.user.id);
     });
   </script>
 </body>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal — Bix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    :root {
+      --purple: #442061;
+      --purple-dark: #2E1442;
+      --charcoal: #0E0A1A;
+      --muted: rgba(14,10,26,0.52);
+      --hair: rgba(14,10,26,0.08);
+      --bg: #f7f7fb;
+      --white: #fff;
+      --green: #1a8a5e;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--charcoal);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--hair);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      width: 32px; height: 32px;
+      background: var(--purple);
+      border-radius: 8px;
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .header-title { font-size: 14px; font-weight: 600; color: var(--charcoal); }
+    .header-badge {
+      font-size: 10px;
+      font-weight: 500;
+      background: var(--hair);
+      color: var(--muted);
+      border-radius: 4px;
+      padding: 2px 8px;
+      letter-spacing: 0.06em;
+    }
+    .header-spacer { flex: 1; }
+    .header-user { font-size: 13px; color: var(--muted); }
+    .btn-logout {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--hair);
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background 200ms, color 200ms;
+    }
+    .btn-logout:hover { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+
+    /* ── Layout ── */
+    .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Welcome ── */
+    .welcome { margin-bottom: 32px; }
+    .welcome-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .welcome-name { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      border: 1px solid var(--hair);
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .card-title { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .card-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+
+    /* ── Status progress ── */
+    .progress-wrap { margin-bottom: 28px; }
+    .progress-steps {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+    }
+    .progress-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .progress-step::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      right: -50%;
+      height: 2px;
+      background: var(--hair);
+      z-index: 0;
+    }
+    .progress-step:last-child::before { display: none; }
+    .progress-step.done::before { background: var(--purple); }
+
+    .step-dot {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--hair);
+      border: 2px solid var(--hair);
+      display: grid; place-items: center;
+      position: relative;
+      z-index: 1;
+      transition: background 300ms, border-color 300ms;
+      flex-shrink: 0;
+    }
+    .progress-step.done .step-dot {
+      background: var(--purple);
+      border-color: var(--purple);
+    }
+    .progress-step.active .step-dot {
+      background: var(--white);
+      border-color: var(--purple);
+      box-shadow: 0 0 0 4px rgba(68,32,97,0.12);
+    }
+    .step-check {
+      display: none;
+    }
+    .progress-step.done .step-check {
+      display: block;
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .progress-step.done .step-label,
+    .progress-step.active .step-label {
+      color: var(--charcoal);
+    }
+    .progress-step.active .step-label { font-weight: 600; }
+
+    /* ── Live URL ── */
+    .live-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--purple);
+      text-decoration: none;
+      background: rgba(68,32,97,0.06);
+      border-radius: 8px;
+      padding: 8px 14px;
+      transition: background 200ms;
+    }
+    .live-link:hover { background: rgba(68,32,97,0.12); }
+
+    /* ── Updates ── */
+    .updates-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .update-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--hair);
+    }
+    .update-item:last-child { border-bottom: none; }
+    .update-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--purple);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .update-content { flex: 1; }
+    .update-msg { font-size: 14px; line-height: 1.6; }
+    .update-date { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .no-updates { font-size: 14px; color: var(--muted); }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: var(--purple);
+      border-radius: 20px;
+      padding: 32px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .contact-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .contact-sub { font-size: 14px; opacity: 0.7; }
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      background: #fff;
+      color: var(--purple);
+      border: none;
+      border-radius: 10px;
+      padding: 11px 20px;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity 200ms;
+    }
+    .btn-white:hover { opacity: 0.9; }
+
+    /* ── Loading / empty ── */
+    .loading { padding: 48px; text-align: center; color: var(--muted); font-size: 14px; }
+    .empty { text-align: center; padding: 48px 24px; }
+    .empty-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-logo">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+        <path d="M5 4h6a4 4 0 0 1 0 8H5V4z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M5 12h6.5a4 4 0 0 1 0 8H5v-8z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" opacity=".6"/>
+      </svg>
+    </div>
+    <span class="header-title">Bix</span>
+    <span class="header-badge">Client Portal</span>
+    <span class="header-spacer"></span>
+    <span class="header-user" id="headerEmail"></span>
+    <button class="btn-logout" id="logoutBtn">Log out</button>
+  </header>
+
+  <main class="main" id="main">
+    <div class="loading">Loading your portal…</div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+  (function () {
+    const SUPA_URL = 'https://mvgyjeocdsngldirehlv.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12Z3lqZW9jZHNuZ2xkaXJlaGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTEwMjUsImV4cCI6MjA5ODMyNzAyNX0.zUzw9X-WPUZ454WU27TI-Svjcs6VycSITmxxZHBSBlQ';
+    const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    var STEPS = ['discovery', 'design', 'development', 'review', 'launched'];
+    var STEP_LABELS = ['Discovery', 'Design', 'Development', 'Review', 'Launched'];
+
+    async function init() {
+      var { data: { session } } = await sb.auth.getSession();
+      if (!session) { window.location.href = 'login.html'; return; }
+
+      var { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+      if (profile?.role === 'admin') { window.location.href = 'admin-portal.html'; return; }
+
+      document.getElementById('headerEmail').textContent = session.user.email;
+      renderPortal(profile, session.user.id);
+    }
+
+    async function renderPortal(profile, uid) {
+      var main = document.getElementById('main');
+
+      var [projRes, updRes] = await Promise.all([
+        sb.from('projects').select('*').eq('client_id', uid).order('created_at', { ascending: false }),
+        sb.from('project_updates').select('*, projects!inner(client_id)').eq('projects.client_id', uid).order('created_at', { ascending: false })
+      ]);
+
+      var projects = projRes.data || [];
+      var updates = updRes.data || [];
+
+      var name = profile?.full_name || session?.user?.email?.split('@')[0] || 'there';
+
+      if (!projects.length) {
+        main.innerHTML =
+          '<div class="welcome"><p class="welcome-label">Welcome back</p><h1 class="welcome-name">Hi, ' + esc(name) + '</h1></div>' +
+          '<div class="card"><div class="empty">' +
+            '<div class="empty-title">Your project is being set up</div>' +
+            '<p class="empty-sub">Bix will add your project details here soon. Check back shortly.</p>' +
+          '</div></div>' +
+          contactCard();
+        wireLogout();
+        return;
+      }
+
+      var projectCards = projects.map(function (p) {
+        var stepIdx = STEPS.indexOf(p.status);
+        var projectUpdates = updates.filter(function (u) { return u.project_id === p.id; });
+
+        var steps = STEPS.map(function (s, i) {
+          var cls = i < stepIdx ? 'done' : (i === stepIdx ? 'active' : '');
+          return '<div class="progress-step ' + cls + '">' +
+            '<div class="step-dot">' +
+              '<svg class="step-check" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</div>' +
+            '<span class="step-label">' + STEP_LABELS[i] + '</span>' +
+          '</div>';
+        }).join('');
+
+        var updatesHtml = projectUpdates.length
+          ? projectUpdates.map(function (u) {
+              return '<div class="update-item"><div class="update-dot"></div><div class="update-content">' +
+                '<div class="update-msg">' + esc(u.message) + '</div>' +
+                '<div class="update-date">' + fmtTime(u.created_at) + '</div>' +
+              '</div></div>';
+            }).join('')
+          : '<p class="no-updates">No updates yet — we\'ll post progress notes here.</p>';
+
+        return '<div class="card">' +
+          '<p class="card-label">Your project</p>' +
+          '<h2 class="card-title">' + esc(p.name) + '</h2>' +
+          (p.description ? '<p class="card-desc">' + esc(p.description) + '</p>' : '') +
+          '<div class="progress-wrap"><div class="progress-steps">' + steps + '</div></div>' +
+          (p.live_url ? '<a href="' + esc(p.live_url) + '" target="_blank" rel="noopener" class="live-link">View live site <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>' : '') +
+        '</div>' +
+        '<div class="card">' +
+          '<h3 class="updates-title">Updates from Bix</h3>' + updatesHtml +
+        '</div>';
+      }).join('');
+
+      main.innerHTML =
+        '<div class="welcome"><p class="welcome-label">Welcome back</p><h1 class="welcome-name">Hi, ' + esc(name) + '</h1></div>' +
+        projectCards +
+        contactCard();
+
+      wireLogout();
+    }
+
+    function contactCard() {
+      return '<div class="contact-card">' +
+        '<div><div class="contact-title">Have questions?</div><p class="contact-sub">We\'re here to help at every stage.</p></div>' +
+        '<a href="https://calendly.com/bixllc/website-inquiry-call" target="_blank" rel="noopener" class="btn-white">Book a call <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>' +
+      '</div>';
+    }
+
+    function wireLogout() {
+      document.getElementById('logoutBtn').addEventListener('click', async function () {
+        await sb.auth.signOut();
+        window.location.href = 'login.html';
+      });
+    }
+
+    function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function fmtTime(d) {
+      return d ? new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+    }
+
+    init();
+  }());
+  </script>
+</body>
+</html>
