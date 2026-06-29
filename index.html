@@ -746,89 +746,233 @@
 </script>
 
 <!-- ====== WORK (carousel) ====== -->
-<section class="work-carousel-section" id="work" data-screen-label="06 Work">
-  <div class="wcs-bg" aria-hidden="true"></div>
-  <div class="wrap wcs-head reveal">
-    <div>
-      <h2 style="margin-top:16px;">
-        Systems we've<br/>
-        <span class="gold-text">shipped.</span>
-      </h2>
-    </div>
-    <div class="right-col">
-      A cross-section of recent work — wellness, hospitality, home services, talent, and beauty. Different verticals, same approach.
-    </div>
-  </div>
+<!-- ====== WORK (case studies) ====== -->
+<section class="cs-section" id="work">
+  <div class="cs-wrap">
 
-  <div class="wc-stage" role="region" aria-label="Project carousel">
-    <div class="wc-track" id="wcTrack">
-      <!-- 5 slides — JS positions them -->
-      <article class="wc-slide" data-industry="Health &amp; Wellness" data-result="E-COMMERCE">
-        <div class="wc-vis wc-vis--img">
-          <img src="lyvwel-screenshot.png" alt="LyvWel website screenshot" class="wc-screenshot" />
-        </div>
-        <div class="wc-meta">
-          <span class="wc-tag">Health &amp; Wellness</span>
-          <h4>LyvWel</h4>
-          <p>E-commerce store + subscription system + product launch site.</p>
-        </div>
-      </article>
-
-      <article class="wc-slide" data-industry="Beauty &amp; Wellness" data-result="BOOKING SITE">
-        <div class="wc-vis wc-vis--img">
-          <img src="smoove-screenshot.png" alt="Smoove Skin Studio website screenshot" class="wc-screenshot" />
-        </div>
-        <div class="wc-meta">
-          <span class="wc-tag">Beauty &amp; Wellness</span>
-          <h4>Smoove Skin Studio</h4>
-          <p>Booking site + intake forms + branded client experience.</p>
-        </div>
-      </article>
-
-      <article class="wc-slide" data-industry="Talent &amp; Media" data-result="AGENCY SITE">
-        <div class="wc-vis wc-vis--img">
-          <img src="yta-screenshot.png" alt="Young Talent Agency website screenshot" class="wc-screenshot" />
-        </div>
-        <div class="wc-meta">
-          <span class="wc-tag">Talent &amp; Media</span>
-          <h4>Young Talent Agency</h4>
-          <p>Creator management site + roster showcase + contact system.</p>
-        </div>
-      </article>
-
-      <article class="wc-slide" data-industry="Hospitality" data-result="BOOKING PLATFORM">
-        <div class="wc-vis wc-vis--img">
-          <img src="pondiriorivercottages-screenshot.png" alt="Pon Di Rio River Cottages website screenshot" class="wc-screenshot" />
-        </div>
-        <div class="wc-meta">
-          <span class="wc-tag">Hospitality</span>
-          <h4>Pon Di Rio River Cottages</h4>
-          <p>Villa booking platform + availability calendar + guest portal.</p>
-        </div>
-      </article>
-
-      <article class="wc-slide" data-industry="Home Services" data-result="LEAD SITE">
-        <div class="wc-vis wc-vis--img">
-          <img src="nelson-screenshot.png" alt="Nelson Home Improvement LLC website screenshot" class="wc-screenshot" />
-        </div>
-        <div class="wc-meta">
-          <span class="wc-tag">Home Services</span>
-          <h4>Nelson Home Improvement LLC</h4>
-          <p>Lead generation site + consultation booking + quote form.</p>
-        </div>
-      </article>
+    <div class="cs-head reveal">
+      <h2 class="cs-h2">Systems we've shipped.</h2>
+      <p class="cs-sub">Different verticals, same approach — understand the problem, then build the right thing.</p>
     </div>
 
-    <button class="wc-nav wc-prev" aria-label="Previous project">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="wc-nav wc-next" aria-label="Next project">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
+    <!-- Tab nav -->
+    <div class="cs-tabs" role="tablist" aria-label="Projects">
+      <button class="cs-tab is-active" role="tab" aria-selected="true"  data-idx="0">Smoove Skin Studio</button>
+      <button class="cs-tab" role="tab" aria-selected="false" data-idx="1">LyvWel</button>
+      <button class="cs-tab" role="tab" aria-selected="false" data-idx="2">Young Talent Agency</button>
+      <button class="cs-tab" role="tab" aria-selected="false" data-idx="3">Pon Di Rio</button>
+      <button class="cs-tab" role="tab" aria-selected="false" data-idx="4">Nelson Home Improvement</button>
+    </div>
 
-  <div class="wc-dots" id="wcDots" aria-hidden="true"></div>
+    <!-- Case study cards -->
+    <div class="cs-cards" id="csCards">
+
+      <!-- 0: Smoove Skin Studio -->
+      <article class="cs-card is-active" role="tabpanel">
+        <div class="cs-left">
+          <p class="cs-client">Smoove · Skin Studio</p>
+          <h3 class="cs-headline">From booking by text to a platform that books itself.</h3>
+          <div class="cs-compare">
+            <div class="cs-col">
+              <p class="cs-col-label before">Before</p>
+              <ul class="cs-list before">
+                <li>Manual booking over DMs</li>
+                <li>Paper intake forms</li>
+                <li>No-shows, no reminders</li>
+              </ul>
+            </div>
+            <div class="cs-col">
+              <p class="cs-col-label after">After</p>
+              <ul class="cs-list after">
+                <li>Custom booking platform</li>
+                <li>Digital intake forms</li>
+                <li>Automated reminders</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-stats">
+            <div class="cs-stat"><span class="cs-stat-val">24/7</span><span class="cs-stat-label">Self-serve booking</span></div>
+            <div class="cs-stat"><span class="cs-stat-val">↓ No-shows</span><span class="cs-stat-label">Auto reminders</span></div>
+          </div>
+        </div>
+        <div class="cs-right">
+          <span class="cs-live-pill">After · live site</span>
+          <div class="cs-browser">
+            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img src="smoove-screenshot.png" alt="Smoove Skin Studio live site" class="cs-img" />
+          </div>
+        </div>
+      </article>
+
+      <!-- 1: LyvWel -->
+      <article class="cs-card" role="tabpanel" hidden>
+        <div class="cs-left">
+          <p class="cs-client">LyvWel · Health &amp; Wellness</p>
+          <h3 class="cs-headline">From selling through DMs to an e-commerce store that runs itself.</h3>
+          <div class="cs-compare">
+            <div class="cs-col">
+              <p class="cs-col-label before">Before</p>
+              <ul class="cs-list before">
+                <li>Orders handled over DMs</li>
+                <li>Manual inventory tracking</li>
+                <li>No subscription option</li>
+              </ul>
+            </div>
+            <div class="cs-col">
+              <p class="cs-col-label after">After</p>
+              <ul class="cs-list after">
+                <li>Full e-commerce storefront</li>
+                <li>Automated fulfillment flow</li>
+                <li>Subscription system</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-stats">
+            <div class="cs-stat"><span class="cs-stat-val">24/7</span><span class="cs-stat-label">Online sales</span></div>
+            <div class="cs-stat"><span class="cs-stat-val">↑ AOV</span><span class="cs-stat-label">Bundle &amp; subscribe</span></div>
+          </div>
+        </div>
+        <div class="cs-right">
+          <span class="cs-live-pill">After · live site</span>
+          <div class="cs-browser">
+            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img src="lyvwel-screenshot.png" alt="LyvWel live site" class="cs-img" />
+          </div>
+        </div>
+      </article>
+
+      <!-- 2: Young Talent Agency -->
+      <article class="cs-card" role="tabpanel" hidden>
+        <div class="cs-left">
+          <p class="cs-client">Young Talent Agency · Media</p>
+          <h3 class="cs-headline">From informal pitches to a platform that sells the roster.</h3>
+          <div class="cs-compare">
+            <div class="cs-col">
+              <p class="cs-col-label before">Before</p>
+              <ul class="cs-list before">
+                <li>No professional web presence</li>
+                <li>Manual creator proposals</li>
+                <li>No roster showcase</li>
+              </ul>
+            </div>
+            <div class="cs-col">
+              <p class="cs-col-label after">After</p>
+              <ul class="cs-list after">
+                <li>Agency site with full roster</li>
+                <li>Streamlined pitch process</li>
+                <li>Structured brand inquiries</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-stats">
+            <div class="cs-stat"><span class="cs-stat-val">Pro</span><span class="cs-stat-label">Web presence</span></div>
+            <div class="cs-stat"><span class="cs-stat-val">↑ Deal flow</span><span class="cs-stat-label">Faster pitching</span></div>
+          </div>
+        </div>
+        <div class="cs-right">
+          <span class="cs-live-pill">After · live site</span>
+          <div class="cs-browser">
+            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img src="yta-screenshot.png" alt="Young Talent Agency live site" class="cs-img" />
+          </div>
+        </div>
+      </article>
+
+      <!-- 3: Pon Di Rio -->
+      <article class="cs-card" role="tabpanel" hidden>
+        <div class="cs-left">
+          <p class="cs-client">Pon Di Rio · Hospitality</p>
+          <h3 class="cs-headline">From email reservations to a platform guests book in minutes.</h3>
+          <div class="cs-compare">
+            <div class="cs-col">
+              <p class="cs-col-label before">Before</p>
+              <ul class="cs-list before">
+                <li>Reservations via email</li>
+                <li>Manual availability checks</li>
+                <li>No deposits collected online</li>
+              </ul>
+            </div>
+            <div class="cs-col">
+              <p class="cs-col-label after">After</p>
+              <ul class="cs-list after">
+                <li>Online booking platform</li>
+                <li>Live availability calendar</li>
+                <li>Automated deposit collection</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-stats">
+            <div class="cs-stat"><span class="cs-stat-val">24/7</span><span class="cs-stat-label">Self-serve bookings</span></div>
+            <div class="cs-stat"><span class="cs-stat-val">↓ Admin</span><span class="cs-stat-label">Automated ops</span></div>
+          </div>
+        </div>
+        <div class="cs-right">
+          <span class="cs-live-pill">After · live site</span>
+          <div class="cs-browser">
+            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img src="pondiriorivercottages-screenshot.png" alt="Pon Di Rio River Cottages live site" class="cs-img" />
+          </div>
+        </div>
+      </article>
+
+      <!-- 4: Nelson Home Improvement -->
+      <article class="cs-card" role="tabpanel" hidden>
+        <div class="cs-left">
+          <p class="cs-client">Nelson Home Improvement · Services</p>
+          <h3 class="cs-headline">From referrals only to a lead machine that works around the clock.</h3>
+          <div class="cs-compare">
+            <div class="cs-col">
+              <p class="cs-col-label before">Before</p>
+              <ul class="cs-list before">
+                <li>Word-of-mouth only</li>
+                <li>No web presence</li>
+                <li>Unqualified inquiries</li>
+              </ul>
+            </div>
+            <div class="cs-col">
+              <p class="cs-col-label after">After</p>
+              <ul class="cs-list after">
+                <li>Lead generation website</li>
+                <li>Consultation booking form</li>
+                <li>Qualified quote requests</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-stats">
+            <div class="cs-stat"><span class="cs-stat-val">Daily</span><span class="cs-stat-label">New leads</span></div>
+            <div class="cs-stat"><span class="cs-stat-val">↑ Quality</span><span class="cs-stat-label">Qualified inquiries</span></div>
+          </div>
+        </div>
+        <div class="cs-right">
+          <span class="cs-live-pill">After · live site</span>
+          <div class="cs-browser">
+            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img src="nelson-screenshot.png" alt="Nelson Home Improvement LLC live site" class="cs-img" />
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /cs-cards -->
+  </div><!-- /cs-wrap -->
 </section>
+
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.cs-tab');
+  var cards = document.querySelectorAll('.cs-card');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var idx = parseInt(tab.dataset.idx, 10);
+      tabs.forEach(function (t) { t.classList.remove('is-active'); t.setAttribute('aria-selected','false'); });
+      cards.forEach(function (c) { c.classList.remove('is-active'); c.hidden = true; });
+      tab.classList.add('is-active');
+      tab.setAttribute('aria-selected', 'true');
+      cards[idx].classList.add('is-active');
+      cards[idx].hidden = false;
+    });
+  });
+}());
+</script>
 
 <!-- ====== PRE-FOOTER CTA ====== -->
 <section class="pfcta-wrap">
