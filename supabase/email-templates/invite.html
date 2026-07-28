@@ -1,0 +1,94 @@
+<!--
+  Supabase → Authentication → Emails → Templates → "Invite user"
+  Paste the markup below into the Message body field.
+
+  Email HTML rules this follows: table layout (flexbox/grid are unsupported),
+  inline styles only (Gmail strips <style> in some contexts), absolute image
+  URLs, a bgcolor fallback behind every gradient (Outlook drops background-image),
+  and a table-wrapped button so Outlook renders the fill.
+
+  Supabase variable: {{ .ConfirmationURL }} — the invite link.
+-->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Set your password to open your Bix client portal.</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F2F8;margin:0;padding:32px 12px;">
+  <tr>
+    <td align="center">
+
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid rgba(14,10,26,0.08);">
+
+        <!-- Header -->
+        <tr>
+          <td bgcolor="#442061" style="background-color:#442061;background-image:linear-gradient(135deg,#2E1442 0%,#442061 52%,#1B6FC6 100%);padding:28px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td width="52" style="vertical-align:middle;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="52" height="52" bgcolor="#FFFFFF" align="center" style="background-color:#FFFFFF;border-radius:14px;text-align:center;vertical-align:middle;">
+                        <img src="https://bix-marketing-site.vercel.app/bix-logo-email.png" width="34" height="34" alt="Bix LLC" style="display:inline-block;border:0;outline:none;text-decoration:none;vertical-align:middle;">
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td style="padding-left:14px;vertical-align:middle;">
+                  <div style="font-family:'Poppins','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:17px;font-weight:600;color:#FFFFFF;line-height:1.2;">Bix LLC</div>
+                  <div style="font-family:'Courier New',Courier,monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.66);padding-top:3px;">Client Portal</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:38px 32px 8px 32px;">
+            <div style="font-family:'Courier New',Courier,monospace;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#442061;padding-bottom:12px;">You're invited</div>
+
+            <h1 style="margin:0 0 14px 0;font-family:'Poppins','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:27px;font-weight:500;letter-spacing:-0.02em;line-height:1.2;color:#0E0A1A;">Your client portal is ready</h1>
+
+            <p style="margin:0 0 12px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#2A2533;">
+              You've been given access to the Bix client portal — one place to follow your project's progress, review invoices and pick up files.
+            </p>
+            <p style="margin:0 0 26px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#2A2533;">
+              Choose a password and you're in.
+            </p>
+
+            <!-- Button -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td bgcolor="#442061" style="background-color:#442061;background-image:linear-gradient(120deg,#442061 0%,#1B6FC6 100%);border-radius:10px;">
+                  <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 30px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:10px;">Set your password &rarr;</a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:26px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.6;color:rgba(14,10,26,0.56);">
+              This invite expires in 24 hours. If the button doesn't work, copy this link into your browser:
+            </p>
+            <p style="margin:8px 0 0 0;font-family:'Courier New',Courier,monospace;font-size:12px;line-height:1.5;word-break:break-all;color:#1B6FC6;">
+              {{ .ConfirmationURL }}
+            </p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding:30px 32px 32px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr><td style="border-top:1px solid rgba(14,10,26,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
+            </table>
+            <p style="margin:18px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.6;color:rgba(14,10,26,0.56);">
+              Weren't expecting this? You can ignore this email — no account is created until the link is used.
+            </p>
+            <p style="margin:12px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.6;color:rgba(14,10,26,0.36);">
+              Bix LLC &middot; <a href="mailto:admin@bixllc.net" style="color:#442061;text-decoration:none;">admin@bixllc.net</a> &middot; (713) 855-6525
+            </p>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
