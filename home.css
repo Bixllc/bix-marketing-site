@@ -20,7 +20,8 @@
 .s-head.center { text-align: center; }
 .s-head h2 {
   font-family: 'Poppins', system-ui, sans-serif;
-  font-weight: 600;
+  /* 500 to match the other section headings, not the spec's 600 */
+  font-weight: 500;
   font-size: clamp(30px, 3.6vw, 46px);
   line-height: 1.06;
   letter-spacing: -.03em;

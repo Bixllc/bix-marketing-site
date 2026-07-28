@@ -3592,10 +3592,11 @@ section { position: relative; }
 .hx-h1 {
   margin: 0;
   font-family: 'Poppins', system-ui, sans-serif;
-  font-weight: 600;
+  /* 500 / -.03em matches every other section heading on the page */
+  font-weight: 500;
   font-size: clamp(38px, 5vw, 62px);
   line-height: 1.02;
-  letter-spacing: -.032em;
+  letter-spacing: -.03em;
   color: var(--hx-charcoal);
   text-wrap: balance;
 }
@@ -3928,3 +3929,12 @@ section { position: relative; }
 /* Work-preview trio, relocated out of the hero */
 .trio-section { padding-top: 0; }
 .trio-section .hero-trio { margin-top: 0; }
+
+/* Footer social link — icon sits inline with the handle */
+.footer-links a.footer-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.footer-links a.footer-social svg { flex: none; opacity: .75; transition: opacity 240ms var(--ease); }
+.footer-links a.footer-social:hover svg { opacity: 1; }
