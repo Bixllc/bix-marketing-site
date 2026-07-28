@@ -278,11 +278,12 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
   <script>
   (function () {
+    // Shared client from auth.js — same storage adapter as the login page.
+    const sb = BixAuth.sb;
     const SUPA_URL = 'https://mvgyjeocdsngldirehlv.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12Z3lqZW9jZHNuZ2xkaXJlaGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTEwMjUsImV4cCI6MjA5ODMyNzAyNX0.zUzw9X-WPUZ454WU27TI-Svjcs6VycSITmxxZHBSBlQ';
-    const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
     var STEPS = ['discovery', 'design', 'development', 'review', 'launched'];
     var STEP_LABELS = ['Discovery', 'Design', 'Development', 'Review', 'Launched'];

@@ -92,3 +92,30 @@ create trigger on_auth_user_created
 --   where id = (select id from auth.users where email = 'admin@bixllc.net');
 --
 -- ============================================================
+
+-- ============================================================
+-- AUTH FLOW CONFIG (dashboard, not SQL)
+--
+-- The invite and password-reset emails both land on set-password.html.
+-- Supabase will only redirect to origins on the allow-list, so add every
+-- origin you use under:
+--
+--   Authentication → URL Configuration → Redirect URLs
+--     https://<your-production-domain>/**
+--     http://localhost:8899/**          (local testing)
+--
+-- A link to an origin that is not listed comes back as
+-- #error=access_denied — set-password.html renders that as
+-- "This link isn't valid" rather than showing a broken form.
+--
+-- The invite Edge Function builds its redirect from the SITE_URL secret,
+-- falling back to the vercel.app domain:
+--
+--   supabase secrets set SITE_URL=https://<your-production-domain>
+--
+-- Flow:
+--   1. Admin invites a client   → invite email  → set-password.html (type=invite)
+--   2. Client forgets password  → reset email   → set-password.html (type=recovery)
+--   3. Password saved           → role looked up in profiles
+--                               → admin-portal.html or client-portal.html
+-- ============================================================

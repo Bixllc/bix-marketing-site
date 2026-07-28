@@ -26,9 +26,14 @@ serve(async (req) => {
 
     const { email, full_name, company } = await req.json()
 
+    // Set SITE_URL in the function's secrets to point invites at a custom
+    // domain. Whatever origin is used must also be listed under
+    // Supabase → Authentication → URL Configuration → Redirect URLs.
+    const siteUrl = Deno.env.get('SITE_URL') ?? 'https://bix-marketing-site.vercel.app'
+
     const { error } = await admin.auth.admin.inviteUserByEmail(email, {
       data: { full_name, role: 'client', company },
-      redirectTo: 'https://bix-marketing-site.vercel.app/set-password.html'
+      redirectTo: `${siteUrl.replace(/\/$/, '')}/set-password.html`
     })
 
     if (error) throw error
