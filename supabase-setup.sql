@@ -119,3 +119,51 @@ create trigger on_auth_user_created
 --   3. Password saved           → role looked up in profiles
 --                               → admin-portal.html or client-portal.html
 -- ============================================================
+
+-- ============================================================
+-- KEEPALIVE
+--
+-- Free-tier projects pause after ~7 days with no requests, which breaks
+-- invite and reset links. .github/workflows/supabase-keepalive.yml pings
+-- this table every 3 days. It holds no application data — it exists purely
+-- so an anonymous read returns 200 instead of a permission error.
+-- ============================================================
+
+create table if not exists public.heartbeat (
+  id smallint primary key default 1,
+  checked_at timestamptz default now(),
+  constraint heartbeat_single_row check (id = 1)
+);
+
+insert into public.heartbeat (id) values (1) on conflict (id) do nothing;
+
+alter table public.heartbeat enable row level security;
+
+drop policy if exists "anyone may read heartbeat" on public.heartbeat;
+create policy "anyone may read heartbeat" on public.heartbeat for select using (true);
+
+grant select on public.heartbeat to anon, authenticated;
+
+-- ------------------------------------------------------------
+-- WORTH CHECKING: table grants for logged-in users
+--
+-- A ping as `anon` came back 42501 "permission denied for table profiles".
+-- That is correct for anonymous callers, but it means table-level grants
+-- are not what Supabase's defaults would normally leave in place — so it is
+-- worth confirming the `authenticated` role can still read. RLS restricts
+-- which ROWS a user sees; it cannot grant access to the table itself.
+--
+-- Check what authenticated currently holds:
+--
+--   select table_name, privilege_type
+--   from information_schema.role_table_grants
+--   where grantee = 'authenticated' and table_schema = 'public';
+--
+-- If profiles / projects / project_updates are missing, restore them —
+-- the RLS policies above still decide which rows each user actually gets:
+--
+--   grant select on public.profiles, public.projects, public.project_updates
+--     to authenticated;
+--   grant insert, update, delete on public.profiles, public.projects,
+--     public.project_updates to authenticated;
+-- ------------------------------------------------------------

@@ -1,0 +1,73 @@
+# Supabase free-tier projects pause after ~7 days with no requests. A paused
+# project breaks client invite and password-reset links, so this reads from the
+# database every 3 days to reset that clock.
+#
+# Target is public.heartbeat — a single-row table with nothing in it but a
+# timestamp, readable by the anon role. See the KEEPALIVE section of
+# supabase-setup.sql for the three statements that create it.
+#
+# Until that SQL is run the job falls back to querying public.profiles. Anon is
+# refused there, but the refusal is a Postgres error (42501), which proves the
+# query reached the database — so it still counts as activity. The job warns in
+# that case rather than passing silently.
+#
+# Heads up: GitHub disables scheduled workflows in a repo with no activity for
+# 60 days (it emails first). Re-enable under the Actions tab, or push any commit.
+
+name: Supabase keepalive
+
+on:
+  schedule:
+    # 09:00 UTC every third day — max gap of 3 days, well inside the 7-day limit
+    - cron: '0 9 */3 * *'
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        env:
+          # The anon key is public by design — it already ships in the portal
+          # HTML, and RLS plus table grants are what guard the data. Repo
+          # secrets win if set, so rotating the key needs no code change.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://mvgyjeocdsngldirehlv.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12Z3lqZW9jZHNuZ2xkaXJlaGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTEwMjUsImV4cCI6MjA5ODMyNzAyNX0.zUzw9X-WPUZ454WU27TI-Svjcs6VycSITmxxZHBSBlQ' }}
+        run: |
+          set -uo pipefail
+
+          # A restoring project sits behind Cloudflare 5xx for a minute or two,
+          # so retry rather than reporting a false alarm.
+          ping() {
+            curl -sS -o /tmp/body -w '%{http_code}' \
+              --max-time 30 --retry 5 --retry-delay 15 --retry-all-errors \
+              -H "apikey: ${SUPABASE_ANON_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+              "${SUPABASE_URL}/rest/v1/$1"
+          }
+
+          code=$(ping 'heartbeat?select=id&limit=1')
+          echo "heartbeat -> HTTP ${code}"
+
+          if [ "${code}" = "200" ]; then
+            echo "Project is awake."
+            exit 0
+          fi
+
+          echo "::warning::public.heartbeat did not return 200 — falling back to profiles."
+          echo "Run the KEEPALIVE section of supabase-setup.sql to create it."
+
+          code=$(ping 'profiles?select=id&limit=1')
+          echo "profiles -> HTTP ${code}"
+          pgcode=$(grep -o '"code":"[0-9A-Za-z]*"' /tmp/body | head -1 || true)
+
+          # 200, or any reply carrying a Postgres error code, means the query
+          # reached the database. A 5xx or an empty body means it did not.
+          if [ "${code}" = "200" ] || [ -n "${pgcode}" ]; then
+            echo "Reached Postgres (${pgcode:-200}). Project is awake."
+            exit 0
+          fi
+
+          echo "Keepalive did not reach the database:"
+          cat /tmp/body
+          exit 1
