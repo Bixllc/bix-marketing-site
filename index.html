@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="home.css" />
+<!-- .reveal starts at opacity:0 and is un-hidden by IntersectionObserver.
+     With JS off that observer never runs, so opt the heading back in. -->
+<noscript><style>.s-head.reveal { opacity: 1; transform: none; filter: none; }</style></noscript>
 <style>
 /* ── PROCESS SCROLL ANIMATION ── */
 .process-scroll-section { padding-top: 100px; padding-bottom: 0; }
@@ -711,6 +715,19 @@
 </script>
 
 <!-- ====== OUR PROCESS ====== -->
+<!-- ====== 05 OUR PROJECTS ====== -->
+<section class="s s-tight" id="work" data-screen-label="05 Case studies">
+  <div class="wrap">
+    <div class="s-head center reveal">
+      <h2>Our projects</h2>
+      <p class="lead">Real businesses, real transformations — from manual and generic to custom and automated.</p>
+    </div>
+    <div class="pj-slider" id="pjSlider"><div class="pj-track" id="pjTrack"></div></div>
+    <div class="pj-dots" id="pjDots" aria-hidden="true"></div>
+  </div>
+</section>
+
+
 <section class="op-section" id="process" aria-labelledby="opHeading">
   <div class="op-inner">
 
@@ -782,248 +799,6 @@
 }());
 </script>
 
-<!-- ====== WORK (carousel) ====== -->
-<!-- ====== WORK (case studies) ====== -->
-<section class="cs-section" id="work">
-  <div class="cs-wrap">
-
-    <div class="cs-head reveal">
-      <h2 class="cs-h2">Systems we've shipped.</h2>
-      <p class="cs-sub">Different verticals, same approach — understand the problem, then build the right thing.</p>
-    </div>
-
-    <!-- Slider -->
-    <div class="cs-cards" id="csCards">
-
-      <!-- 0: Smoove Skin Studio -->
-      <article class="cs-card is-active">
-        <div class="cs-left">
-          <p class="cs-client">Smoove · Skin Studio</p>
-          <h3 class="cs-headline">Website design &amp; development.</h3>
-          <div class="cs-compare">
-            <div class="cs-col">
-              <p class="cs-col-label before">Before</p>
-              <ul class="cs-list before">
-                <li>Booking over DMs</li>
-                <li>Paper intake forms</li>
-                <li>No reminders</li>
-              </ul>
-            </div>
-            <div class="cs-col">
-              <p class="cs-col-label after">After</p>
-              <ul class="cs-list after">
-                <li>Online booking platform</li>
-                <li>Digital intake forms</li>
-                <li>Automated reminders</li>
-              </ul>
-            </div>
-          </div>
-          <div class="cs-stats">
-            <div class="cs-stat"><span class="cs-stat-val">24/7</span><span class="cs-stat-label">Self-serve booking</span></div>
-            <div class="cs-stat"><span class="cs-stat-val">↓ No-shows</span><span class="cs-stat-label">Auto reminders</span></div>
-          </div>
-        </div>
-        <div class="cs-right">
-          <div class="cs-browser">
-            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <img src="smoove-screenshot.png" alt="Smoove Skin Studio" class="cs-img" />
-          </div>
-        </div>
-      </article>
-
-      <!-- 1: LyvWel -->
-      <article class="cs-card" hidden>
-        <div class="cs-left">
-          <p class="cs-client">LyvWel · Health &amp; Wellness</p>
-          <h3 class="cs-headline">E-commerce design &amp; development.</h3>
-          <div class="cs-compare">
-            <div class="cs-col">
-              <p class="cs-col-label before">Before</p>
-              <ul class="cs-list before">
-                <li>Orders via DMs</li>
-                <li>No online store</li>
-                <li>No subscriptions</li>
-              </ul>
-            </div>
-            <div class="cs-col">
-              <p class="cs-col-label after">After</p>
-              <ul class="cs-list after">
-                <li>E-commerce storefront</li>
-                <li>Automated fulfillment</li>
-                <li>Subscription system</li>
-              </ul>
-            </div>
-          </div>
-          <div class="cs-stats">
-            <div class="cs-stat"><span class="cs-stat-val">24/7</span><span class="cs-stat-label">Online sales</span></div>
-            <div class="cs-stat"><span class="cs-stat-val">↑ AOV</span><span class="cs-stat-label">Bundle &amp; subscribe</span></div>
-          </div>
-        </div>
-        <div class="cs-right">
-          <div class="cs-browser">
-            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <img src="lyvwel-screenshot.png" alt="LyvWel" class="cs-img" />
-          </div>
-        </div>
-      </article>
-
-      <!-- 2: Young Talent Agency -->
-      <article class="cs-card" hidden>
-        <div class="cs-left">
-          <p class="cs-client">Young Talent Agency · Media</p>
-          <h3 class="cs-headline">Agency website design &amp; development.</h3>
-          <div class="cs-compare">
-            <div class="cs-col">
-              <p class="cs-col-label before">Before</p>
-              <ul class="cs-list before">
-                <li>No web presence</li>
-                <li>Manual proposals</li>
-                <li>No roster showcase</li>
-              </ul>
-            </div>
-            <div class="cs-col">
-              <p class="cs-col-label after">After</p>
-              <ul class="cs-list after">
-                <li>Agency site with roster</li>
-                <li>Structured pitching</li>
-                <li>Brand inquiry system</li>
-              </ul>
-            </div>
-          </div>
-          <div class="cs-stats">
-            <div class="cs-stat"><span class="cs-stat-val">Pro</span><span class="cs-stat-label">Web presence</span></div>
-            <div class="cs-stat"><span class="cs-stat-val">↑ Deal flow</span><span class="cs-stat-label">Faster pitching</span></div>
-          </div>
-        </div>
-        <div class="cs-right">
-          <div class="cs-browser">
-            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <img src="yta-screenshot.png" alt="Young Talent Agency" class="cs-img" />
-          </div>
-        </div>
-      </article>
-
-      <!-- 3: Pon Di Rio -->
-      <article class="cs-card" hidden>
-        <div class="cs-left">
-          <p class="cs-client">Pon Di Rio · Hospitality</p>
-          <h3 class="cs-headline">Website &amp; booking platform.</h3>
-          <div class="cs-compare">
-            <div class="cs-col">
-              <p class="cs-col-label before">Before</p>
-              <ul class="cs-list before">
-                <li>Reservations by email</li>
-                <li>Manual availability</li>
-                <li>No online deposits</li>
-              </ul>
-            </div>
-            <div class="cs-col">
-              <p class="cs-col-label after">After</p>
-              <ul class="cs-list after">
-                <li>Online booking platform</li>
-                <li>Live availability calendar</li>
-                <li>Automated deposits</li>
-              </ul>
-            </div>
-          </div>
-          <div class="cs-stats">
-            <div class="cs-stat"><span class="cs-stat-val">24/7</span><span class="cs-stat-label">Self-serve bookings</span></div>
-            <div class="cs-stat"><span class="cs-stat-val">↓ Admin</span><span class="cs-stat-label">Automated ops</span></div>
-          </div>
-        </div>
-        <div class="cs-right">
-          <div class="cs-browser">
-            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <img src="pondiriorivercottages-screenshot.png" alt="Pon Di Rio River Cottages" class="cs-img" />
-          </div>
-        </div>
-      </article>
-
-      <!-- 4: Nelson Home Improvement -->
-      <article class="cs-card" hidden>
-        <div class="cs-left">
-          <p class="cs-client">Nelson Home Improvement · Services</p>
-          <h3 class="cs-headline">Lead generation website.</h3>
-          <div class="cs-compare">
-            <div class="cs-col">
-              <p class="cs-col-label before">Before</p>
-              <ul class="cs-list before">
-                <li>Word-of-mouth only</li>
-                <li>No web presence</li>
-                <li>Unqualified leads</li>
-              </ul>
-            </div>
-            <div class="cs-col">
-              <p class="cs-col-label after">After</p>
-              <ul class="cs-list after">
-                <li>Lead generation site</li>
-                <li>Consultation booking</li>
-                <li>Quote request form</li>
-              </ul>
-            </div>
-          </div>
-          <div class="cs-stats">
-            <div class="cs-stat"><span class="cs-stat-val">Daily</span><span class="cs-stat-label">New leads</span></div>
-            <div class="cs-stat"><span class="cs-stat-val">↑ Quality</span><span class="cs-stat-label">Qualified inquiries</span></div>
-          </div>
-        </div>
-        <div class="cs-right">
-          <div class="cs-browser">
-            <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <img src="nelson-screenshot.png" alt="Nelson Home Improvement LLC" class="cs-img" />
-          </div>
-        </div>
-      </article>
-
-    </div><!-- /cs-cards -->
-
-    <!-- Slider controls -->
-    <div class="cs-controls">
-      <button class="cs-nav cs-prev" id="csPrev" aria-label="Previous project">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="cs-dots" id="csDots"></div>
-      <button class="cs-nav cs-next" id="csNext" aria-label="Next project">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
-
-  </div><!-- /cs-wrap -->
-</section>
-
-<script>
-(function () {
-  var cards = document.querySelectorAll('.cs-card');
-  var dotsWrap = document.getElementById('csDots');
-  var prev = document.getElementById('csPrev');
-  var next = document.getElementById('csNext');
-  var cur = 0;
-  var dots = [];
-
-  cards.forEach(function (_, i) {
-    var d = document.createElement('button');
-    d.className = 'cs-dot' + (i === 0 ? ' is-active' : '');
-    d.setAttribute('aria-label', 'Project ' + (i + 1));
-    d.addEventListener('click', function () { goTo(i); });
-    dotsWrap.appendChild(d);
-    dots.push(d);
-  });
-
-  function goTo(idx) {
-    cards[cur].classList.remove('is-active');
-    cards[cur].hidden = true;
-    dots[cur].classList.remove('is-active');
-    cur = (idx + cards.length) % cards.length;
-    cards[cur].hidden = false;
-    requestAnimationFrame(function () { cards[cur].classList.add('is-active'); });
-    dots[cur].classList.add('is-active');
-  }
-
-  prev.addEventListener('click', function () { goTo(cur - 1); });
-  next.addEventListener('click', function () { goTo(cur + 1); });
-}());
-</script>
-
 <!-- ====== PRE-FOOTER CTA ====== -->
 <section class="pfcta-wrap">
   <div class="pfcta-card" id="contact">
@@ -1086,6 +861,23 @@
     </div>
   </div>
 </footer>
+
+<!-- ====== PROJECT MODAL ====== -->
+<div class="pj-modal" id="pjModal" role="dialog" aria-modal="true" aria-labelledby="pjMName">
+  <div class="pj-backdrop"></div>
+  <div class="pj-dialog">
+    <button class="pj-close" id="pjMClose" type="button" aria-label="Close project details">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <div class="pj-dhead">
+      <div class="t" id="pjMTag"></div>
+      <h3 id="pjMName"></h3>
+      <p id="pjMDesc"></p>
+      <a class="pj-visit" id="pjMVisit" target="_blank" rel="noopener">Visit site →</a>
+    </div>
+    <div class="pj-gallery" id="pjMGallery"></div>
+  </div>
+</div>
 
 <script>
   // Navbar scrolled state
@@ -1318,7 +1110,300 @@
       setTimeout(run, 200);
     }, 8000);
   })();
+
+  /* ================= 05 — OUR PROJECTS carousel ================= */
+  (function () {
+    const track  = document.getElementById('pjTrack');
+    const slider = document.getElementById('pjSlider');
+    const dotsEl = document.getElementById('pjDots');
+    if (!track || !slider) return;
+
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const PROJECTS = [
+      { name: 'Smoove Skin Studio', tag: 'Skin Studio · Custom Site',
+        site: 'https://www.smooveskinstudio.com/',
+        desc: 'A custom site for a skin studio — built to present the services clearly and turn visitors into booked clients.' },
+      { name: 'Rocket Boyz', tag: 'Custom Shopify · Ecommerce',
+        site: 'https://shoprocketboyz.com/', local: 'rocketboyz-shot.png',
+        desc: 'A custom Shopify build for a Caribbean snack brand — bold branding, curated snack boxes and a clearer, smoother path to checkout.' },
+      { name: 'Pondirio River Cottages', tag: 'Hospitality · Reservations',
+        site: 'https://www.pondiriorivercottagesja.com/',
+        desc: 'A booking-focused site for a riverside cottage retreat — rooms, rates and availability all in one clear flow.' },
+      { name: 'Amavi', tag: 'Lifestyle · Mobile App',
+        site: '',
+        desc: 'A mobile experience for discovering and booking local lifestyle services, designed around a warm editorial feel.' },
+      { name: 'YNG TLNT Agency', tag: 'Agency · Brand Site',
+        site: 'https://www.yngtlntagency.com/',
+        desc: 'A brand-forward agency site built to showcase talent and convert enquiries into signed clients.' },
+      { name: 'LyvWel', tag: 'Custom Shopify · Ecommerce',
+        site: 'https://lyvwel.com/', local: 'lyvwel-shot.png',
+        desc: 'A custom Shopify storefront for a caffeine-pouch brand — bundle pricing, wholesale flows and variety packs built into the buying experience.' }
+    ];
+
+    const N = PROJECTS.length;
+    const host = s => s.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    PROJECTS.forEach(p => { p.host = p.site ? host(p.site) : ''; });
+
+    const shotUrl = (p, w) => p.local ||
+      'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(p.site) + '?w=' + w;
+    const shotAlt = (p, w) =>
+      'https://image.thum.io/get/width/' + w + '/crop/' + Math.round(w * 0.625) +
+      '/noanimate/' + p.site;
+
+    const esc = s => String(s).replace(/[&<>"]/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    /* ---- Build three copies so shifting never reaches an edge ---- */
+    const cardHTML = (p, i) => `
+      <article class="pj-card" data-idx="${i}" tabindex="0" role="button"
+               aria-label="View ${esc(p.name)} case study">
+        <div class="pj-cover browser">
+          <div class="pj-chrome" aria-hidden="true"><i></i><i></i><i></i><span class="pj-url">${esc(p.host || p.tag)}</span></div>
+          <div class="pj-shot${p.site || p.local ? '' : ' no-shot'}" data-p="${esc(p.host || p.name)}">
+            <span class="pj-fb" aria-hidden="true">
+              <b>${esc(p.name)}</b><i>${esc(p.host || p.tag)}</i>
+              <span class="pj-load"></span>
+              <span class="pj-giveup">View site →</span>
+            </span>
+            <img alt="${esc(p.name)} website">
+          </div>
+          <div class="pj-open" aria-hidden="true"><span>View project →</span></div>
+        </div>
+        <div class="pj-meta"><div class="t">${esc(p.tag)}</div><h3>${esc(p.name)}</h3></div>
+      </article>`;
+
+    track.innerHTML = [0, 1, 2].map(() => PROJECTS.map(cardHTML).join('')).join('');
+    const cards = [].slice.call(track.children);
+
+    /* ---- Dots: one per real project, not per clone ---- */
+    const dots = PROJECTS.map((p, i) => {
+      const d = document.createElement('button');
+      d.className = 'pj-dot' + (i === 0 ? ' is-active' : '');
+      d.type = 'button';
+      d.setAttribute('aria-label', 'Show ' + p.name);
+      d.addEventListener('click', () => goToProject(i));
+      dotsEl.appendChild(d);
+      return d;
+    });
+
+    /* ---- Position ---- */
+    let cur = N;                  // start on the middle copy
+    let dragging = false, startX = 0, dx = 0, baseX = 0;
+
+    function offsetFor(idx) {
+      const card = cards[idx];
+      if (!card) return 0;
+      return slider.clientWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
+    }
+
+    function paint(animate) {
+      track.classList.toggle('no-anim', !animate || REDUCED);
+      baseX = offsetFor(cur);
+      track.style.transform = 'translateX(' + baseX + 'px)';
+      cards.forEach((c, i) => c.classList.toggle('is-center', i === cur));
+      const real = ((cur % N) + N) % N;
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === real));
+      if (!animate || REDUCED) void track.offsetHeight;   // flush the jump
+    }
+
+    function go(idx, animate) {
+      cur = idx;
+      paint(animate !== false);
+      // Silently re-centre on the middle copy once the slide settles.
+      if (cur < N || cur >= N * 2) {
+        setTimeout(() => {
+          cur = N + (((cur % N) + N) % N);
+          paint(false);
+        }, REDUCED ? 0 : 700);
+      }
+    }
+
+    function goToProject(real) {
+      const curReal = ((cur % N) + N) % N;
+      let delta = real - curReal;
+      if (delta > N / 2) delta -= N;            // shortest path
+      if (delta < -N / 2) delta += N;
+      go(cur + delta);
+    }
+
+    /* ---- Auto-advance ---- */
+    let timer = null, hovering = false, offscreen = false, modalOpen = false;
+    function tick() { go(cur + 1); }
+    function sync() {
+      const should = !REDUCED && !hovering && !offscreen && !modalOpen;
+      if (should && !timer) timer = setInterval(tick, 4500);
+      if (!should && timer) { clearInterval(timer); timer = null; }
+    }
+    slider.addEventListener('pointerenter', () => { hovering = true; sync(); });
+    slider.addEventListener('pointerleave', () => { hovering = false; sync(); });
+    slider.addEventListener('focusin',  () => { hovering = true; sync(); });
+    slider.addEventListener('focusout', () => { hovering = false; sync(); });
+
+    new IntersectionObserver(es => {
+      offscreen = !es[0].isIntersecting;
+      sync();
+    }, { threshold: 0.15 }).observe(slider);
+
+    /* ---- Drag / swipe ---- */
+    slider.addEventListener('pointerdown', e => {
+      dragging = true; startX = e.clientX; dx = 0;
+      track.classList.add('no-anim');
+      slider.setPointerCapture(e.pointerId);
+    });
+    slider.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      dx = e.clientX - startX;
+      track.style.transform = 'translateX(' + (baseX + dx) + 'px)';
+    });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('no-anim');
+      if (Math.abs(dx) > 60) go(cur + (dx < 0 ? 1 : -1));
+      else paint(true);
+      dx = 0;
+    }
+    slider.addEventListener('pointerup', endDrag);
+    slider.addEventListener('pointercancel', endDrag);
+
+    /* ---- Keyboard ---- */
+    slider.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      else if (e.key === 'Enter' || e.key === ' ') {
+        const card = e.target.closest('.pj-card');
+        if (card) { e.preventDefault(); activate(card); }
+      }
+    });
+
+    /* ---- Click: off-centre cards centre themselves, centred card opens ---- */
+    function activate(card) {
+      const i = cards.indexOf(card);
+      if (i !== cur) { go(i); return; }
+      openModal(PROJECTS[+card.dataset.idx], card);
+    }
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        if (Math.abs(dx) > 6) return;          // that was a drag, not a click
+        activate(card);
+      });
+    });
+
+    /* ---- Progressive, sequential screenshot loading ------------------------
+       The thumbnail services rate-limit and cold-cache, so requests go one at
+       a time and each project gets ~2.5s before we move on regardless. ---- */
+    function markAll(key, cls) {
+      track.querySelectorAll('.pj-shot[data-p="' + CSS.escape(key) + '"]').forEach(slot => {
+        slot.classList.add(cls);
+        if (cls === 'ready') {
+          const src = slot.__src;
+          slot.querySelectorAll('img').forEach(img => { if (src) img.src = src; });
+        }
+      });
+    }
+
+    function loadOne(p, done) {
+      if (!p.site && !p.local) { done(); return; }   // nothing to fetch
+      const key = p.host || p.name;
+      let settled = false;
+      const finish = cls => {
+        if (settled) return;
+        settled = true;
+        track.querySelectorAll('.pj-shot[data-p="' + CSS.escape(key) + '"]')
+             .forEach(s => { s.__src = probe.src; });
+        markAll(key, cls);
+        done();
+      };
+      const timeout = setTimeout(() => { if (!settled) done(); }, 2500);
+      let triedFallback = false;
+      const probe = new Image();
+      probe.onload = () => { clearTimeout(timeout); finish('ready'); };
+      probe.onerror = () => {
+        if (!triedFallback && p.site) {           // one retry on the fallback host
+          triedFallback = true;
+          probe.src = shotAlt(p, 1200);
+          return;
+        }
+        clearTimeout(timeout);
+        finish('gave-up');
+      };
+      probe.src = shotUrl(p, 1200);
+    }
+
+    (function chain(i) {
+      if (i >= N) return;
+      loadOne(PROJECTS[i], () => chain(i + 1));
+    })(0);
+
+    /* ---- Modal ---- */
+    const modal   = document.getElementById('pjModal');
+    const mTag    = document.getElementById('pjMTag');
+    const mName   = document.getElementById('pjMName');
+    const mDesc   = document.getElementById('pjMDesc');
+    const mVisit  = document.getElementById('pjMVisit');
+    const mGal    = document.getElementById('pjMGallery');
+    const mClose  = document.getElementById('pjMClose');
+    let lastTrigger = null;
+
+    function openModal(p, trigger) {
+      lastTrigger = trigger || null;
+      mTag.textContent  = p.tag;
+      mName.textContent = p.name;
+      mDesc.textContent = p.desc;
+      if (p.site) { mVisit.href = p.site; mVisit.hidden = false; }
+      else { mVisit.removeAttribute('href'); mVisit.hidden = true; }
+
+      if (p.site || p.local) {
+        mGal.innerHTML =
+          '<div class="pj-frame">' +
+            '<div class="pj-chrome" aria-hidden="true"><i></i><i></i><i></i>' +
+              '<span class="pj-url">' + esc(p.host || p.name) + '</span></div>' +
+            '<img alt="' + esc(p.name) + ' website">' +
+          '</div>';
+        const img = mGal.querySelector('img');
+        img.onerror = () => { if (p.site && img.src !== shotAlt(p, 1600)) img.src = shotAlt(p, 1600); };
+        img.src = p.local || shotUrl(p, 1600);
+      } else {
+        mGal.innerHTML = '<div class="pj-empty">Screenshot not available — ' +
+                         esc(p.name) + ' is a mobile app</div>';
+      }
+
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modalOpen = true; sync();
+      // Flush layout so the transition has a start frame, then run it. A rAF
+      // here would stall the fade whenever the tab throttles frames.
+      void modal.offsetHeight;
+      modal.classList.add('in');
+      mClose.focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove('in');
+      const finish = () => {
+        modal.classList.remove('open');
+        mGal.innerHTML = '';
+      };
+      REDUCED ? finish() : setTimeout(finish, 300);
+      document.body.style.overflow = '';
+      modalOpen = false; sync();
+      if (lastTrigger) { lastTrigger.focus(); lastTrigger = null; }
+    }
+
+    mClose.addEventListener('click', closeModal);
+    modal.querySelector('.pj-backdrop').addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    /* ---- Boot ---- */
+    paint(false);
+    addEventListener('resize', () => paint(false));
+    sync();
+  })();
 </script>
+
 
 </body>
 </html>
