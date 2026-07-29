@@ -12,9 +12,9 @@
    -------------------------------------------------------------------------- */
 .s {
   position: relative;
-  padding: 110px 0;
+  padding-block: 110px;
 }
-.s-tight { padding: 84px 0; }
+.s-tight { padding-block: 84px; }
 
 .s-head { margin-bottom: 46px; }
 .s-head.center { text-align: center; }
@@ -646,18 +646,58 @@
 
 @media (max-width: 980px) {
   .nav-burger { display: flex; }
+  /* .nav-links is hidden here, so nothing is left to push the group across —
+     it would otherwise sit against the logo. */
+  .nav-cta-group { margin-left: auto; }
+  /* Start a Project, then the burger. The burger is first in the DOM so it
+     stays the first tab stop on desktop; order only moves it visually. */
+  .nav-burger { order: 2; margin-left: 2px; }
+  .nav-cta { order: 1; }
+  /* The portal lives behind the menu on small screens — one entry point is
+     enough, and the icon read as decoration next to the CTA. */
+  .nav-client-link { display: none; }
 }
 
 @media (max-width: 640px) {
   /* one column — two was wrapping card titles onto three lines */
   .wwb-grid { grid-template-columns: 1fr !important; }
-  .op-step { grid-template-columns: 1fr !important; gap: 10px; }
+  /* The step keeps its node column here. Collapsing it to one column put the
+     body at x:0, directly under the timeline rail, so the rule ran through
+     the text. Narrower node + gap instead. */
+  .op-step { grid-template-columns: 38px 1fr; gap: 14px; padding-bottom: 32px; }
+  .op-node { width: 38px; height: 38px; font-size: 13px; }
+  .op-line-track { left: 18px; }
+  .op-body { padding-top: 8px; }
+  .op-title { font-size: 16px; gap: 8px; }
+  .op-desc { font-size: 13.5px; }
+
+  /* ---- Hero: heading, paragraph, graphic, buttons, stats ----
+     The graphic is a sibling of the copy column, so it can't be moved between
+     two of that column's children by order alone. display:contents dissolves
+     the copy wrapper, promoting its children to flex items alongside the
+     visual, and order then interleaves them. */
+  .hx-grid { display: flex; flex-direction: column; gap: 26px; }
+  .hx-copy { display: contents; }
+  .hx-h1     { order: 1; }
+  .hx-sub    { order: 2; margin-bottom: 0; }
+  .hx-visual { order: 3; }
+  .hx-cta    { order: 4; margin-top: 0; }
+  .hx-stats  { order: 5; margin-top: 0; }
+
+  .hx-h1, .hx-sub { text-align: center; }
+  .hx-sub { margin-inline: auto; }
+  /* Scaled down so the conveyor's outer cards stay inside the gutter instead
+     of being clipped by .hx-ai's overflow. */
+  .hx-ai { height: 300px; }
+  .cv-stage { transform: rotateX(20deg) rotateY(-14deg) scale(.62); }
 
   /* stat row read as 2 + 1 orphan; stacked rows are cleaner */
-  .hx-stats { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .hx-stats { display: grid; grid-template-columns: 1fr; gap: 14px; justify-items: center; }
   .hx-stat { display: flex; align-items: baseline; gap: 10px; }
   .hx-stat b { font-size: 20px; }
   .hx-stat span { margin-top: 0; }
+  /* "100% custom-built" is the weakest of the three and pushed the fold down */
+  .hx-stat:first-child { display: none; }
 
   /* equal-width CTAs rather than two different pill widths */
   .hx-cta { display: grid; grid-template-columns: 1fr; gap: 10px; }
@@ -665,9 +705,15 @@
   .pfcta-btns { display: grid; grid-template-columns: 1fr; gap: 10px; }
   .pfcta-btns .btn { width: 100%; justify-content: center; }
 
-  /* comfortable tap targets */
-  .footer-links a { min-height: 44px; display: flex; align-items: center; }
-  .nav-client-link { min-width: 44px; min-height: 44px; display: grid; place-items: center; }
+  /* ---- Footer: compact, not one long column ---- */
+  .footer { padding: 40px 0 28px; }
+  .footer-row { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-brand p { margin-top: 10px; }
+  .footer h5 { margin-bottom: 10px; }
+  .footer-links { gap: 2px; }
+  .footer-links a { min-height: 32px; display: flex; align-items: center; font-size: 13px; }
+  .footer-base { margin-top: 32px; flex-direction: column; gap: 6px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

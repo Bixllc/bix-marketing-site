@@ -2317,7 +2317,9 @@ section { position: relative; }
 
 /* ====== SECTION SHELL ====== */
 .section {
-  padding: 120px 0;
+  /* padding-block, not the shorthand: several sections are also .wrap, and a
+     shorthand here would zero the horizontal gutter .wrap sets. */
+  padding-block: 120px;
 }
 .section-head {
   display: grid;
@@ -3519,7 +3521,7 @@ section { position: relative; }
 @media (max-width: 640px) {
   .wrap { padding: 0 22px; }
   .hero { padding: 130px 0 60px; }
-  .section { padding: 80px 0; }
+  .section { padding-block: 80px; }
   .hero-meta { grid-template-columns: 1fr 1fr; gap: 20px; }
 }
 
