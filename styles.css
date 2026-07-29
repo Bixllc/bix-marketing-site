@@ -3639,13 +3639,15 @@ section { position: relative; }
 }
 .hx-btn .arrow { transition: transform 320ms var(--hx-ease); }
 .hx-btn--primary {
-  background: linear-gradient(120deg, var(--hx-purple), var(--hx-blue-dark));
+  /* solid purple, matching the nav's Start a Project button */
+  background: var(--hx-purple);
   color: #FFFFFF;
-  box-shadow: 0 14px 30px -12px rgba(46,20,66,.6);
+  box-shadow: 0 8px 22px rgba(68,32,97,.28);
 }
 .hx-btn--primary:hover {
+  background: #371851;
   transform: translateY(-1px);
-  box-shadow: 0 18px 38px -12px rgba(46,20,66,.66);
+  box-shadow: 0 12px 30px rgba(68,32,97,.34);
 }
 .hx-btn--primary:hover .arrow { transform: translateX(3px); }
 .hx-btn--ghost {

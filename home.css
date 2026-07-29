@@ -357,7 +357,7 @@
   margin-top: 26px;
   padding: 13px 21px;
   border-radius: 999px;
-  background: linear-gradient(120deg, var(--purple), var(--blue-deep));
+  background: var(--purple);
   color: #fff;
   font-family: 'Montserrat', system-ui, sans-serif;
   font-size: 14px;
@@ -367,6 +367,7 @@
   transition: transform 320ms var(--pj-ease), box-shadow 320ms var(--pj-ease);
 }
 .pj-visit:hover {
+  background: #371851;
   transform: translateY(-1px);
   box-shadow: 0 18px 38px -12px rgba(46, 20, 66, .66);
 }
@@ -460,4 +461,117 @@
   .pj-dialog { transition: none; opacity: 1; transform: none; }
   .pj-backdrop { transition: none; opacity: 1; }
   .pj-shot img, .pj-fb, .pj-open, .pj-dot { transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   07 — Contact
+   -------------------------------------------------------------------------- */
+.ct-sec { background: rgba(250, 250, 252, .6); border-top: 1px solid var(--hair); }
+
+.ct-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 28px;
+  align-items: start;
+  max-width: 940px;
+  margin: 0 auto;
+}
+
+.ct-ways { display: grid; gap: 10px; }
+.ct-way {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 16px;
+  border-radius: 14px;
+  background: var(--ivory);
+  border: 1px solid var(--hair);
+  text-decoration: none;
+  transition: border-color 240ms var(--ease), box-shadow 240ms var(--ease), transform 240ms var(--ease);
+}
+.ct-way:hover {
+  border-color: rgba(68, 32, 97, .24);
+  box-shadow: 0 10px 26px -14px rgba(46, 20, 66, .3);
+  transform: translateY(-1px);
+}
+.ct-way__ico {
+  width: 38px; height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--purple-soft);
+  color: var(--purple);
+}
+.ct-way__k {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.ct-way__v { display: block; font-size: 13.5px; font-weight: 600; color: var(--charcoal); margin-top: 2px; }
+
+.ct-form {
+  background: var(--ivory);
+  border: 1px solid var(--hair);
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 1px 2px rgba(17,17,17,.04), 0 18px 44px -28px rgba(17,17,17,.2);
+}
+.ct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ct-field { margin-bottom: 14px; }
+.ct-field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--graphite);
+  margin-bottom: 6px;
+}
+.ct-opt { font-weight: 400; color: var(--faint); }
+.ct-field input, .ct-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(14,10,26,.14);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--charcoal);
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  outline: none;
+  transition: border-color 220ms var(--ease), box-shadow 220ms var(--ease);
+}
+.ct-field textarea { resize: vertical; min-height: 118px; }
+.ct-field input::placeholder, .ct-field textarea::placeholder { color: var(--faint); }
+.ct-field input:focus, .ct-field textarea:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(68,32,97,.12);
+}
+.ct-field.is-bad input, .ct-field.is-bad textarea { border-color: #C2402F; }
+
+.ct-alert {
+  display: none;
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ct-alert.is-bad { display: block; color: #A6321F; background: #FDF3F1; border: 1px solid #F3CFC8; }
+.ct-alert.is-good { display: block; color: #1B5E43; background: #F0F9F4; border: 1px solid #C6E6D5; }
+
+.ct-send { width: 100%; justify-content: center; }
+.ct-fine { margin-top: 12px; font-size: 12.5px; color: var(--muted); text-align: center; }
+
+@media (max-width: 900px) {
+  .ct-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+@media (max-width: 560px) {
+  .ct-row { grid-template-columns: 1fr; gap: 0; }
+  .ct-form { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-way, .ct-way:hover { transition: none; transform: none; }
 }
