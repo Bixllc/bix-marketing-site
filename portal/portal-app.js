@@ -282,6 +282,35 @@ BIX.isHidden = id => BIX.hidden.indexOf(id) > -1;
       '<button class="bx-pop__item" id="bxLogout" role="menuitem">' + BIX.icon('logout') + 'Log out</button>';
   }
 
+  /* ------------------------- admin: client switcher ----------------------- */
+  function renderSwitcher() {
+    var el = document.getElementById('bxSwitcher');
+    if (!BIX.api.isAdmin() || !BIX.api.clients.length) { el.hidden = true; return; }
+
+    el.hidden = false;
+    el.innerHTML =
+      '<label class="bx-sr" for="bxClientSel">Viewing client</label>' +
+      '<select class="bx-switcher__sel" id="bxClientSel">' +
+        BIX.api.clients.map(function (c) {
+          return '<option value="' + H.esc(c.id) + '"' + (c.id === BIX.api.viewingId ? ' selected' : '') + '>' +
+            H.esc(c.business || c.full_name || 'Client') + '</option>';
+        }).join('') +
+      '</select>';
+
+    el.querySelector('#bxClientSel').addEventListener('change', function (e) {
+      var id = e.target.value;
+      document.getElementById('bxView').innerHTML =
+        '<div class="bx-view"><div class="bx-empty"><div class="bx-boot__spin" style="margin:0 auto"></div>' +
+        '<div class="bx-empty__t" style="margin-top:14px">Loading…</div></div></div>';
+      BIX.api.loadFor(id).then(function () {
+        renderShell();
+        renderSwitcher();
+        BIX.app.rerender();
+        BIX.toast('Viewing ' + (BIX.data.client.business || 'client'));
+      });
+    });
+  }
+
   /* --------------------------------- router ------------------------------- */
   var current = null;
 
@@ -319,32 +348,35 @@ BIX.isHidden = id => BIX.hidden.indexOf(id) > -1;
     rerender: function () { if (current) go(current); },
 
     boot: function () {
-      renderShell();
+      var boot = document.getElementById('bxBoot');
+      var msg = document.getElementById('bxBootMsg');
+      var app = document.getElementById('bxApp');
+
+      /* Real session, real data. No session → back to the sign-in page. */
+      BIX.api.load().then(function () {
+        renderShell();
+        renderSwitcher();
+        boot.hidden = true;
+        app.hidden = false;
+
+        var start = location.hash.slice(1);
+        go(BIX.views[start] && !BIX.isHidden(start) ? start : 'dashboard');
+      }).catch(function (err) {
+        if (err === 'no session') return;          // already redirecting
+        msg.textContent = (err && err.message) || 'Could not load your portal.';
+        msg.style.color = '#C2402F';
+        var back = document.createElement('a');
+        back.className = 'bx-btn bx-btn--ghost bx-btn--sm';
+        back.style.marginTop = '14px';
+        back.href = '../login.html';
+        back.textContent = 'Back to sign in';
+        msg.parentNode.appendChild(back);
+      });
 
       /* delegated navigation — any [data-go] anywhere routes */
       document.addEventListener('click', function (e) {
         var t = e.target.closest('[data-go]');
         if (t) { e.preventDefault(); go(t.getAttribute('data-go')); }
-      });
-
-      /* auth */
-      var auth = document.getElementById('bxAuth');
-      var app = document.getElementById('bxApp');
-      function enter() {
-        auth.hidden = true;
-        app.hidden = false;
-        var start = location.hash.slice(1);
-        go(BIX.views[start] && !BIX.isHidden(start) ? start : 'dashboard');
-      }
-      if (sessionStorage.getItem('bx.in') === '1') enter();
-
-      document.getElementById('bxAuthForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        sessionStorage.setItem('bx.in', '1');
-        enter();
-      });
-      document.getElementById('bxAuthForgot').addEventListener('click', function () {
-        BIX.toast('A reset link would be emailed — this is a demo account.');
       });
 
       /* topbar */
@@ -354,8 +386,7 @@ BIX.isHidden = id => BIX.hidden.indexOf(id) > -1;
         BIX.modal({
           title: 'Search',
           body: '<div class="bx-field"><label for="bxSearchM">What are you looking for?</label>' +
-                '<input id="bxSearchM" type="search" placeholder="Invoice, file, request…" /></div>' +
-                '<p class="bx-field__hint bx-mono">Try: invoice, gift certificate, training</p>',
+                '<input id="bxSearchM" type="search" placeholder="Invoice, file, request…" /></div>',
           foot: '<button class="bx-btn bx-btn--ghost" data-close>Close</button>'
         });
       });
@@ -387,8 +418,7 @@ BIX.isHidden = id => BIX.hidden.indexOf(id) > -1;
       });
       document.getElementById('bxPop').addEventListener('click', function (e) {
         if (e.target.closest('#bxLogout')) {
-          sessionStorage.removeItem('bx.in');
-          location.reload();
+          BixAuth.sb.auth.signOut().then(function () { location.href = '../login.html'; });
         }
       });
 

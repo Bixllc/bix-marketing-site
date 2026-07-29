@@ -159,17 +159,14 @@
                 '<button class="bx-btn bx-btn--primary" id="payGo">Pay ' + H.money(d.outstanding) + '</button>',
           mount: function (w) {
             w.querySelector('#payGo').addEventListener('click', function () {
-              var dd = BIX.data;
-              dd.invoices.forEach(function (i) {
-                if (i.status !== 'Paid') {
-                  i.status = 'Paid';
-                  dd.payments.unshift({ on: dd.today, method: 'Visa •••• ' + dd.paymentMethod.last4, amount: i.amount, ref: i.no });
-                }
+              BIX.api.payAll().then(function (res) {
+                if (res.error) { BIX.toast(res.error.message); return; }
+                return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+                  BIX.closeModal();
+                  BIX.app.rerender();
+                  BIX.toast('Payment received — thank you');
+                });
               });
-              dd.recount();
-              BIX.closeModal();
-              BIX.app.rerender();
-              BIX.toast('Payment received — thank you');
             });
           }
         });

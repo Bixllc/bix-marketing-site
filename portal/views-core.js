@@ -354,22 +354,22 @@
         wrap.querySelector('#rqSave').addEventListener('click', function () {
           var t = wrap.querySelector('#rqT').value.trim();
           if (!t) { wrap.querySelector('#rqT').focus(); BIX.toast('Give the request a title'); return; }
-          var d = BIX.data;
-          var n = 1043 + d.requests.filter(function (r) { return /^REQ-/.test(r.id); }).length - 12;
-          d.requests.unshift({
-            id: 'REQ-' + (1042 + (d.requests.length - 11)),
+          var btn = wrap.querySelector('#rqSave');
+          btn.disabled = true;
+          BIX.api.addRequest({
             title: t,
             category: wrap.querySelector('#rqC').value,
             priority: pri,
-            status: 'Open',
-            date: d.today,
-            desc: wrap.querySelector('#rqD').value.trim() || 'No further detail provided.',
-            comments: []
+            body: wrap.querySelector('#rqD').value.trim() || 'No further detail provided.'
+          }).then(function (res) {
+            if (res.error) { btn.disabled = false; BIX.toast(res.error.message); return; }
+            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.closeModal();
+              reqFilter = 'All';
+              BIX.app.rerender();
+              BIX.toast('Request submitted');
+            });
           });
-          BIX.closeModal();
-          reqFilter = 'All';
-          BIX.app.rerender();
-          BIX.toast('Request submitted');
         });
       }
     });

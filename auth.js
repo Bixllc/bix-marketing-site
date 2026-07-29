@@ -89,7 +89,9 @@
   /* Where a signed-in user belongs. Defaults to the client portal — that page
      re-checks the role itself, and RLS is the real boundary either way. */
   function portalFor(role) {
-    return role === 'admin' ? 'admin-portal.html' : 'client-portal.html';
+    /* Both roles land in the same portal. It resolves the role itself and,
+       for an admin, offers a switcher across every client. */
+    return 'portal/';
   }
 
   function roleOf(uid) {

@@ -64,6 +64,17 @@
     wide: true,
     render: function () {
       var a = BIX.data.analytics;
+
+      /* No analytics wired up yet — say so rather than rendering NaN. */
+      if (!a.visitors.length) {
+        return '<div class="bx-card bx-card--pad">' +
+          H.empty('chart', 'No analytics yet',
+            'Once traffic tracking is connected to your site, visitors, leads and ' +
+            'conversion will appear here.',
+            '<button class="bx-btn bx-btn--ghost" data-go="website">View site health</button>') +
+        '</div>';
+      }
+
       var vis = a.visitors.slice(-range);
       var leads = a.leads.slice(-range);
       var totalVis = vis.reduce(function (s, p) { return s + p.v; }, 0);
@@ -244,9 +255,12 @@
         w.querySelector('#tkGo').addEventListener('click', function () {
           var s = w.querySelector('#tkS').value.trim();
           if (!s) { w.querySelector('#tkS').focus(); BIX.toast('Give the ticket a subject'); return; }
-          var d = BIX.data;
-          d.tickets.unshift({ id: 'TK-' + (319 + d.tickets.length - 4), subject: s, opened: d.today, status: 'Open' });
-          BIX.closeModal(); BIX.app.rerender(); BIX.toast('Ticket raised — we\'ll be in touch');
+          BIX.api.addTicket(s).then(function (res) {
+            if (res.error) { BIX.toast(res.error.message); return; }
+            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.closeModal(); BIX.app.rerender(); BIX.toast('Ticket raised — we\'ll be in touch');
+            });
+          });
         });
       }
     });
@@ -367,7 +381,17 @@
             d.client.timezone = el.querySelector('#stZ').value.trim() || d.client.timezone;
             document.getElementById('bxSideBiz').textContent = d.client.business;
           }
-          BIX.toast(what === 'Photo' ? 'Photo picker would open here' : what + ' saved');
+          if (what === 'Photo') { BIX.toast('Photo picker would open here'); return; }
+          var patch = what === 'Profile'
+            ? { full_name: d.client.name, email: d.client.email, phone: d.client.phone }
+            : what === 'Business'
+              ? { business: d.client.business, industry: d.client.industry,
+                  address: d.client.address, timezone: d.client.timezone }
+              : null;
+          if (!patch) { BIX.toast(what + ' saved'); return; }
+          BIX.api.saveProfile(patch).then(function (res) {
+            BIX.toast(res.error ? res.error.message : what + ' saved');
+          });
         });
       });
     }
