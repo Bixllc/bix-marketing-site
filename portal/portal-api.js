@@ -177,8 +177,12 @@ window.BIX = window.BIX || {};
       });
     },
 
-    downloadFile: function (path) {
-      return sb.storage.from('client-files').createSignedUrl(path, 60);
+    /* `download` makes Storage return Content-Disposition: attachment, so the
+       browser saves the file instead of rendering PDFs and images inline. The
+       value becomes the suggested filename. */
+    downloadFile: function (path, name) {
+      return sb.storage.from('client-files')
+        .createSignedUrl(path, 60, { download: name || true });
     },
 
     payAll: function () {

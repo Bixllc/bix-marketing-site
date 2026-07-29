@@ -88,10 +88,20 @@
       el.querySelectorAll('[data-dl]').forEach(function (b) {
         b.addEventListener('click', function () {
           var path = b.getAttribute('data-path');
+          var name = b.getAttribute('data-dl') || '';
           if (!path) { BIX.toast('This file has no stored copy yet'); return; }
-          BIX.api.downloadFile(path).then(function (r) {
+          BIX.api.downloadFile(path, name).then(function (r) {
             if (r.error || !r.data) { BIX.toast(r.error ? r.error.message : 'Could not fetch that file'); return; }
-            window.open(r.data.signedUrl, '_blank', 'noopener');
+            /* A synthetic <a download> click saves straight to disk. window.open
+               would surface a tab that the attachment header then closes again. */
+            var a = document.createElement('a');
+            a.href = r.data.signedUrl;
+            a.download = name;
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            BIX.toast('Downloading ' + (name || 'file'));
           });
         });
       });
