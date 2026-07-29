@@ -682,7 +682,6 @@
   .hx-sub    { order: 2; margin-bottom: 0; }
   .hx-visual { order: 3; }
   .hx-cta    { order: 4; margin-top: 0; }
-  .hx-stats  { order: 5; margin-top: 0; }
 
   .hx-h1, .hx-sub { text-align: center; }
   .hx-sub { margin-inline: auto; }
@@ -691,17 +690,15 @@
   .hx-ai { height: 300px; }
   .cv-stage { transform: rotateX(20deg) rotateY(-14deg) scale(.62); }
 
-  /* stat row read as 2 + 1 orphan; stacked rows are cleaner */
-  .hx-stats { display: grid; grid-template-columns: 1fr; gap: 14px; justify-items: center; }
-  .hx-stat { display: flex; align-items: baseline; gap: 10px; }
-  .hx-stat b { font-size: 20px; }
-  .hx-stat span { margin-top: 0; }
-  /* "100% custom-built" is the weakest of the three and pushed the fold down */
-  .hx-stat:first-child { display: none; }
+  /* The stat row is desktop-only — it pushed the CTAs below the fold and read
+     as filler once the graphic sat above it. */
+  .hx-stats { display: none; }
 
-  /* equal-width CTAs rather than two different pill widths */
-  .hx-cta { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .hx-btn { width: 100%; justify-content: center; }
+  /* Side by side. The label needs the tighter padding and type to fit two
+     pills across a phone without wrapping. */
+  .hx-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hx-btn { width: 100%; justify-content: center; padding: 14px 8px; font-size: 13px; text-align: center; }
+  .hx-btn .arrow { display: none; }
   .pfcta-btns { display: grid; grid-template-columns: 1fr; gap: 10px; }
   .pfcta-btns .btn { width: 100%; justify-content: center; }
 
