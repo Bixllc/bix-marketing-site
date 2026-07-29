@@ -20,7 +20,8 @@
       return '' +
       '<div class="bx-drop" id="flDrop">' + I('upload') +
         '<div class="bx-drop__t">Drop files here, or click to browse</div>' +
-        '<div class="bx-mono bx-drop__s">Photos, copy, logos · up to 25 MB each</div></div>' +
+        '<div class="bx-mono bx-drop__s">Photos, copy, logos · up to 25 MB each</div>' +
+        '<input type="file" id="flInput" multiple hidden /></div>' +
 
       '<div class="bx-sec"><div class="bx-sec__h">' +
         '<div class="bx-seg" id="flFolders">' + folders.map(function (f) {
@@ -38,7 +39,7 @@
           '<div class="bx-file__b"><div class="bx-file__n" title="' + H.esc(f.name) + '">' + H.esc(f.name) + '</div>' +
             '<div class="bx-file__m">' + H.esc(f.size) + ' · ' + H.date(f.date) + '</div></div>' +
           '<div class="bx-file__acts">' +
-            '<button class="bx-iconbtn" data-dl="' + H.esc(f.name) + '" aria-label="Download ' + H.esc(f.name) + '">' + I('download') + '</button>' +
+            '<button class="bx-iconbtn" data-dl="' + H.esc(f.name) + '" data-path="' + H.esc(f.path || '') + '" aria-label="Download ' + H.esc(f.name) + '">' + I('download') + '</button>' +
             '<button class="bx-iconbtn" data-more="' + H.esc(f.name) + '" aria-label="More options for ' + H.esc(f.name) + '">' + I('chev') + '</button>' +
           '</div></div>';
       }).join('') + '</div>'
@@ -62,11 +63,37 @@
       ['dragleave', 'drop'].forEach(function (t) {
         drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove('is-over'); });
       });
-      drop.addEventListener('drop', function () { BIX.toast('Upload started'); });
-      drop.addEventListener('click', function () { BIX.toast('File picker would open here'); });
+      var input = el.querySelector('#flInput');
+
+      function send(list) {
+        if (!list || !list.length) return;
+        var files = [].slice.call(list);
+        BIX.toast('Uploading ' + files.length + ' file' + (files.length === 1 ? '' : 's') + '…');
+        Promise.all(files.map(function (f) { return BIX.api.uploadFile(f, fileFolder); }))
+          .then(function (results) {
+            var failed = results.filter(function (r) { return r && r.error; });
+            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.app.rerender();
+              BIX.toast(failed.length
+                ? failed[0].error.message
+                : 'Uploaded ' + files.length + ' file' + (files.length === 1 ? '' : 's'));
+            });
+          });
+      }
+
+      drop.addEventListener('drop', function (e) { send(e.dataTransfer && e.dataTransfer.files); });
+      drop.addEventListener('click', function () { input.click(); });
+      input.addEventListener('change', function () { send(input.files); input.value = ''; });
 
       el.querySelectorAll('[data-dl]').forEach(function (b) {
-        b.addEventListener('click', function () { BIX.toast('Downloading ' + b.getAttribute('data-dl')); });
+        b.addEventListener('click', function () {
+          var path = b.getAttribute('data-path');
+          if (!path) { BIX.toast('This file has no stored copy yet'); return; }
+          BIX.api.downloadFile(path).then(function (r) {
+            if (r.error || !r.data) { BIX.toast(r.error ? r.error.message : 'Could not fetch that file'); return; }
+            window.open(r.data.signedUrl, '_blank', 'noopener');
+          });
+        });
       });
       el.querySelectorAll('[data-more]').forEach(function (b) {
         b.addEventListener('click', function () {
@@ -121,7 +148,7 @@
           '<th scope="col" class="bx-r">Amount</th><th scope="col">Status</th>' +
           '<th scope="col"><span class="bx-sr">Download</span></th></tr></thead><tbody>' +
           d.invoices.map(function (v) {
-            return '<tr' + (v.status === 'Overdue' ? ' class="is-overdue"' : '') + '>' +
+            return '<tr class="is-clickable' + (v.status === 'Overdue' ? ' is-overdue' : '') + '" data-open="' + H.esc(v.no) + '">' +
               '<td class="bx-num bx-faint">' + H.esc(v.no) + '</td>' +
               '<td class="bx-table__name">' + H.esc(v.desc) + '</td>' +
               '<td class="bx-drop-col bx-num bx-faint">' + H.date(v.issued) + '</td>' +
@@ -191,10 +218,69 @@
       });
 
       el.querySelectorAll('[data-inv]').forEach(function (b) {
-        b.addEventListener('click', function () { BIX.toast('Downloading ' + b.getAttribute('data-inv') + '.pdf'); });
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          BIX.toast('Downloading ' + b.getAttribute('data-inv') + '.pdf');
+        });
+      });
+
+      el.querySelectorAll('[data-open]').forEach(function (row) {
+        row.addEventListener('click', function () { openInvoice(row.getAttribute('data-open')); });
       });
     }
   };
+
+  function openInvoice(no) {
+    var d = BIX.data;
+    var v = d.invoices.filter(function (x) { return x.no === no; })[0];
+    if (!v) return;
+
+    BIX.modal({
+      title: 'Invoice ' + v.no,
+      body:
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">' +
+          '<div><div class="bx-mono bx-faint">Billed to</div>' +
+            '<div class="bx-mini__t" style="margin-top:4px">' + H.esc(d.client.business) + '</div>' +
+            '<div class="bx-mini__s">' + H.esc(d.client.address || '') + '</div></div>' +
+          '<div style="text-align:right">' + H.pill(v.status) +
+            '<div class="bx-big" style="margin-top:8px;font-size:26px">' + H.money(v.amount, 2) + '</div></div>' +
+        '</div>' +
+
+        '<div class="bx-dl" style="margin-top:18px">' +
+          '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Description</span>' +
+            '<span class="bx-dl__v">' + H.esc(v.desc) + '</span></div>' +
+          '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Issued</span>' +
+            '<span class="bx-dl__v">' + H.date(v.issued, 'long') + '</span></div>' +
+          '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Due</span>' +
+            '<span class="bx-dl__v">' + H.date(v.due, 'long') + '</span></div>' +
+          '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Amount</span>' +
+            '<span class="bx-dl__v">' + H.money(v.amount, 2) + '</span></div>' +
+        '</div>' +
+
+        (v.status === 'Paid'
+          ? '<p class="bx-mini__s" style="margin-top:16px">Settled — thank you.</p>'
+          : '<p class="bx-mini__s" style="margin-top:16px">Payable to Bix LLC · admin@bixllc.net</p>'),
+
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Close</button>' +
+            '<button class="bx-btn bx-btn--ghost" id="invDl">Download PDF</button>' +
+            (v.status !== 'Paid' ? '<button class="bx-btn bx-btn--primary" id="invPayOne">Pay ' + H.money(v.amount) + '</button>' : ''),
+
+      mount: function (w) {
+        w.querySelector('#invDl').addEventListener('click', function () {
+          BIX.toast('Downloading ' + v.no + '.pdf');
+        });
+        var pay = w.querySelector('#invPayOne');
+        if (pay) pay.addEventListener('click', function () {
+          BIX.api.payAll().then(function (res) {
+            if (res.error) { BIX.toast(res.error.message); return; }
+            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.closeModal(); BIX.app.rerender(); BIX.toast('Payment received — thank you');
+            });
+          });
+        });
+      }
+    });
+  }
 
   /* =============================== MEETINGS ============================== */
   BIX.views.meetings = {
@@ -280,7 +366,14 @@
     }
   };
 
+  var CALENDLY = 'https://calendly.com/bixllc/website-inquiry-call';
+
   function bookModal() {
+    window.open(CALENDLY, '_blank', 'noopener');
+    BIX.toast('Opening the booking calendar');
+  }
+
+  function bookModalOld() {
     var d = BIX.data;
     var days = [1, 2, 3, 4, 5].map(function (n) { return d.ahead(n); });
     var slots = ['09:00', '10:30', '13:00', '14:30', '16:00'];

@@ -37,6 +37,21 @@ window.BIX = window.BIX || {};
     launched:    'Live'
   };
 
+  function kindOf(name) {
+    var e = String(name).split('.').pop().toLowerCase();
+    if (['png','jpg','jpeg','gif','webp','svg'].indexOf(e) > -1) return 'img';
+    if (['mp4','mov','webm'].indexOf(e) > -1) return 'mp4';
+    if (['xls','xlsx','csv'].indexOf(e) > -1) return 'xls';
+    if (e === 'pdf') return 'pdf';
+    return 'doc';
+  }
+
+  function sizeLabel(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
   function initialsOf(name) {
     return String(name || '?').trim().split(/\s+/).map(function (w) { return w[0]; })
       .join('').slice(0, 2).toUpperCase();
@@ -138,6 +153,34 @@ window.BIX = window.BIX || {};
       }).select().single();
     },
 
+    updateRequest: function (id, fields) {
+      return sb.from('requests').update(fields).eq('id', id).select().single();
+    },
+
+    deleteRequest: function (id) {
+      return sb.from('requests').delete().eq('id', id);
+    },
+
+    /* ---- files: Supabase Storage ---- */
+    uploadFile: function (file, folder) {
+      var path = api.viewingId + '/' + Date.now() + '-' + file.name.replace(/[^\w.\-]/g, '_');
+      return sb.storage.from('client-files').upload(path, file).then(function (up) {
+        if (up.error) return { error: up.error };
+        return sb.from('files').insert({
+          client_id: api.viewingId,
+          name: file.name,
+          kind: kindOf(file.name),
+          size_label: sizeLabel(file.size),
+          folder: folder && folder !== 'All' ? folder : 'General',
+          url: path
+        }).select().single();
+      });
+    },
+
+    downloadFile: function (path) {
+      return sb.storage.from('client-files').createSignedUrl(path, 60);
+    },
+
     payAll: function () {
       return sb.from('invoices')
         .update({ status: 'Paid' })
@@ -201,6 +244,7 @@ window.BIX = window.BIX || {};
 
       requests: requests.map(function (r) {
         return {
+          dbId: r.id,
           id: r.ref || r.id.slice(0, 8),
           title: r.title,
           category: r.category,
@@ -230,7 +274,8 @@ window.BIX = window.BIX || {};
       files: files.map(function (f) {
         return {
           name: f.name, kind: f.kind || 'doc', size: f.size_label || '',
-          date: iso(f.created_at), folder: f.folder || 'General', src: f.url || null
+          date: iso(f.created_at), folder: f.folder || 'General',
+          src: null, path: f.url || null, id: f.id
         };
       }),
 

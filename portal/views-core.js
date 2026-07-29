@@ -141,17 +141,6 @@
             '<div class="bx-card__foot"><button class="bx-btn bx-btn--ghost bx-btn--sm" data-go="invoices">View invoices</button></div>' +
           '</div>' +
 
-          '<div class="bx-card"><div class="bx-card__head"><h3>Site health</h3></div>' +
-            '<div class="bx-card__body">' +
-              '<div class="bx-dl">' +
-                '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Score</span><span class="bx-dl__v">' + d.website.score + ' / 100</span></div>' +
-                '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Uptime</span><span class="bx-dl__v">' + H.esc(d.website.uptime) + '</span></div>' +
-                '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Load</span><span class="bx-dl__v">' + H.esc(d.website.load) + '</span></div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="bx-card__foot"><button class="bx-btn bx-btn--ghost bx-btn--sm" data-go="website">Site detail</button></div>' +
-          '</div>' +
-
         '</div>' +
       '</div>';
     },
@@ -212,13 +201,13 @@
             'so nothing changes for your clients without you seeing it first.</p></div>' +
 
           '<div class="bx-card"><div class="bx-card__head"><h3>Your team</h3></div>' +
-            '<div class="bx-card__body"><div class="bx-stack">' +
-              d.team.map(function (t) {
-                return '<div class="bx-person"><span class="bx-person__a">' + H.esc(t.initials) + '</span>' +
-                  '<div><div class="bx-person__n">' + H.esc(t.name) + '</div>' +
-                  '<div class="bx-mono bx-person__r">' + H.esc(t.role) + '</div></div></div>';
-              }).join('') +
-            '</div></div>' +
+            '<div class="bx-card__body">' +
+              (d.team.length
+                ? '<div class="bx-avatars">' + d.team.map(function (t) {
+                    return '<span class="bx-person__a" title="' + H.esc(t.name) + '">' + H.esc(t.initials) + '</span>';
+                  }).join('') + '</div>'
+                : '<div class="bx-avatars"><span class="bx-person__a" title="Bix LLC">BX</span></div>') +
+            '</div>' +
             '<div class="bx-card__foot"><button class="bx-btn bx-btn--ghost bx-btn--sm" data-go="requests">Request a change</button></div>' +
           '</div>' +
         '</div>' +
@@ -269,6 +258,10 @@
               '<td class="bx-drop-col bx-num bx-faint">' + H.date(r.date) + '</td></tr>' +
             '<tr class="bx-detail" data-detail="' + H.esc(r.id) + '" hidden><td colspan="6"><div class="bx-detail__in">' +
               '<div class="bx-detail__d">' + H.esc(r.desc) + '</div>' +
+              '<div style="display:flex;gap:8px;margin-top:14px">' +
+                '<button class="bx-btn bx-btn--ghost bx-btn--sm" data-edit="' + H.esc(r.dbId) + '">Edit</button>' +
+                '<button class="bx-btn bx-btn--danger bx-btn--sm" data-del="' + H.esc(r.dbId) + '">Delete</button>' +
+              '</div>' +
               (r.comments.length ? '<div class="bx-thread">' + r.comments.map(function (c) {
                 return '<div class="bx-cmt"><span class="bx-cmt__a">' + H.esc(c.who.split(' ').map(function (w) { return w[0]; }).join('')) + '</span>' +
                   '<div class="bx-cmt__b"><div class="bx-cmt__w">' + H.esc(c.who) + ' · ' + H.esc(c.w) + '</div>' +
@@ -292,6 +285,37 @@
           if (d) d.hidden = !d.hidden;
         });
       });
+      el.querySelectorAll('[data-edit]').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var r = BIX.data.requests.filter(function (x) { return x.dbId === b.getAttribute('data-edit'); })[0];
+          if (r) openEdit(r);
+        });
+      });
+      el.querySelectorAll('[data-del]').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var id = b.getAttribute('data-del');
+          var r = BIX.data.requests.filter(function (x) { return x.dbId === id; })[0];
+          BIX.modal({
+            title: 'Delete this request?',
+            body: '<p class="bx-hero__s">“' + H.esc(r ? r.title : '') + '” will be removed for good. ' +
+                  'This cannot be undone.</p>',
+            foot: '<button class="bx-btn bx-btn--ghost" data-close>Keep it</button>' +
+                  '<button class="bx-btn bx-btn--danger" id="rqKill">Delete request</button>',
+            mount: function (w) {
+              w.querySelector('#rqKill').addEventListener('click', function () {
+                BIX.api.deleteRequest(id).then(function (res) {
+                  if (res.error) { BIX.toast(res.error.message); return; }
+                  return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+                    BIX.closeModal(); BIX.app.rerender(); BIX.toast('Request deleted');
+                  });
+                });
+              });
+            }
+          });
+        });
+      });
       ['reqNew', 'reqNew2'].forEach(function (id) {
         var b = el.querySelector('#' + id);
         if (b) b.addEventListener('click', openNew);
@@ -307,6 +331,55 @@
       (delta || '') + '</div>';
   }
   BIX.stat = stat;
+
+  function openEdit(r) {
+    BIX.modal({
+      title: 'Edit request',
+      body:
+        '<div class="bx-field"><label for="edT">Title</label>' +
+          '<input id="edT" value="' + H.esc(r.title) + '" /></div>' +
+        '<div class="bx-field"><label for="edC">Category</label>' +
+          '<select id="edC">' + ['Feature','Content','Bug','Question'].map(function (c) {
+            return '<option' + (c === r.category ? ' selected' : '') + '>' + c + '</option>';
+          }).join('') + '</select></div>' +
+        '<div class="bx-field"><label id="edPL">Priority</label>' +
+          '<div class="bx-seg" id="edP" role="radiogroup" aria-labelledby="edPL">' +
+            ['Low','Medium','High'].map(function (p) {
+              return '<button type="button" class="bx-seg__b' + (p === r.priority ? ' is-on' : '') + '" ' +
+                'role="radio" aria-checked="' + (p === r.priority) + '" data-p="' + p + '">' + p + '</button>';
+            }).join('') + '</div></div>' +
+        '<div class="bx-field"><label for="edD">Description</label>' +
+          '<textarea id="edD">' + H.esc(r.desc) + '</textarea></div>',
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
+            '<button class="bx-btn bx-btn--primary" id="edSave">Save changes</button>',
+      mount: function (w) {
+        var pri = r.priority;
+        w.querySelectorAll('#edP .bx-seg__b').forEach(function (b) {
+          b.addEventListener('click', function () {
+            pri = b.getAttribute('data-p');
+            w.querySelectorAll('#edP .bx-seg__b').forEach(function (o) {
+              var on = o === b; o.classList.toggle('is-on', on); o.setAttribute('aria-checked', String(on));
+            });
+          });
+        });
+        w.querySelector('#edSave').addEventListener('click', function () {
+          var t = w.querySelector('#edT').value.trim();
+          if (!t) { w.querySelector('#edT').focus(); BIX.toast('Give the request a title'); return; }
+          BIX.api.updateRequest(r.dbId, {
+            title: t,
+            category: w.querySelector('#edC').value,
+            priority: pri,
+            body: w.querySelector('#edD').value.trim()
+          }).then(function (res) {
+            if (res.error) { BIX.toast(res.error.message); return; }
+            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.closeModal(); BIX.app.rerender(); BIX.toast('Request updated');
+            });
+          });
+        });
+      }
+    });
+  }
 
   function openNew() {
     BIX.modal({

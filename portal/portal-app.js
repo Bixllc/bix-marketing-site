@@ -7,7 +7,7 @@ BIX.views = BIX.views || {};
 /* Features switched off for launch. Everything downstream — nav, quick
    actions, dashboard cards, FAQs, tutorials, secondary CTAs — filters through
    BIX.isHidden so a hidden feature leaves no dead button behind. */
-BIX.hidden = ['messages', 'booking', 'ai'];
+BIX.hidden = ['messages', 'booking', 'ai', 'analytics'];
 BIX.isHidden = id => BIX.hidden.indexOf(id) > -1;
 
 (function () {

@@ -168,103 +168,61 @@
   BIX.views.support = {
     render: function () {
       var d = BIX.data;
-      var actions = [
-        { id: 'ticket', icon: 'ticket', t: 'Raise a ticket', s: 'Something not working?' },
-        { id: 'docs',   icon: 'book',   t: 'Browse docs',    s: 'Guides for the whole system' },
-        { id: 'ai',     icon: 'zap',    t: 'Live chat',      s: 'Ask Bix anything' }
-      ].filter(function (a) { return a.id === 'ai' ? !BIX.isHidden('ai') : true; });
-
-      var faqs = d.faqs.filter(function (f) { return !f.needs || !BIX.isHidden(f.needs); });
-      var tuts = d.tutorials.filter(function (t) { return !t.needs || !BIX.isHidden(t.needs); });
 
       return '' +
-      '<div class="bx-qas" style="' + H.autoCols(actions.length, 3) + '">' +
-        actions.map(function (a) {
-          return '<button class="bx-qa" data-act="' + a.id + '">' +
-            '<span class="bx-qa__chip">' + I(a.icon) + '</span>' +
-            '<span><span class="bx-qa__t">' + H.esc(a.t) + '</span>' +
-            '<span class="bx-qa__s">' + H.esc(a.s) + '</span></span></button>';
-        }).join('') +
-      '</div>' +
+      '<div class="bx-split">' +
 
-      '<div class="bx-sec"><div class="bx-card">' +
-        '<div class="bx-card__head"><h3>Your tickets</h3></div>' +
-        '<div class="bx-table__wrap">' + (d.tickets.length ?
-          '<table class="bx-table"><thead><tr><th scope="col">ID</th><th scope="col">Subject</th>' +
-          '<th scope="col" class="bx-drop-col">Opened</th><th scope="col">Status</th></tr></thead><tbody>' +
-          d.tickets.map(function (t) {
-            return '<tr><td class="bx-num bx-faint">' + H.esc(t.id) + '</td>' +
-              '<td class="bx-table__name">' + H.esc(t.subject) + '</td>' +
-              '<td class="bx-drop-col bx-num bx-faint">' + H.date(t.opened) + '</td>' +
-              '<td>' + H.pill(t.status) + '</td></tr>';
-          }).join('') + '</tbody></table>'
-          : H.empty('ticket', 'No tickets', 'Nothing open right now.')) +
-        '</div></div></div>' +
+        '<div class="bx-card">' +
+          '<div class="bx-card__head"><h3>Your tickets</h3>' +
+            '<div class="bx-card__head-r">' +
+              '<span class="bx-pill bx-pill--amber">' +
+                d.tickets.filter(function (t) { return t.status !== 'Completed'; }).length + ' open</span>' +
+            '</div></div>' +
+          '<div class="bx-table__wrap">' + (d.tickets.length ?
+            '<table class="bx-table"><thead><tr><th scope="col">ID</th><th scope="col">Subject</th>' +
+            '<th scope="col" class="bx-drop-col">Opened</th><th scope="col">Status</th></tr></thead><tbody>' +
+            d.tickets.map(function (t) {
+              return '<tr><td class="bx-num bx-faint">' + H.esc(t.id) + '</td>' +
+                '<td class="bx-table__name">' + H.esc(t.subject) + '</td>' +
+                '<td class="bx-drop-col bx-num bx-faint">' + H.date(t.opened) + '</td>' +
+                '<td>' + H.pill(t.status) + '</td></tr>';
+            }).join('') + '</tbody></table>'
+            : H.empty('ticket', 'No tickets yet', 'Anything you send us will show up here.')) +
+          '</div></div>' +
 
-      '<div class="bx-sec bx-split">' +
-        '<div class="bx-card"><div class="bx-card__head"><h3>Common questions</h3></div>' +
-          '<div class="bx-card__body">' + faqs.map(function (f, i) {
-            return '<div class="bx-acc" data-acc="' + i + '">' +
-              '<button class="bx-acc__q" aria-expanded="false">' + H.esc(f.q) + I('chev') + '</button>' +
-              '<div class="bx-acc__a" hidden>' + H.esc(f.a) + '</div></div>';
-          }).join('') + '</div></div>' +
+        '<div class="bx-card">' +
+          '<div class="bx-card__head"><h3>Send us a message</h3></div>' +
+          '<div class="bx-card__body">' +
+            '<p class="bx-mini__s" style="margin-bottom:14px">Something broken, or just a question? ' +
+              'Send it over and we will come back to you — usually the same day.</p>' +
+            '<div class="bx-field"><label for="spS">Subject</label>' +
+              '<input id="spS" placeholder="What is this about?" /></div>' +
+            '<div class="bx-field"><label for="spM">Message</label>' +
+              '<textarea id="spM" placeholder="Tell us what is going on."></textarea></div>' +
+            '<button class="bx-btn bx-btn--primary bx-btn--block" id="spSend">Send message</button>' +
+          '</div></div>' +
 
-        '<div class="bx-card"><div class="bx-card__head"><h3>Tutorials</h3></div>' +
-          '<div class="bx-card__body">' + tuts.map(function (t) {
-            return '<div class="bx-tut"><span class="bx-tut__th">' + I('play') + '</span>' +
-              '<div style="flex:1"><div class="bx-mini__t">' + H.esc(t.title) + '</div>' +
-              '<div class="bx-mono bx-faint" style="margin-top:2px">' + H.esc(t.dur) + '</div></div>' +
-              '<button class="bx-btn bx-btn--ghost bx-btn--sm" data-tut="' + H.esc(t.title) + '">Watch</button></div>';
-          }).join('') + '</div></div>' +
       '</div>';
     },
 
     mount: function (el) {
-      el.querySelectorAll('[data-act]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          var a = b.getAttribute('data-act');
-          if (a === 'ticket') return ticketModal();
-          if (a === 'docs') return BIX.toast('Opening the documentation');
-          BIX.toast('Live chat would open here');
+      el.querySelector('#spSend').addEventListener('click', function () {
+        var subj = el.querySelector('#spS').value.trim();
+        var body = el.querySelector('#spM').value.trim();
+        if (!subj) { el.querySelector('#spS').focus(); BIX.toast('Give your message a subject'); return; }
+
+        var btn = el.querySelector('#spSend');
+        btn.disabled = true;
+        BIX.api.addTicket(body ? subj + ' — ' + body : subj).then(function (res) {
+          if (res.error) { btn.disabled = false; BIX.toast(res.error.message); return; }
+          return BIX.api.loadFor(BIX.api.viewingId).then(function () {
+            BIX.app.rerender();
+            BIX.toast('Message sent — we will be in touch');
+          });
         });
-      });
-      el.querySelectorAll('.bx-acc').forEach(function (acc) {
-        var q = acc.querySelector('.bx-acc__q'), a = acc.querySelector('.bx-acc__a');
-        q.addEventListener('click', function () {
-          var open = acc.classList.toggle('is-open');
-          a.hidden = !open;
-          q.setAttribute('aria-expanded', String(open));
-        });
-      });
-      el.querySelectorAll('[data-tut]').forEach(function (b) {
-        b.addEventListener('click', function () { BIX.toast('Playing “' + b.getAttribute('data-tut') + '”'); });
       });
     }
   };
-
-  function ticketModal() {
-    BIX.modal({
-      title: 'Raise a ticket',
-      body: '<div class="bx-field"><label for="tkS">Subject</label>' +
-              '<input id="tkS" placeholder="What has gone wrong?" /></div>' +
-            '<div class="bx-field"><label for="tkD">Detail</label>' +
-              '<textarea id="tkD" placeholder="What were you doing when it happened?"></textarea></div>',
-      foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
-            '<button class="bx-btn bx-btn--primary" id="tkGo">Send ticket</button>',
-      mount: function (w) {
-        w.querySelector('#tkGo').addEventListener('click', function () {
-          var s = w.querySelector('#tkS').value.trim();
-          if (!s) { w.querySelector('#tkS').focus(); BIX.toast('Give the ticket a subject'); return; }
-          BIX.api.addTicket(s).then(function (res) {
-            if (res.error) { BIX.toast(res.error.message); return; }
-            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
-              BIX.closeModal(); BIX.app.rerender(); BIX.toast('Ticket raised — we\'ll be in touch');
-            });
-          });
-        });
-      }
-    });
-  }
 
   /* =============================== SETTINGS ============================== */
   BIX.views.settings = {
