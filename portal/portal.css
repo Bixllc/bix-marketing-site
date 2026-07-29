@@ -560,13 +560,29 @@ tr.is-overdue td:first-child { box-shadow: inset 3px 0 0 var(--bx-red); }
    height:100% does not resolve and the image renders at intrinsic size. */
 .bx-file__prev img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 .bx-file__ext { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; letter-spacing: .1em; color: var(--bx-purple); text-transform: uppercase; }
-.bx-file__b { padding: 11px 13px; }
-.bx-file__n { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bx-file__m { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--bx-faint); margin-top: 3px; letter-spacing: .04em; }
+/* The card body is a button so the whole tile opens the preview. Its children
+   are spans, so each needs display restored to lay out as it did as a div. */
+.bx-file__open { display: block; width: 100%; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.bx-file__open:focus-visible { outline: 2px solid var(--bx-purple); outline-offset: -2px; }
+.bx-file__b { display: block; padding: 11px 13px; }
+.bx-file__n { display: block; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bx-file__m { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--bx-faint); margin-top: 3px; letter-spacing: .04em; }
 .bx-file__acts { display: flex; gap: 5px; padding: 0 9px 10px; opacity: 0; transition: opacity 150ms var(--bx-ease); }
 .bx-file:hover .bx-file__acts, .bx-file:focus-within .bx-file__acts { opacity: 1; }
 .bx-file__acts .bx-iconbtn { width: 28px; height: 28px; }
 .bx-file__acts .bx-iconbtn svg { width: 14px; height: 14px; }
+
+/* ---- file preview modal ---- */
+.bx-preview { background: var(--bx-purple-soft); border: 1px solid var(--bx-line); border-radius: var(--bx-r); overflow: hidden; display: grid; place-items: center; min-height: 260px; max-height: 60vh; }
+.bx-preview img { display: block; max-width: 100%; max-height: 60vh; object-fit: contain; }
+.bx-preview video { display: block; max-width: 100%; max-height: 60vh; }
+.bx-preview iframe { display: block; width: 100%; height: 60vh; border: 0; background: #fff; }
+.bx-preview__wait { font-size: 11px; color: var(--bx-faint); letter-spacing: .04em; }
+.bx-preview__none { display: grid; place-items: center; gap: 10px; padding: 40px 24px; text-align: center; font-size: 13px; color: var(--bx-muted); }
+.bx-preview__none svg { width: 26px; height: 26px; color: var(--bx-purple); }
+.bx-preview__meta { margin-top: 10px; font-size: 10px; color: var(--bx-faint); letter-spacing: .04em; }
+/* Destructive action sits apart from the two it could be mistaken for. */
+.bx-modal__foot [data-pvdel] { margin-right: auto; }
 
 /* display:block so the primitive works as a <span> too — the analytics
    source rows nest it inside inline elements. */

@@ -185,6 +185,30 @@ window.BIX = window.BIX || {};
         .createSignedUrl(path, 60, { download: name || true });
     },
 
+    /* Same signed URL without the attachment header, so the browser renders it
+       in the preview modal rather than saving it. Longer TTL because a preview
+       stays open while someone reads it. */
+    previewFile: function (path) {
+      return sb.storage.from('client-files').createSignedUrl(path, 300);
+    },
+
+    renameFile: function (id, name) {
+      return sb.from('files').update({ name: name, kind: kindOf(name) })
+        .eq('id', id).select().single();
+    },
+
+    /* Object first, then the row. If the object delete fails the row survives,
+       which leaves a broken link rather than an orphaned file nobody can see. */
+    deleteFile: function (id, path) {
+      var obj = path
+        ? sb.storage.from('client-files').remove([path])
+        : Promise.resolve({ error: null });
+      return obj.then(function (r) {
+        if (r && r.error) return { error: r.error };
+        return sb.from('files').delete().eq('id', id);
+      });
+    },
+
     payAll: function () {
       return sb.from('invoices')
         .update({ status: 'Paid' })

@@ -35,12 +35,13 @@
           ? '<img src="' + H.esc(f.src) + '" alt="' + H.esc(f.name) + '" loading="lazy" />'
           : '<span class="bx-file__ext">' + H.esc(f.name.split('.').pop()) + '</span>';
         return '<div class="bx-file">' +
-          '<div class="bx-file__prev">' + prev + '</div>' +
-          '<div class="bx-file__b"><div class="bx-file__n" title="' + H.esc(f.name) + '">' + H.esc(f.name) + '</div>' +
-            '<div class="bx-file__m">' + H.esc(f.size) + ' · ' + H.date(f.date) + '</div></div>' +
+          '<button class="bx-file__open" data-view="' + H.esc(f.id) + '" aria-label="Preview ' + H.esc(f.name) + '">' +
+            '<span class="bx-file__prev">' + prev + '</span>' +
+            '<span class="bx-file__b"><span class="bx-file__n" title="' + H.esc(f.name) + '">' + H.esc(f.name) + '</span>' +
+              '<span class="bx-file__m">' + H.esc(f.size) + ' · ' + H.date(f.date) + '</span></span>' +
+          '</button>' +
           '<div class="bx-file__acts">' +
             '<button class="bx-iconbtn" data-dl="' + H.esc(f.name) + '" data-path="' + H.esc(f.path || '') + '" aria-label="Download ' + H.esc(f.name) + '">' + I('download') + '</button>' +
-            '<button class="bx-iconbtn" data-more="' + H.esc(f.name) + '" aria-label="More options for ' + H.esc(f.name) + '">' + I('chev') + '</button>' +
           '</div></div>';
       }).join('') + '</div>'
       : H.empty('file', 'No files in this folder', 'Try another folder, or drop something in above.')) +
@@ -105,20 +106,116 @@
           });
         });
       });
-      el.querySelectorAll('[data-more]').forEach(function (b) {
+      el.querySelectorAll('[data-view]').forEach(function (b) {
         b.addEventListener('click', function () {
-          BIX.modal({
-            title: b.getAttribute('data-more'),
-            body: '<div class="bx-stack">' +
-              '<button class="bx-btn bx-btn--ghost bx-btn--block" data-close>Rename</button>' +
-              '<button class="bx-btn bx-btn--ghost bx-btn--block" data-close>Move to folder</button>' +
-              '<button class="bx-btn bx-btn--ghost bx-btn--block" data-close>Share a link</button></div>',
-            foot: '<button class="bx-btn bx-btn--danger" data-close>Delete file</button>'
-          });
+          var id = b.getAttribute('data-view');
+          var f = BIX.data.files.filter(function (x) { return String(x.id) === id; })[0];
+          if (f) openPreview(f);
         });
       });
     }
   };
+
+  /* Renders the file itself where the browser can, and falls back to a plain
+     "download to open" panel where it can't (docs, spreadsheets). Rename and
+     delete live here now that the old options menu is gone. */
+  function openPreview(f) {
+    BIX.modal({
+      title: f.name,
+      body:
+        '<div class="bx-preview" id="pvBox"><div class="bx-preview__wait bx-mono">Loading preview…</div></div>' +
+        '<div class="bx-preview__meta bx-mono">' + H.esc(f.size) + ' · ' + H.esc(f.folder) + ' · ' + H.date(f.date) + '</div>',
+      foot:
+        '<button class="bx-btn bx-btn--danger" data-pvdel>Delete</button>' +
+        '<button class="bx-btn bx-btn--ghost" data-pvren>Rename</button>' +
+        '<button class="bx-btn bx-btn--primary" data-pvdl>Download</button>',
+      mount: function (wrap) {
+        var box = wrap.querySelector('#pvBox');
+
+        if (!f.path) {
+          box.innerHTML = '<div class="bx-preview__none">' + I('file') +
+            '<div>This file has no stored copy yet</div></div>';
+        } else {
+          BIX.api.previewFile(f.path).then(function (r) {
+            if (r.error || !r.data) {
+              box.innerHTML = '<div class="bx-preview__none">' + I('file') +
+                '<div>' + H.esc(r.error ? r.error.message : 'Could not load this file') + '</div></div>';
+              return;
+            }
+            var u = H.esc(r.data.signedUrl);
+            if (f.kind === 'img') box.innerHTML = '<img src="' + u + '" alt="' + H.esc(f.name) + '" />';
+            else if (f.kind === 'pdf') box.innerHTML = '<iframe src="' + u + '" title="' + H.esc(f.name) + '"></iframe>';
+            else if (f.kind === 'mp4') box.innerHTML = '<video src="' + u + '" controls></video>';
+            else box.innerHTML = '<div class="bx-preview__none">' + I('file') +
+              '<div>No preview for ' + H.esc(f.name.split('.').pop().toUpperCase()) + ' files — download to open it.</div></div>';
+          });
+        }
+
+        wrap.querySelector('[data-pvdl]').addEventListener('click', function () {
+          if (!f.path) { BIX.toast('This file has no stored copy yet'); return; }
+          BIX.api.downloadFile(f.path, f.name).then(function (r) {
+            if (r.error || !r.data) { BIX.toast(r.error ? r.error.message : 'Could not fetch that file'); return; }
+            var a = document.createElement('a');
+            a.href = r.data.signedUrl;
+            a.download = f.name;
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            BIX.toast('Downloading ' + f.name);
+          });
+        });
+
+        wrap.querySelector('[data-pvren]').addEventListener('click', function () { openRename(f); });
+        wrap.querySelector('[data-pvdel]').addEventListener('click', function () { confirmDelete(f); });
+      }
+    });
+  }
+
+  function openRename(f) {
+    BIX.modal({
+      title: 'Rename file',
+      body: '<div class="bx-field"><label for="pvName">File name</label>' +
+        '<input id="pvName" value="' + H.esc(f.name) + '" /></div>',
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
+        '<button class="bx-btn bx-btn--primary" data-save>Save</button>',
+      mount: function (wrap) {
+        wrap.querySelector('[data-save]').addEventListener('click', function () {
+          var name = wrap.querySelector('#pvName').value.trim();
+          if (!name) { BIX.toast('Give the file a name'); return; }
+          BIX.api.renameFile(f.id, name).then(function (r) {
+            if (r.error) { BIX.toast(r.error.message); return; }
+            BIX.closeModal();
+            BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.app.rerender();
+              BIX.toast('Renamed to ' + name);
+            });
+          });
+        });
+      }
+    });
+  }
+
+  function confirmDelete(f) {
+    BIX.modal({
+      title: 'Delete this file?',
+      body: '<p class="bx-hero__s">“' + H.esc(f.name) + '” will be removed for good. This cannot be undone.</p>',
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Keep it</button>' +
+        '<button class="bx-btn bx-btn--danger" data-yes>Delete file</button>',
+      mount: function (wrap) {
+        wrap.querySelector('[data-yes]').addEventListener('click', function () {
+          BIX.api.deleteFile(f.id, f.path).then(function (r) {
+            if (r && r.error) { BIX.toast(r.error.message); return; }
+            BIX.closeModal();
+            BIX.api.loadFor(BIX.api.viewingId).then(function () {
+              BIX.app.rerender();
+              BIX.toast('Deleted ' + f.name);
+            });
+          });
+        });
+      }
+    });
+  }
 
   /* =============================== INVOICES ============================== */
   BIX.views.invoices = {
