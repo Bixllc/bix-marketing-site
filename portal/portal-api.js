@@ -27,6 +27,16 @@ window.BIX = window.BIX || {};
     var mo = Math.floor(d / 30);     return mo + ' month' + (mo === 1 ? '' : 's') + ' ago';
   }
 
+  /* projects.status is a constrained vocabulary in the database. Map it to the
+     label the pills expect — H.tone() then colours it correctly. */
+  var STATUS_LABEL = {
+    discovery:   'Discovery',
+    design:      'Design',
+    development: 'In progress',
+    review:      'Review',
+    launched:    'Live'
+  };
+
   function initialsOf(name) {
     return String(name || '?').trim().split(/\s+/).map(function (w) { return w[0]; })
       .join('').slice(0, 2).toUpperCase();
@@ -167,7 +177,7 @@ window.BIX = window.BIX || {};
       project: project ? {
         name: project.name,
         url: project.live_url || '',
-        status: project.status || 'In progress',
+        status: STATUS_LABEL[project.status] || project.status || 'In progress',
         phase: project.phase || 'Discovery',
         nextMilestone: project.next_milestone || 'To be scheduled',
         launched: iso(project.launched) || iso(project.start_date) || today(),

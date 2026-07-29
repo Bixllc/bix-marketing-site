@@ -64,7 +64,8 @@ begin
     (v_id,
      'Serene Skin Studio — booking site & client system',
      'Online booking, deposits and automated reminders.',
-     'Live',
+     'launched',                       -- constrained vocabulary; the portal maps it to "Live"
+
      'https://sereneskinstudio.com',
      'Phase 4 · Optimisation',
      78,
