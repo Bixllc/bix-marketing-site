@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Portal — Bix LLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+<!-- ============================ LOGIN ============================ -->
+<div class="bx-auth" id="bxAuth">
+  <div class="bx-auth__panel">
+    <div class="bx-auth__brand">
+      <span class="bx-auth__mark" aria-hidden="true"></span>
+      <span>Bix LLC</span>
+    </div>
+    <h1 class="bx-auth__pitch">Everything about your project, in one place.</h1>
+    <ul class="bx-auth__list">
+      <li><span aria-hidden="true">✓</span> Track progress in real time</li>
+      <li><span aria-hidden="true">✓</span> Request changes without the email chain</li>
+      <li><span aria-hidden="true">✓</span> Invoices, files and meetings together</li>
+    </ul>
+  </div>
+
+  <div class="bx-auth__form">
+    <div class="bx-auth__form-inner">
+      <p class="bx-mono bx-auth__eyebrow">Client portal</p>
+      <h2 class="bx-auth__title">Sign in to your account</h2>
+      <p class="bx-auth__sub">Welcome back. Pick up where you left off.</p>
+
+      <form id="bxAuthForm" novalidate>
+        <div class="bx-field">
+          <label for="bxAuthEmail">Email</label>
+          <input type="email" id="bxAuthEmail" value="kadeen@sereneskinstudio.com" autocomplete="email" required />
+        </div>
+        <div class="bx-field">
+          <label for="bxAuthPw">Password</label>
+          <input type="password" id="bxAuthPw" value="demo-password" autocomplete="current-password" required />
+        </div>
+        <div class="bx-auth__row">
+          <label class="bx-check">
+            <input type="checkbox" id="bxAuthRemember" checked />
+            <span class="bx-check__box" aria-hidden="true"></span>
+            Remember me
+          </label>
+          <button type="button" class="bx-linkish" id="bxAuthForgot">Forgot password?</button>
+        </div>
+        <button type="submit" class="bx-btn bx-btn--primary bx-btn--block">Sign in</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ APP ============================ -->
+<div class="bx-app" id="bxApp" hidden>
+
+  <div class="bx-scrim" id="bxScrim" hidden></div>
+
+  <!-- Sidebar -->
+  <aside class="bx-side" id="bxSide">
+    <div class="bx-side__top">
+      <span class="bx-side__mark" aria-hidden="true"></span>
+      <div class="bx-side__id">
+        <div class="bx-side__biz" id="bxSideBiz"></div>
+        <div class="bx-mono bx-side__plan" id="bxSidePlan"></div>
+      </div>
+    </div>
+
+    <nav class="bx-nav" id="bxNav" aria-label="Portal"></nav>
+
+    <div class="bx-side__foot">
+      <div class="bx-plancard" id="bxPlanCard"></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="bx-main" id="bxMain">
+    <header class="bx-top">
+      <button class="bx-iconbtn bx-top__burger" id="bxBurger" aria-label="Open navigation"></button>
+
+      <div class="bx-top__titles">
+        <div class="bx-top__title" id="bxTopTitle"></div>
+        <div class="bx-top__sub" id="bxTopSub"></div>
+      </div>
+
+      <div class="bx-top__right">
+        <div class="bx-search" id="bxSearchWrap">
+          <span class="bx-search__ico" aria-hidden="true"></span>
+          <input type="search" id="bxSearch" placeholder="SEARCH" aria-label="Search the portal" />
+        </div>
+        <button class="bx-iconbtn" id="bxSearchBtn" aria-label="Search"></button>
+        <button class="bx-iconbtn bx-bell" id="bxBell" aria-label="Notifications"></button>
+        <button class="bx-avatar" id="bxAvatar" aria-label="Account menu" aria-haspopup="menu" aria-expanded="false"></button>
+        <div class="bx-pop" id="bxPop" role="menu" hidden></div>
+      </div>
+    </header>
+
+    <main class="bx-viewwrap" id="bxViewWrap">
+      <div id="bxView"></div>
+    </main>
+  </div>
+</div>
+
+<div id="bxModalRoot"></div>
+<div class="bx-toasts" id="bxToasts" aria-live="polite" aria-atomic="false"></div>
+
+<script src="portal-data.js"></script>
+<script src="portal-app.js"></script>
+<script src="views-core.js"></script>
+<script src="views-business.js"></script>
+<script src="views-growth.js"></script>
+<script>BIX.app.boot();</script>
+</body>
+</html>
