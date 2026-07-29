@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agency Console — Bix LLC</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Shared base. The admin does not fork the portal's tokens or primitives; it
+     loads them and layers its own console styles on top. -->
+<link rel="stylesheet" href="../portal/portal.css" />
+<link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<!-- ============================== login gate ============================== -->
+<div class="bx-auth" id="bxAuth">
+  <div class="bx-auth__panel">
+    <div class="bx-auth__brand">
+      <span class="bx-auth__mark" aria-hidden="true"></span>
+      <span>Bix LLC</span>
+    </div>
+    <div class="bx-auth__pitch">
+      <div class="bx-auth__eyebrow bx-mono">Admin</div>
+      <h1 class="bx-auth__title">Agency console</h1>
+      <ul class="bx-auth__list bx-mono">
+        <li>Pipeline, nurture &amp; conversion</li>
+        <li>Client accounts &amp; active builds</li>
+        <li>Revenue, invoices &amp; calendar</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bx-auth__form">
+    <form class="bx-auth__form-inner" novalidate>
+      <h2 class="bx-auth__sub">Sign in</h2>
+      <div class="bx-field">
+        <label for="bxEmail">Email</label>
+        <input id="bxEmail" type="email" value="admin@bixllc.net" autocomplete="username" />
+      </div>
+      <div class="bx-field">
+        <label for="bxPass">Password</label>
+        <input id="bxPass" type="password" value="demo-password" autocomplete="current-password" />
+      </div>
+      <div class="bx-auth__row">
+        <label class="bx-check"><input type="checkbox" checked /><span class="bx-check__box"></span> Remember me</label>
+        <button type="button" class="bx-linkish" id="bxForgot">Forgot password?</button>
+      </div>
+      <button class="bx-btn bx-btn--primary bx-btn--block" type="submit">Sign in</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================================= app ================================== -->
+<div class="bx-app">
+  <aside class="bx-side" id="bxSide"></aside>
+  <div class="bx-scrim" id="bxScrim"></div>
+  <main class="bx-main" id="bxMain">
+    <header class="bx-top" id="bxTop"></header>
+    <div class="bx-viewwrap" id="bxView"></div>
+  </main>
+</div>
+
+<div id="bxModalRoot"></div>
+<div id="bxDrawerRoot"></div>
+<div class="bx-toasts" id="bxToasts" aria-live="polite"></div>
+
+<script src="admin-data.js"></script>
+<script src="admin-app.js"></script>
+<script src="admin-ai.js"></script>
+<script src="views-overview.js"></script>
+<script src="views-leads.js"></script>
+<script src="views-nurture.js"></script>
+<script src="views-composer.js"></script>
+<script src="views-business.js"></script>
+<script>BIX.app.boot();</script>
+
+</body>
+</html>
