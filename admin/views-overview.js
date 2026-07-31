@@ -37,8 +37,6 @@
   BIX.ring = ring;
   BIX.animateRings = animateRings;
 
-  function healthTone(h) { return h < 60 ? 'red' : h < 80 ? 'amber' : 'green'; }
-
   /* Inline meter used in the clients table and project cards. */
   function meter(pct, tone) {
     return '<span class="bx-meterline"><span class="bx-meterline__t">' +
@@ -86,7 +84,8 @@
       var owing = d.invoices.filter(function (i) {
         return i.status === 'Outstanding' || i.status === 'Overdue';
       }).sort(function (a, b) { return a.due < b.due ? -1 : 1; }).slice(0, 4);
-      var lowest = d.clients.slice().sort(function (a, b) { return a.health - b.health; }).slice(0, 3);
+      /* Ranked by MRR, not by the old health column — that was a constant. */
+      var top3 = d.clients.slice().sort(function (a, b) { return b.mrr - a.mrr; }).slice(0, 3);
 
       return '' +
       '<div class="bx-greet"><h2>Good morning, ' + H.esc(d.agency.founder.split(' ')[0]) + '</h2>' +
@@ -155,13 +154,14 @@
           '</section>' +
 
           '<section class="bx-card">' +
-            '<div class="bx-card__head"><h3>Client health</h3>' +
-              '<span class="bx-card__head-r bx-mono">avg ' + t.avgHealth + '</span></div>' +
-            '<div class="bx-card__body"><div class="bx-healths">' + lowest.map(function (c) {
-              return '<div class="bx-health">' + ring(c.health, '', true) +
-                '<div class="bx-health__t"><div class="bx-health__n">' + H.esc(c.business) + '</div>' +
-                '<div class="bx-health__s bx-mono">' + H.esc(c.plan) + ' · ' + BIX.money0(c.mrr) + '/mo</div></div></div>';
-            }).join('') + '</div></div>' + H.more('clients', 'Open clients') +
+            '<div class="bx-card__head"><h3>Accounts</h3>' +
+              '<span class="bx-card__head-r bx-mono">' + t.activeClients + ' active</span></div>' +
+            '<div class="bx-card__body">' + (top3.length ? top3.map(function (c) {
+              return '<div class="bx-owe"><span class="bx-owe__c">' + H.esc(c.business) +
+                '<span class="bx-mono">' + H.esc(c.plan) + '</span></span>' +
+                '<span class="bx-owe__a bx-mono">' + BIX.money0(c.mrr) + '</span></div>';
+            }).join('') : H.empty('users', 'No clients yet', 'Add your first account to get started.')) +
+            '</div>' + H.more('clients', 'Open clients') +
           '</section>' +
         '</div>' +
       '</div>';
@@ -203,8 +203,9 @@
       '<div class="bx-stats">' +
         H.stat({ k: 'Active clients', v: t.activeClients, icon: 'users', tone: 'purple' }) +
         H.stat({ k: 'Total MRR', v: BIX.money0(t.mrr), icon: 'money', tone: 'green' }) +
-        H.stat({ k: 'Avg health', v: t.avgHealth, icon: 'zap', tone: 'blue' }) +
-        H.stat({ k: 'Churn risk', v: t.churnRisk, icon: 'warn', tone: t.churnRisk ? 'red' : 'green' }) +
+        H.stat({ k: 'Upcoming', v: t.upcoming, icon: 'clock', tone: 'blue' }) +
+        H.stat({ k: 'Overdue accounts', v: t.overdueClients, icon: 'warn',
+                 tone: t.overdueClients ? 'red' : 'green' }) +
       '</div>' +
 
       '<div class="bx-sec"><div class="bx-sec__h">' +
@@ -217,7 +218,7 @@
             return '<button class="bx-chip' + (s === clientFilter.status ? ' is-on' : '') + '" data-status="' + H.esc(s) + '">' + H.esc(s) + '</button>';
           }).join('') +
         '</div>' +
-        '<span class="bx-mono bx-faint">' + rows.length + ' of ' + d.clients.length + '</span>' +
+        '<button class="bx-btn bx-btn--primary bx-btn--sm" data-act="client">' + I('plus') + ' Add client</button>' +
       '</div>' +
 
       (rows.length ? '<div class="bx-table__wrap"><table class="bx-table">' +
@@ -225,23 +226,24 @@
           '<th scope="col">Business</th><th scope="col" class="c-ind">Industry</th>' +
           '<th scope="col" class="c-con">Contact</th><th scope="col">Plan</th>' +
           '<th scope="col" class="num">MRR</th><th scope="col" class="c-st">Status</th>' +
-          '<th scope="col" class="c-he">Health</th><th scope="col" class="c-pr">Project</th>' +
+          '<th scope="col" class="c-pr">Projects</th>' +
         '</tr></thead><tbody>' +
         rows.map(function (c) {
+          var mine = d.projects.filter(function (p) { return p.client === c.business; });
+          var live = mine.filter(function (p) { return p.phase !== 'Launched'; }).length;
           return '<tr data-client="' + H.esc(c.id) + '" tabindex="0">' +
             '<td><span class="bx-table__name">' + H.esc(c.business) + '</span>' +
-              '<span class="bx-table__sub bx-mono">' + H.esc(c.location) + '</span></td>' +
+              (c.website ? '<span class="bx-table__sub bx-mono">' + H.esc(shortUrl(c.website)) + '</span>' : '') + '</td>' +
             '<td class="c-ind">' + H.esc(c.industry) + '</td>' +
             '<td class="c-con">' + H.esc(c.contact) + '</td>' +
             '<td><span class="bx-pill bx-pill--purple">' + H.esc(c.plan) + '</span></td>' +
             '<td class="num bx-mono">' + BIX.money0(c.mrr) + '</td>' +
             '<td class="c-st">' + H.pill(c.status) + '</td>' +
-            '<td class="c-he">' + meter(c.health, healthTone(c.health)) + '</td>' +
-            '<td class="c-pr"><span class="bx-table__name">' + H.esc(c.project) + '</span>' +
-              '<span class="bx-table__sub bx-mono">' + c.percent + '% complete</span></td>' +
+            '<td class="c-pr bx-mono">' + mine.length + (live ? ' · ' + live + ' active' : '') + '</td>' +
           '</tr>';
         }).join('') + '</tbody></table></div>'
-        : H.empty('users', 'No clients match', 'Try a different plan or status filter.')) +
+        : H.empty('users', 'No clients match', 'Try a different plan or status filter.',
+            '<button class="bx-btn bx-btn--primary" data-act="client">Add client</button>')) +
       '</div>';
     },
     mount: function (el) {
@@ -251,8 +253,11 @@
       el.querySelectorAll('[data-status]').forEach(function (b) {
         b.addEventListener('click', function () { clientFilter.status = b.getAttribute('data-status'); BIX.app.rerender(); });
       });
+      el.querySelectorAll('[data-act="client"]').forEach(function (b) {
+        b.addEventListener('click', function () { BIX.actions.client(); });
+      });
       el.querySelectorAll('[data-client]').forEach(function (tr) {
-        function open() { clientDrawer(tr.getAttribute('data-client')); }
+        function open() { clientModal(tr.getAttribute('data-client')); }
         tr.addEventListener('click', open);
         tr.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
@@ -261,46 +266,243 @@
     }
   };
 
-  function clientDrawer(id) {
+  function shortUrl(u) { return String(u).replace(/^https?:\/\//, '').replace(/\/$/, ''); }
+
+  /* Full client record in one modal: money, site, contact, projects,
+     invoices and internal notes. Replaces the old slide-in drawer, which
+     could only show a summary. */
+  function clientModal(id) {
     var c = BIX.data.clients.filter(function (x) { return x.id === id; })[0];
     if (!c) return;
-    var proj = BIX.data.projects.filter(function (p) { return p.client === c.business; })[0];
-    var bills = BIX.data.invoices.filter(function (i) { return i.client === c.business; }).slice(0, 4);
+    var projects = BIX.data.projects.filter(function (p) { return p.client === c.business; });
+    var bills = BIX.data.invoices.filter(function (i) { return i.clientId === c.id; }).slice(0, 5);
 
-    BIX.drawer({
-      eyebrow: c.industry + ' · ' + c.location,
+    BIX.modal({
+      wide: true,
       title: c.business,
       body:
-        '<div class="bx-dhero">' +
-          '<div><div class="bx-dhero__k bx-mono">MRR</div><div class="bx-dhero__v">' + BIX.money0(c.mrr) + '</div></div>' +
-          '<div><div class="bx-dhero__k bx-mono">Health</div><div class="bx-dhero__v is-' + healthTone(c.health) + '">' + c.health + '</div></div>' +
-          '<div><div class="bx-dhero__k bx-mono">Plan</div><div class="bx-dhero__v is-plan">' + H.esc(c.plan) + '</div></div>' +
-        '</div>' +
+        '<div class="bx-cm">' +
 
-        (proj ? '<section class="bx-dsec"><h4>Current project</h4>' +
-          '<div class="bx-dproj">' + ring(proj.percent, 'done') +
-            '<div><div class="bx-dproj__n">' + H.esc(proj.title) + '</div>' +
-              '<div class="bx-dproj__m bx-mono">' + H.esc(proj.phase) + ' · due ' + H.date(proj.due, 'short') + '</div>' +
-              '<p class="bx-dproj__s">' + H.esc(proj.notes) + '</p></div></div></section>' : '') +
+          '<div class="bx-dhero">' +
+            '<div><div class="bx-dhero__k bx-mono">Monthly</div>' +
+              '<div class="bx-dhero__v">' + BIX.money0(c.mrr) + '</div></div>' +
+            '<div><div class="bx-dhero__k bx-mono">Plan</div>' +
+              '<div class="bx-dhero__v is-plan">' + H.esc(c.plan) + '</div></div>' +
+            '<div><div class="bx-dhero__k bx-mono">Status</div>' +
+              '<div class="bx-dhero__v is-plan">' + H.pill(c.status) + '</div></div>' +
+          '</div>' +
 
-        '<section class="bx-dsec"><h4>Contact</h4>' +
-          contactRow('mail', 'Email', c.email) + contactRow('phone', 'Phone', c.phone) +
-          '<div class="bx-drow"><span class="bx-drow__k bx-mono">Client since</span>' +
-            '<span class="bx-drow__v">' + H.date(c.since) + '</span></div>' +
-        '</section>' +
+          '<div class="bx-cm__cols">' +
+            '<div>' +
+              '<section class="bx-dsec"><h4>Details</h4>' +
+                (c.website
+                  ? '<div class="bx-drow"><span class="bx-drow__k bx-mono">' + I('globe') + ' Website</span>' +
+                    '<span class="bx-drow__v"><a href="' + H.esc(c.website) + '" target="_blank" rel="noopener" data-go-skip>' +
+                    H.esc(shortUrl(c.website)) + '</a>' + I('external') + '</span></div>'
+                  : '<div class="bx-drow"><span class="bx-drow__k bx-mono">' + I('globe') + ' Website</span>' +
+                    '<span class="bx-drow__v bx-faint">none set</span></div>') +
+                contactRow('mail', 'Email', c.email) +
+                contactRow('phone', 'Phone', c.phone) +
+                '<div class="bx-drow"><span class="bx-drow__k bx-mono">Industry</span>' +
+                  '<span class="bx-drow__v">' + H.esc(c.industry) + '</span></div>' +
+                '<div class="bx-drow"><span class="bx-drow__k bx-mono">Next billing</span>' +
+                  '<span class="bx-drow__v">' + (c.nextBilling ? H.date(c.nextBilling) : '—') + '</span></div>' +
+                '<div class="bx-drow"><span class="bx-drow__k bx-mono">Client since</span>' +
+                  '<span class="bx-drow__v">' + H.date(c.since) + '</span></div>' +
+              '</section>' +
 
-        '<section class="bx-dsec"><h4>Recent invoices</h4>' +
-          (bills.length ? bills.map(function (i) {
-            return '<div class="bx-drow"><span class="bx-drow__k bx-mono">' + H.esc(i.id) + '</span>' +
-              '<span class="bx-drow__v">' + BIX.money0(i.amount) + ' ' + H.pill(i.status) + '</span></div>';
-          }).join('') : '<p class="bx-faint">No invoices yet.</p>') +
-        '</section>',
+              '<section class="bx-dsec"><h4>Recent invoices</h4>' +
+                (bills.length ? bills.map(function (i) {
+                  return '<div class="bx-drow"><span class="bx-drow__k bx-mono">' + H.esc(i.id) + '</span>' +
+                    '<span class="bx-drow__v">' + BIX.money0(i.amount) + ' ' + H.pill(i.status) + '</span></div>';
+                }).join('') : '<p class="bx-faint">No invoices yet.</p>') +
+              '</section>' +
+            '</div>' +
+
+            '<div>' +
+              '<section class="bx-dsec">' +
+                '<h4>Projects <button class="bx-linkish bx-cm__add" id="cmAddProj">' + I('plus') + ' Add</button></h4>' +
+                '<div id="cmProjects">' + projectList(projects) + '</div>' +
+              '</section>' +
+
+              '<section class="bx-dsec">' +
+                '<h4>Internal notes</h4>' +
+                '<p class="bx-cm__hint bx-mono">Agency only — never shown in the client portal.</p>' +
+                '<div class="bx-field">' +
+                  '<label for="cmNote" class="bx-sr">Add a note</label>' +
+                  '<textarea id="cmNote" rows="2" placeholder="What should we remember about this account?"></textarea>' +
+                '</div>' +
+                '<button class="bx-btn bx-btn--ghost bx-btn--sm" id="cmAddNote">' + I('plus') + ' Add note</button>' +
+                '<div class="bx-notes2" id="cmNotes" style="margin-top:12px">' +
+                  '<p class="bx-faint bx-mono">Loading…</p></div>' +
+              '</section>' +
+            '</div>' +
+          '</div>' +
+        '</div>',
+
       foot:
-        '<button class="bx-btn bx-btn--ghost" data-go="projects">Open project</button>' +
+        '<button class="bx-btn bx-btn--ghost" id="cmEdit">Edit details</button>' +
+        '<button class="bx-btn bx-btn--ghost" data-close>Close</button>' +
         '<a class="bx-btn bx-btn--primary" href="../portal/" data-go-skip>View as client</a>',
+
       mount: function (w) {
-        animateRings(w);
-        wireCopy(w);
+        BIX.wireCopy(w);
+
+        function paintNotes() {
+          BIX.api.listNotes(c.id).then(function (r) {
+            var host = w.querySelector('#cmNotes');
+            if (!host) return;
+            if (r.error) { host.innerHTML = '<p class="bx-faint">' + H.esc(r.error.message) + '</p>'; return; }
+            host.innerHTML = (r.data && r.data.length) ? r.data.map(function (n) {
+              return '<div class="bx-note2"><div class="bx-note2__h bx-mono">' +
+                H.esc(n.author || 'Bix') + ' · ' + H.date(n.created_at, 'short') +
+                '<button class="bx-iconbtn bx-iconbtn--xs" data-delnote="' + H.esc(n.id) + '" aria-label="Delete note">' + I('trash') + '</button>' +
+                '</div><div class="bx-note2__b">' + H.esc(n.body) + '</div></div>';
+            }).join('') : '<p class="bx-faint">No notes yet.</p>';
+            host.querySelectorAll('[data-delnote]').forEach(function (b) {
+              b.addEventListener('click', function () {
+                BIX.api.deleteNote(b.getAttribute('data-delnote')).then(function (res) {
+                  if (res.error) { BIX.toast(res.error.message); return; }
+                  paintNotes(); BIX.toast('Note deleted');
+                });
+              });
+            });
+          });
+        }
+        paintNotes();
+
+        w.querySelector('#cmAddNote').addEventListener('click', function () {
+          var ta = w.querySelector('#cmNote');
+          var body = ta.value.trim();
+          if (!body) { BIX.toast('Write something first'); return; }
+          BIX.api.addNote(c.id, BIX.data.agency.founder, body).then(function (r) {
+            if (r.error) { BIX.toast(r.error.message); return; }
+            ta.value = '';
+            paintNotes();
+            BIX.toast('Note added');
+          });
+        });
+
+        w.querySelector('#cmAddProj').addEventListener('click', function () { projectForm(c); });
+        w.querySelector('#cmEdit').addEventListener('click', function () { editClient(c); });
+
+        w.querySelectorAll('[data-openproj]').forEach(function (b) {
+          b.addEventListener('click', function () { BIX.closeModal(); BIX.app.go('projects'); });
+        });
+      }
+    });
+  }
+  BIX.clientModal = clientModal;
+
+  function projectList(projects) {
+    if (!projects.length) return '<p class="bx-faint">No projects yet.</p>';
+    return projects.map(function (p) {
+      return '<button class="bx-cmproj" data-openproj="' + H.esc(p.id) + '">' +
+        '<span class="bx-cmproj__t">' + H.esc(p.title) + '</span>' +
+        '<span class="bx-cmproj__m">' + H.pill(p.phase) +
+          '<span class="bx-mono">' + p.percent + '%</span></span></button>';
+    }).join('');
+  }
+
+  /* Create a project against a client. status uses the constrained database
+     vocabulary; the board maps it back to a phase name. */
+  function projectForm(c) {
+    BIX.modal({
+      title: 'New project — ' + c.business,
+      body:
+        '<div class="bx-field"><label for="npN">Project name</label>' +
+          '<input id="npN" placeholder="e.g. Booking system" /></div>' +
+        '<div class="bx-row2">' +
+          '<div class="bx-field"><label for="npS">Stage</label><select id="npS">' +
+            '<option value="discovery">Discovery</option>' +
+            '<option value="design">Design</option>' +
+            '<option value="development">Build</option>' +
+            '<option value="review">QA</option>' +
+            '<option value="launched">Launched</option></select></div>' +
+          '<div class="bx-field"><label for="npP">Progress %</label>' +
+            '<input id="npP" type="number" min="0" max="100" value="0" /></div>' +
+        '</div>' +
+        '<div class="bx-field"><label for="npU">Live URL</label>' +
+          '<input id="npU" placeholder="https://" /></div>' +
+        '<div class="bx-field"><label for="npD">Due date</label><input id="npD" type="date" /></div>' +
+        '<div class="bx-field"><label for="npM">Notes</label>' +
+          '<textarea id="npM" rows="3" placeholder="Scope, links, anything worth keeping"></textarea></div>',
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
+            '<button class="bx-btn bx-btn--primary" id="npSave">Create project</button>',
+      mount: function (w) {
+        var btn = w.querySelector('#npSave');
+        btn.addEventListener('click', function () {
+          var name = w.querySelector('#npN').value.trim();
+          if (!name) { BIX.toast('Give the project a name'); return; }
+          btn.disabled = true;
+          BIX.api.createProject({
+            client_id: c.id, name: name,
+            status: w.querySelector('#npS').value,
+            progress: Number(w.querySelector('#npP').value) || 0,
+            live_url: w.querySelector('#npU').value.trim() || null,
+            due: w.querySelector('#npD').value || null,
+            summary: w.querySelector('#npM').value.trim() || null
+          }).then(function (r) {
+            btn.disabled = false;
+            if (r.error) { BIX.toast(r.error.message); return; }
+            BIX.api.log('added project <b>' + H.esc(name) + '</b> for ' + H.esc(c.business));
+            BIX.closeModal();
+            BIX.refresh(name + ' created').then(function () { clientModal(c.id); });
+          });
+        });
+      }
+    });
+  }
+
+  /* Edit the fields the console shows. Kept to the same set the onboarding
+     form collects, so the two never drift apart. */
+  function editClient(c) {
+    BIX.modal({
+      title: 'Edit ' + c.business,
+      body:
+        '<div class="bx-field"><label for="ecB">Business</label>' +
+          '<input id="ecB" value="' + H.esc(c.business) + '" /></div>' +
+        '<div class="bx-row2">' +
+          '<div class="bx-field"><label for="ecC">Contact</label>' +
+            '<input id="ecC" value="' + H.esc(c.contact === '—' ? '' : c.contact) + '" /></div>' +
+          '<div class="bx-field"><label for="ecP">Phone</label>' +
+            '<input id="ecP" value="' + H.esc(c.phone === '—' ? '' : c.phone) + '" /></div>' +
+        '</div>' +
+        '<div class="bx-field"><label for="ecW">Website</label>' +
+          '<input id="ecW" value="' + H.esc(c.website || '') + '" placeholder="https://" /></div>' +
+        '<div class="bx-field"><label for="ecI">Industry</label>' +
+          '<input id="ecI" value="' + H.esc(c.industry === '—' ? '' : c.industry) + '" /></div>' +
+        '<div class="bx-row2">' +
+          '<div class="bx-field"><label for="ecPl">Plan</label>' +
+            '<input id="ecPl" value="' + H.esc(c.plan) + '" /></div>' +
+          '<div class="bx-field"><label for="ecM">Monthly (USD)</label>' +
+            '<input id="ecM" type="number" value="' + c.mrr + '" /></div>' +
+        '</div>' +
+        '<div class="bx-field"><label for="ecS">Status</label><select id="ecS">' +
+          ['Active', 'Upcoming', 'Paused', 'At risk'].map(function (s) {
+            return '<option' + (s === c.status ? ' selected' : '') + '>' + s + '</option>';
+          }).join('') + '</select></div>',
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
+            '<button class="bx-btn bx-btn--primary" id="ecSave">Save</button>',
+      mount: function (w) {
+        w.querySelector('#ecSave').addEventListener('click', function () {
+          var biz = w.querySelector('#ecB').value.trim();
+          if (!biz) { BIX.toast('Business name is required'); return; }
+          BIX.api.updateClient(c.id, {
+            business: biz, company: biz,
+            full_name: w.querySelector('#ecC').value.trim() || biz,
+            phone: w.querySelector('#ecP').value.trim() || null,
+            website: w.querySelector('#ecW').value.trim() || null,
+            industry: w.querySelector('#ecI').value.trim() || null,
+            plan: w.querySelector('#ecPl').value.trim() || null,
+            plan_price: Number(w.querySelector('#ecM').value) || 0,
+            status: w.querySelector('#ecS').value
+          }).then(function (r) {
+            if (r.error) { BIX.toast(r.error.message); return; }
+            BIX.closeModal();
+            BIX.refresh(biz + ' updated').then(function () { clientModal(c.id); });
+          });
+        });
       }
     });
   }
@@ -340,7 +542,10 @@
           '<div class="bx-field"><label for="ncP">Plan</label><select id="ncP">' +
             '<option>Essential</option><option selected>Growth Care</option><option>Scale</option></select></div>' +
         '</div>' +
-        '<div class="bx-field"><label for="ncM">Monthly retainer (USD)</label><input id="ncM" type="number" value="340" /></div>',
+        '<div class="bx-row2">' +
+          '<div class="bx-field"><label for="ncM">Monthly retainer (USD)</label><input id="ncM" type="number" value="340" /></div>' +
+          '<div class="bx-field"><label for="ncW">Website</label><input id="ncW" placeholder="https://" /></div>' +
+        '</div>',
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
             '<button class="bx-btn bx-btn--primary" id="ncSave">Add &amp; invite</button>',
       mount: function (w) {
@@ -358,7 +563,8 @@
             business: biz,
             industry: w.querySelector('#ncI').value.trim() || null,
             plan: w.querySelector('#ncP').value,
-            plan_price: Number(w.querySelector('#ncM').value) || 0
+            plan_price: Number(w.querySelector('#ncM').value) || 0,
+            website: w.querySelector('#ncW').value.trim() || null
           }).then(function (r) {
             btn.disabled = false; btn.textContent = 'Add & invite';
             if (r.error) {

@@ -555,3 +555,24 @@
   .bx-lcard:hover, .bx-pcard:hover, .bx-qa:hover, .bx-btn--primary:hover { transform: none; }
   .bx-caret, .bx-cross2, .bx-ctip { transition: none; }
 }
+
+/* ---- client detail modal ---- */
+.bx-cm__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+.bx-cm .bx-dsec:first-child { margin-top: 0; }
+.bx-cm__add { float: right; font-size: 10.5px; }
+.bx-cm__add svg { width: 12px; height: 12px; }
+.bx-cm__hint { font-size: 9.5px; color: var(--bx-faint); letter-spacing: .04em; margin: -4px 0 10px; }
+.bx-cmproj { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; text-align: left; padding: 9px 11px; margin-bottom: 7px; cursor: pointer;
+  background: var(--bx-surface); border: 1px solid var(--bx-line); border-radius: var(--bx-r-sm);
+  color: inherit; transition: border-color 140ms var(--bx-ease); }
+.bx-cmproj:hover { border-color: rgba(68,32,97,.24); }
+.bx-cmproj__t { font-size: 12.5px; font-weight: 600; }
+.bx-cmproj__m { display: flex; align-items: center; gap: 8px; flex: none; }
+.bx-cmproj__m .bx-mono { font-size: 10.5px; color: var(--bx-muted); }
+.bx-drow__v a { color: var(--bx-purple); text-decoration: none; }
+.bx-drow__v a:hover { text-decoration: underline; }
+.bx-drow__v svg { width: 12px; height: 12px; color: var(--bx-faint); }
+.bx-note2__h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+@media (max-width: 820px) { .bx-cm__cols { grid-template-columns: 1fr; } }

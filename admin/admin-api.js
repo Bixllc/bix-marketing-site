@@ -141,6 +141,21 @@ window.BIX = window.BIX || {};
       return sb.from('profiles').update(patch).eq('id', id).select().single();
     },
 
+    /* Internal notes are fetched per client rather than loaded up front —
+       they are only ever read inside one client's detail. */
+    listNotes: function (clientId) {
+      return sb.from('client_notes').select('*').eq('client_id', clientId)
+        .order('created_at', { ascending: false });
+    },
+    addNote: function (clientId, author, body) {
+      return sb.from('client_notes')
+        .insert({ client_id: clientId, author: author, body: body }).select().single();
+    },
+    deleteNote: function (id) { return sb.from('client_notes').delete().eq('id', id); },
+
+    createProject: function (row) { return sb.from('projects').insert(row).select().single(); },
+    deleteProject: function (id) { return sb.from('projects').delete().eq('id', id); },
+
     createLead: function (row) { return sb.from('leads').insert(row).select().single(); },
     updateLead: function (id, patch) { return sb.from('leads').update(patch).eq('id', id).select().single(); },
     deleteLead: function (id) { return sb.from('leads').delete().eq('id', id); },
@@ -203,7 +218,9 @@ window.BIX = window.BIX || {};
         plan: p.plan || 'Growth Care',
         mrr: num(p.plan_price),
         status: p.status || 'Active',
-        health: proj ? num(proj.health_score) : 100,
+        website: p.website || null,
+        phone: p.phone || '—',
+        nextBilling: iso(p.next_billing),
         since: iso(p.created_at) || t,
         project: proj ? proj.name : 'Onboarding',
         percent: proj ? num(proj.progress) : 0
@@ -452,8 +469,15 @@ window.BIX = window.BIX || {};
       wonThisMonth: won.length,
       wonValue: sum(won, 'value'),
       avgDeal: open.length ? Math.round(sum(open, 'value') / open.length) : 0,
-      avgHealth: paying.length ? Math.round(sum(paying, 'health') / paying.length) : 0,
-      churnRisk: d.clients.filter(function (c) { return c.health < 60 || c.status === 'At risk'; }).length,
+      /* Health was a static column with a default — it ranked nothing. These
+         two are computed from invoices, which is real. */
+      overdueClients: (function () {
+        var ids = {};
+        d.invoices.filter(function (i) { return i.status === 'Overdue'; })
+          .forEach(function (i) { ids[i.clientId] = 1; });
+        return Object.keys(ids).length;
+      })(),
+      upcoming: d.clients.filter(function (c) { return c.status === 'Upcoming'; }).length,
       activeBuilds: d.projects.filter(function (p) { return p.phase !== 'Launched'; }).length,
       overdueBuilds: d.projects.filter(function (p) { return p.phase !== 'Launched' && p.due < t; }).length,
       launchingThisMonth: d.projects.filter(function (p) { return p.phase !== 'Launched' && monthOf(p.due) === month; }).length
