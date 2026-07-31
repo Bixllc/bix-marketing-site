@@ -224,6 +224,46 @@ More generally — list any full-screen layer that is capturing clicks:
 **Lesson** When borrowing markup from another app, check *how* the original
 hides it. A shared stylesheet can carry an assumption its JS enforces.
 
+---
+
+## RX-11 · Edge Function gets "permission denied" holding a valid service key
+
+**Symptom** A function using the service-role key returns 403 for a genuine
+admin. Its profile lookup fails even though the row exists and the same query
+works from the browser.
+
+**Cause** `service_role` had no GRANT on `public.profiles`. The schema granted
+to `authenticated` only. RLS was never involved — the table was simply
+unreachable for that role, so `.single()` returned no row and the admin check
+rejected a real admin.
+
+This is RX-06 wearing a different hat: the first time it bit `authenticated`,
+this time `service_role`. **Edge Functions do not run as `authenticated`.**
+
+**Fix**
+```sql
+grant all privileges on all tables in schema public to service_role;
+alter default privileges in schema public
+  grant all privileges on tables to service_role;   -- covers future tables
+```
+
+**Check** Never guess at an auth failure — make the function report what it
+saw. A 403 that returns the caller's own resolved id, role, lookup error and
+whether it holds a privileged key turns an hour of guessing into one call:
+```js
+{ error:'Unauthorized', seenUserId: user.id, seenRole: profile?.role ?? null,
+  lookupError: err?.message ?? null, privileged: secretKey.length > 0 }
+```
+That is the caller's own identity, so it leaks nothing. It separates "you are
+not an admin" from "I could not read your row at all" — different bugs that
+look identical from outside.
+
+```sql
+-- who can actually reach a table
+select grantee, privilege_type from information_schema.role_table_grants
+where table_schema='public' and table_name='profiles' order by 1;
+```
+
 ## Pre-flight checklist
 
 Run these before calling any feature done.
