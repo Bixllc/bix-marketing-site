@@ -40,25 +40,48 @@ serve(async (req) => {
     const { email, full_name, business } = body
     if (!email) return json({ error: 'Email is required' }, 400)
 
+    /* mode 'preload' creates the account and its profile but sends nothing, so
+       client records can be loaded and checked before anyone is emailed. The
+       invite goes out later as a password-set link, which is the correct email
+       for an account that already exists. */
+    const mode = body.mode === 'preload' ? 'preload' : 'invite'
+
     // Set SITE_URL in the function's secrets to point invites at the custom
     // domain. Whatever origin is used must also be listed under
     // Supabase → Authentication → URL Configuration → Redirect URLs.
     const siteUrl = Deno.env.get('SITE_URL') ?? 'https://bixllc.net'
 
-    const { data: invited, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
-      data: { full_name, role: 'client', company: business },
-      redirectTo: `${siteUrl.replace(/\/$/, '')}/set-password.html`,
-    })
+    const meta = { full_name, role: 'client', company: business }
+    let created, createErr
 
-    if (inviteErr) {
-      // A repeat invite is the common case — surface it as its own signal so
-      // the console can say "already invited" instead of "something failed".
-      const already = /already registered|already been registered/i.test(inviteErr.message)
-      return json({ error: inviteErr.message, already }, already ? 409 : 400)
+    if (mode === 'preload') {
+      // createUser sends no email. email_confirm stays false so the account is
+      // unverified until they follow the link we send later.
+      const r = await admin.auth.admin.createUser({
+        email,
+        email_confirm: false,
+        user_metadata: meta,
+      })
+      created = r.data
+      createErr = r.error
+    } else {
+      const r = await admin.auth.admin.inviteUserByEmail(email, {
+        data: meta,
+        redirectTo: `${siteUrl.replace(/\/$/, '')}/set-password.html`,
+      })
+      created = r.data
+      createErr = r.error
     }
 
-    const id = invited?.user?.id
-    if (!id) return json({ error: 'Invite succeeded but returned no user' }, 500)
+    if (createErr) {
+      // A repeat is the common case — surface it as its own signal so the
+      // console can say "already exists" instead of "something failed".
+      const already = /already registered|already been registered|already exists/i.test(createErr.message)
+      return json({ error: createErr.message, already }, already ? 409 : 400)
+    }
+
+    const id = created?.user?.id
+    if (!id) return json({ error: 'Account created but no user was returned' }, 500)
 
     // The on_auth_user_created trigger writes id / role / full_name. Everything
     // else the portal displays has to be filled in here, while we still hold a
@@ -85,7 +108,7 @@ serve(async (req) => {
       })
     }
 
-    return json({ success: true, id })
+    return json({ success: true, id, mode })
   } catch (err) {
     return json({ error: (err as Error).message }, 400)
   }

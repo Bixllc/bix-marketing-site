@@ -38,6 +38,15 @@
 .bx-iconbtn[disabled] { opacity: .35; pointer-events: none; }
 .bx-inline { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .bx-inline svg { width: 14px; height: 14px; color: var(--bx-faint); }
+
+/* Inline SVGs carry no intrinsic size, so any container without an explicit
+   rule renders them at the element's full box — the card-footer arrows were
+   coming out at 94px. These are the two containers the portal sheet does not
+   already cover. */
+.bx-linkish svg { width: 14px; height: 14px; flex: none; }
+.bx-linkish { display: inline-flex; align-items: center; gap: 6px; }
+.bx-seg__b svg { width: 15px; height: 15px; flex: none; }
+.bx-seg__b { display: inline-flex; align-items: center; gap: 6px; }
 .bx-hint { font-size: 10.5px; color: var(--bx-faint); letter-spacing: .06em; margin: 0 0 10px; }
 
 /* ------------------------------------------------------------- side + top - */
@@ -183,6 +192,10 @@
 .bx-avatar--sm { width: 22px; height: 22px; font-size: 9px; }
 .bx-avatars .bx-avatar { margin-right: -8px; border: 2px solid var(--bx-surface); }
 .bx-avatars .bx-avatar:last-child { margin-right: 0; }
+/* Projects carry no team assignment yet, so the stack is often empty. An
+   empty flex row still holds its gap and pushes the due date off-centre. */
+.bx-avatars:empty { display: none; }
+.bx-pcard__f:only-child, .bx-pcard__f > :only-child { margin-left: auto; }
 
 /* --------------------------------------------------------------- drawer --- */
 .bx-drawer { position: fixed; inset: 0; z-index: 70; }

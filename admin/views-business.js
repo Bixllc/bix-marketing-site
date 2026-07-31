@@ -63,7 +63,9 @@
   function byPlan() {
     var map = {};
     BIX.data.clients.forEach(function (c) {
-      if (c.status === 'Paused') return;
+      /* Mirrors the MRR filter in admin-api.js — a plan that is not billing
+         yet must not appear as revenue in the by-plan split either. */
+      if (c.status === 'Paused' || c.status === 'Upcoming') return;
       map[c.plan] = (map[c.plan] || 0) + c.mrr;
     });
     return Object.keys(map).map(function (k) { return { plan: k, mrr: map[k] }; })

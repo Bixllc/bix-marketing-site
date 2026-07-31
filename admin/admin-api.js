@@ -108,8 +108,18 @@ window.BIX = window.BIX || {};
 
     /* Onboarding runs through the Edge Function: creating an auth user needs
        the service-role key, which must never reach the browser. */
+    /* The Authorization header is set explicitly: functions.invoke otherwise
+       sends the anon key, which carries no user, and the function's admin
+       check then rejects every call as an invalid session. */
     inviteClient: function (fields) {
-      return sb.functions.invoke('invite-client', { body: fields })
+      return sb.auth.getSession().then(function (s) {
+        var token = s.data && s.data.session && s.data.session.access_token;
+        if (!token) return { error: { message: 'Session expired — sign in again' } };
+
+        return sb.functions.invoke('invite-client', {
+          body: fields,
+          headers: { Authorization: 'Bearer ' + token }
+        })
         .then(function (r) {
           if (!r.error) return { data: r.data };
           /* A non-2xx arrives as FunctionsHttpError with the Response on
@@ -124,6 +134,7 @@ window.BIX = window.BIX || {};
           }
           return { error: { message: r.error.message } };
         });
+      });
     },
 
     updateClient: function (id, patch) {
@@ -420,7 +431,11 @@ window.BIX = window.BIX || {};
     var d = BIX.data, t = d.today, month = monthOf(t);
     function sum(list, key) { return list.reduce(function (a, x) { return a + num(x[key]); }, 0); }
 
-    var paying = d.clients.filter(function (c) { return c.status !== 'Paused'; });
+    /* Upcoming and Paused accounts are not billing yet, so counting them would
+       overstate recurring revenue. They still appear in the clients list. */
+    var paying = d.clients.filter(function (c) {
+      return c.status !== 'Paused' && c.status !== 'Upcoming';
+    });
     var open = d.leads.filter(function (l) { return l.stage !== 'won' && l.stage !== 'lost'; });
     var owing = d.invoices.filter(function (i) { return i.status === 'Outstanding' || i.status === 'Overdue'; });
     var collected = d.invoices.filter(function (i) { return i.status === 'Paid' && monthOf(i.paid) === month; });
