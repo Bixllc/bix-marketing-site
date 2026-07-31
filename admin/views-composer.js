@@ -201,10 +201,7 @@
           if (!picked.length) { BIX.toast('Add at least one recipient'); return; }
           if (!body.value.trim()) { BIX.toast('Write a message first'); return; }
           var who = picked.length === 1 ? picked[0].name : picked.length + ' recipients';
-          BIX.data.activity.unshift({
-            at: BIX.data.today + 'T09:00:00', who: BIX.data.agency.founder,
-            what: 'sent a ' + H.esc(channel) + ' message to <b>' + H.esc(who) + '</b>'
-          });
+          BIX.api.log('sent a ' + H.esc(channel) + ' message to <b>' + H.esc(who) + '</b>');
           BIX.closeModal();
           BIX.toast('Sent to ' + who);
           if (BIX.app.current() === 'dashboard') BIX.app.rerender();

@@ -88,10 +88,12 @@
 
   /* Where a signed-in user belongs. Defaults to the client portal — that page
      re-checks the role itself, and RLS is the real boundary either way. */
+  /* An admin lands in the agency console; a client lands in their portal.
+     Each destination re-checks the role itself, and RLS is the real boundary
+     either way — this only decides which door opens first. The console's
+     account menu links across to the client view. */
   function portalFor(role) {
-    /* Both roles land in the same portal. It resolves the role itself and,
-       for an admin, offers a switcher across every client. */
-    return 'portal/';
+    return role === 'admin' ? 'admin/' : 'portal/';
   }
 
   function roleOf(uid) {

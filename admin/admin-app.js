@@ -143,7 +143,10 @@ BIX.isHidden = function (id) { return BIX.hidden.indexOf(id) > -1; };
       return t || { name: 'Unassigned', initials: '—', role: '' };
     },
 
+    /* null means "no prior month to compare against" — render nothing rather
+       than an authoritative-looking 0%. */
     delta: function (n) {
+      if (n == null || isNaN(Number(n))) return '';
       var up = Number(n) >= 0;
       return '<div class="bx-stat__d bx-mono ' + (up ? 'is-up' : 'is-down') + '">' +
         (up ? '▲' : '▼') + ' ' + Math.abs(Number(n)) + '% <span>vs last month</span></div>';
@@ -391,8 +394,7 @@ BIX.isHidden = function (id) { return BIX.hidden.indexOf(id) > -1; };
       more.setAttribute('aria-expanded', 'false');
     });
     document.getElementById('bxLogout').addEventListener('click', function () {
-      try { sessionStorage.removeItem('bix.admin'); } catch (_) {}
-      location.reload();
+      BIX.api.signOut();
     });
   }
 
@@ -616,21 +618,29 @@ BIX.isHidden = function (id) { return BIX.hidden.indexOf(id) > -1; };
   }
 
   BIX.app.boot = function () {
-    var authed = false;
-    try { authed = sessionStorage.getItem('bix.admin') === '1'; } catch (_) {}
-    var auth = document.getElementById('bxAuth');
+    var boot = document.getElementById('bxBoot');
+    var says = document.getElementById('bxBootT');
 
-    if (authed) { auth.remove(); start(); return; }
+    function bail(msg, href) {
+      says.textContent = msg;
+      setTimeout(function () { location.href = href; }, 900);
+    }
 
-    auth.querySelector('form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      try { sessionStorage.setItem('bix.admin', '1'); } catch (_) {}
-      auth.classList.add('is-gone');
-      setTimeout(function () { auth.remove(); }, 260);
+    BIX.api.load().then(function (res) {
+      if (res && res.fatal === 'no-session') {
+        bail('Sign in required…', '../login.html');
+        return;
+      }
+      if (res && res.fatal === 'not-admin') {
+        /* A client who reaches this URL is not an error — send them to the
+           console that is theirs rather than showing a refusal. */
+        bail('Opening your portal…', '../portal/');
+        return;
+      }
+      boot.remove();
       start();
-    });
-    auth.querySelector('#bxForgot').addEventListener('click', function () {
-      BIX.toast('Password resets go through admin@bixllc.net');
+    }).catch(function (e) {
+      says.textContent = 'Could not load the console: ' + e.message;
     });
   };
 })();

@@ -15,40 +15,14 @@
 </head>
 <body>
 
-<!-- ============================== login gate ============================== -->
-<div class="bx-auth" id="bxAuth">
-  <div class="bx-auth__panel">
-    <div class="bx-auth__brand">
-      <span class="bx-auth__mark" aria-hidden="true"></span>
-      <span>Bix LLC</span>
-    </div>
-    <div class="bx-auth__pitch">
-      <div class="bx-auth__eyebrow bx-mono">Admin</div>
-      <h1 class="bx-auth__title">Agency console</h1>
-      <ul class="bx-auth__list bx-mono">
-        <li>Pipeline, nurture &amp; conversion</li>
-        <li>Client accounts &amp; active builds</li>
-        <li>Revenue, invoices &amp; calendar</li>
-      </ul>
-    </div>
-  </div>
-  <div class="bx-auth__form">
-    <form class="bx-auth__form-inner" novalidate>
-      <h2 class="bx-auth__sub">Sign in</h2>
-      <div class="bx-field">
-        <label for="bxEmail">Email</label>
-        <input id="bxEmail" type="email" value="admin@bixllc.net" autocomplete="username" />
-      </div>
-      <div class="bx-field">
-        <label for="bxPass">Password</label>
-        <input id="bxPass" type="password" value="demo-password" autocomplete="current-password" />
-      </div>
-      <div class="bx-auth__row">
-        <label class="bx-check"><input type="checkbox" checked /><span class="bx-check__box"></span> Remember me</label>
-        <button type="button" class="bx-linkish" id="bxForgot">Forgot password?</button>
-      </div>
-      <button class="bx-btn bx-btn--primary bx-btn--block" type="submit">Sign in</button>
-    </form>
+<!-- ============================== boot gate ===============================
+     Sign-in happens at /login.html, the same door the client portal uses.
+     This screen covers the moment between "has a session" and "is an admin
+     with data loaded", so the shell never flashes empty. -->
+<div class="bx-boot" id="bxBoot">
+  <div class="bx-boot__in">
+    <span class="bx-boot__mark" aria-hidden="true"></span>
+    <div class="bx-boot__t bx-mono" id="bxBootT">Loading the console…</div>
   </div>
 </div>
 
@@ -66,7 +40,9 @@
 <div id="bxDrawerRoot"></div>
 <div class="bx-toasts" id="bxToasts" aria-live="polite"></div>
 
-<script src="admin-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../auth.js"></script>
+<script src="admin-api.js"></script>
 <script src="admin-app.js"></script>
 <script src="admin-ai.js"></script>
 <script src="views-overview.js"></script>

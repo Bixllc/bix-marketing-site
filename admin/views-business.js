@@ -13,7 +13,9 @@
      skew the stroke, so the chart keeps its ratio and scales as a unit. */
   function chart(series) {
     var W = 640, Ht = 190, padL = 46, padR = 12, padT = 14, padB = 26;
-    var max = Math.max.apply(null, series.map(function (p) { return p.total; })) * 1.12;
+    /* `|| 1` keeps the scale finite before any invoice is settled — every
+       month at zero would otherwise divide by zero and emit NaN coordinates. */
+    var max = (Math.max.apply(null, series.map(function (p) { return p.total; })) * 1.12) || 1;
     var iw = W - padL - padR, ih = Ht - padT - padB;
     var step = iw / (series.length - 1);
     var pts = series.map(function (p, i) {
@@ -171,11 +173,9 @@
       var chase = el.querySelector('#rvChase');
       if (chase) chase.addEventListener('click', function () {
         var od = BIX.data.invoices.filter(function (i) { return i.status === 'Overdue'; });
+        if (!od.length) { BIX.toast('Nothing is overdue'); return; }
         BIX.toast('Reminder queued for ' + od.length + ' overdue account' + (od.length === 1 ? '' : 's'));
-        BIX.data.activity.unshift({
-          at: BIX.data.today + 'T09:00:00', who: BIX.data.agency.founder,
-          what: 'chased <b>' + od.length + ' overdue invoice' + (od.length === 1 ? '' : 's') + '</b>'
-        });
+        BIX.api.log('chased <b>' + od.length + ' overdue invoice' + (od.length === 1 ? '' : 's') + '</b>');
       });
     }
   };
@@ -207,16 +207,11 @@
   function markPaid(id) {
     var i = BIX.data.invoices.filter(function (x) { return x.id === id; })[0];
     if (!i) return;
-    i.status = 'Paid';
-    i.paid = BIX.data.today;
-    BIX.data.activity.unshift({
-      at: BIX.data.today + 'T09:00:00', who: 'System',
-      what: 'payment received for <b>' + H.esc(i.id) + '</b>'
+    BIX.api.updateInvoice(i.rowId, { status: 'Paid', paid_on: BIX.data.today }).then(function (r) {
+      if (r.error) { BIX.toast(r.error.message); return; }
+      BIX.api.log('payment received for <b>' + H.esc(i.id) + '</b>');
+      BIX.refresh(i.id + ' marked paid');
     });
-    BIX.recompute();
-    BIX.app.rerender();
-    BIX.app.refreshChrome();
-    BIX.toast(i.id + ' marked paid');
   }
 
   function invoiceModal(id) {
@@ -303,25 +298,37 @@
           lines.push({ what: '', amt: 0 }); repaint();
         });
 
-        w.querySelector('#niSave').addEventListener('click', function () {
+        var save = w.querySelector('#niSave');
+        save.addEventListener('click', function () {
           var amt = total();
           if (!amt) { BIX.toast('Add at least one line with an amount'); return; }
-          var num = 'INV-' + (2044 + d.invoices.length - 18);
-          d.invoices.unshift({
-            id: num, client: w.querySelector('#niC').value,
+          var biz = w.querySelector('#niC').value;
+          var client = d.clients.filter(function (c) { return c.business === biz; })[0];
+          if (!client) { BIX.toast('Pick a client first'); return; }
+
+          /* Sequential against the highest existing number, so a deleted row
+             can never cause a collision. */
+          var top = d.invoices.reduce(function (a, i) {
+            var n = parseInt(String(i.id).replace(/\D/g, ''), 10);
+            return isNaN(n) ? a : Math.max(a, n);
+          }, 2000);
+          var number = 'INV-' + (top + 1);
+
+          save.disabled = true;
+          BIX.api.createInvoice({
+            client_id: client.id, number: number,
             descr: lines.map(function (l) { return l.what; }).filter(Boolean).join(', ') || 'Services',
-            amount: amt, due: w.querySelector('#niD').value || nextWeek(),
-            status: 'Outstanding', paid: null
+            amount: amt, issued: d.today,
+            due: w.querySelector('#niD').value || nextWeek(),
+            status: 'Outstanding'
+          }).then(function (r) {
+            save.disabled = false;
+            if (r.error) { BIX.toast(r.error.message); return; }
+            BIX.api.log('issued invoice <b>' + H.esc(number) + '</b>');
+            BIX.closeModal();
+            BIX.refresh(number + ' created');
+            BIX.app.go('revenue');
           });
-          d.activity.unshift({
-            at: d.today + 'T09:00:00', who: d.agency.founder,
-            what: 'issued invoice <b>' + H.esc(num) + '</b>'
-          });
-          BIX.recompute();
-          BIX.closeModal();
-          BIX.app.go('revenue');
-          BIX.app.refreshChrome();
-          BIX.toast(num + ' created');
         });
       }
     });
@@ -439,19 +446,35 @@
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
             '<button class="bx-btn bx-btn--primary" id="smSave">Schedule</button>',
       mount: function (w) {
-        w.querySelector('#smSave').addEventListener('click', function () {
+        var save = w.querySelector('#smSave');
+        save.addEventListener('click', function () {
           var t = w.querySelector('#smT').value.trim();
           if (!t) { BIX.toast('Give the meeting a title'); return; }
           var on = w.querySelector('#smD').value || d.today;
-          d.meetings.push({
-            id: 'm-' + Date.now(), title: t, type: w.querySelector('#smK').value,
-            on: on, at: w.querySelector('#smH').value || '10:00',
-            mins: Number(w.querySelector('#smM').value), who: w.querySelector('#smW').value.trim() || '—', link: ''
+          var whoTxt = w.querySelector('#smW').value.trim();
+          /* Match the attendee to a client so it shows on their side too;
+             an internal sync simply carries no client_id. */
+          var client = d.clients.filter(function (c) {
+            return whoTxt && (c.business === whoTxt || c.contact === whoTxt);
+          })[0];
+
+          save.disabled = true;
+          BIX.api.createMeeting({
+            client_id: client ? client.id : null,
+            title: t, kind: w.querySelector('#smK').value,
+            meets_on: on, meets_at: w.querySelector('#smH').value || '10:00',
+            duration: w.querySelector('#smM').value + ' min',
+            upcoming: on >= d.today,
+            notes: client ? null : (whoTxt || 'Internal')
+          }).then(function (r) {
+            save.disabled = false;
+            if (r.error) { BIX.toast(r.error.message); return; }
+            cal.ym = on.slice(0, 7); cal.pick = on;
+            BIX.api.log('scheduled <b>' + H.esc(t) + '</b>');
+            BIX.closeModal();
+            BIX.refresh(t + ' scheduled');
+            BIX.app.go('calendar');
           });
-          cal.ym = on.slice(0, 7); cal.pick = on;
-          BIX.closeModal();
-          BIX.app.go('calendar');
-          BIX.toast(t + ' scheduled');
         });
       }
     });
@@ -581,9 +604,11 @@
                   '<button class="bx-btn bx-btn--danger" id="rmGo">Remove</button>',
             mount: function (w) {
               w.querySelector('#rmGo').addEventListener('click', function () {
-                BIX.data.team = BIX.data.team.filter(function (x) { return x.id !== id; });
-                BIX.closeModal(); BIX.app.rerender();
-                BIX.toast(m.name + ' removed');
+                BIX.api.removeTeam(id).then(function (r) {
+                  if (r.error) { BIX.toast(r.error.message); return; }
+                  BIX.closeModal();
+                  BIX.refresh(m.name + ' removed');
+                });
               });
             }
           });
@@ -601,14 +626,16 @@
             w.querySelector('#ivGo').addEventListener('click', function () {
               var n = w.querySelector('#ivN').value.trim();
               if (!n) { BIX.toast('Give them a name'); return; }
-              BIX.data.team.push({
+              BIX.api.addTeam({
                 id: 't-' + Date.now(), name: n,
                 role: w.querySelector('#ivR').value.trim() || 'Team',
-                email: w.querySelector('#ivE').value.trim() || '—',
+                email: w.querySelector('#ivE').value.trim() || null,
                 initials: H.initials(n)
+              }).then(function (r) {
+                if (r.error) { BIX.toast(r.error.message); return; }
+                BIX.closeModal();
+                BIX.refresh(n + ' added to the team');
               });
-              BIX.closeModal(); BIX.app.rerender();
-              BIX.toast('Invite sent to ' + n);
             });
           }
         });

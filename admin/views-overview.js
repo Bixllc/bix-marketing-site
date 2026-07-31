@@ -68,10 +68,11 @@
 
       /* Funnel widths are relative to the top of the funnel; the data
          guarantees a monotonic descent so a later bar is never wider. */
-      var top = d.funnel[0].count;
+      /* `|| 1` guards the width maths before the first lead exists. */
+      var top = d.funnel[0].count || 1;
       var funnel = d.funnel.map(function (f, i) {
         var next = d.funnel[i + 1];
-        var conv = next ? Math.round(next.count / f.count * 100) : null;
+        var conv = next && f.count ? Math.round(next.count / f.count * 100) : null;
         return '<div class="bx-fun__row">' +
           '<div class="bx-fun__k bx-mono">' + H.esc(f.stage) + '</div>' +
           '<div class="bx-fun__track"><div class="bx-fun__bar" style="width:' +
@@ -108,7 +109,9 @@
         '<div class="bx-stack">' +
           '<section class="bx-card">' +
             '<div class="bx-card__head"><h3>Funnel — last 30 days</h3>' +
-              '<span class="bx-card__head-r bx-mono">' + Math.round(d.funnel[4].count / d.funnel[0].count * 100) + '% end to end</span></div>' +
+              '<span class="bx-card__head-r bx-mono">' +
+                (d.funnel[0].count ? Math.round(d.funnel[4].count / d.funnel[0].count * 100) + '% end to end' : 'no leads yet') +
+              '</span></div>' +
             '<div class="bx-card__body"><div class="bx-fun">' +
               '<div class="bx-fun__hd bx-mono"><span>Stage</span><span>Count</span><span>To next</span></div>' +
               funnel + '</div>' +
@@ -320,10 +323,13 @@
   }
   BIX.wireCopy = wireCopy;
 
+  /* Onboarding a client creates their auth account and emails the set-password
+     link, so the email is the one field that cannot be skipped. */
   BIX.actions.client = function () {
     BIX.modal({
       title: 'Add client',
       body:
+        '<p class="bx-hero__s">They get an email with a link to set a password and open their portal.</p>' +
         '<div class="bx-field"><label for="ncB">Business</label><input id="ncB" placeholder="Business name" /></div>' +
         '<div class="bx-row2">' +
           '<div class="bx-field"><label for="ncC">Contact</label><input id="ncC" placeholder="Full name" /></div>' +
@@ -336,26 +342,35 @@
         '</div>' +
         '<div class="bx-field"><label for="ncM">Monthly retainer (USD)</label><input id="ncM" type="number" value="340" /></div>',
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
-            '<button class="bx-btn bx-btn--primary" id="ncSave">Add client</button>',
+            '<button class="bx-btn bx-btn--primary" id="ncSave">Add &amp; invite</button>',
       mount: function (w) {
-        w.querySelector('#ncSave').addEventListener('click', function () {
+        var btn = w.querySelector('#ncSave');
+        btn.addEventListener('click', function () {
           var biz = w.querySelector('#ncB').value.trim();
+          var email = w.querySelector('#ncE').value.trim();
           if (!biz) { BIX.toast('Give the client a business name'); return; }
-          BIX.data.clients.unshift({
-            id: 'c-' + Date.now(), business: biz,
-            industry: w.querySelector('#ncI').value.trim() || 'General',
-            contact: w.querySelector('#ncC').value.trim() || '—',
-            email: w.querySelector('#ncE').value.trim() || '—', phone: '—', location: '—',
-            plan: w.querySelector('#ncP').value, mrr: Number(w.querySelector('#ncM').value) || 0,
-            status: 'Active', health: 100, since: BIX.data.today,
-            project: 'Onboarding', percent: 0
+          if (!email || email.indexOf('@') < 0) { BIX.toast('A valid email is needed to invite them'); return; }
+
+          btn.disabled = true; btn.textContent = 'Inviting…';
+          BIX.api.inviteClient({
+            email: email,
+            full_name: w.querySelector('#ncC').value.trim() || biz,
+            business: biz,
+            industry: w.querySelector('#ncI').value.trim() || null,
+            plan: w.querySelector('#ncP').value,
+            plan_price: Number(w.querySelector('#ncM').value) || 0
+          }).then(function (r) {
+            btn.disabled = false; btn.textContent = 'Add & invite';
+            if (r.error) {
+              BIX.toast(r.error.already ? email + ' already has an account' : r.error.message);
+              return;
+            }
+            BIX.api.log('added client <b>' + H.esc(biz) + '</b>');
+            BIX.closeModal();
+            BIX.refresh('Invite sent to ' + email);
+            BIX.app.go('clients');
+            if (r.data && r.data.warning) BIX.toast(r.data.warning);
           });
-          BIX.data.activity.unshift({ at: BIX.data.today + 'T09:00:00', who: BIX.data.agency.founder, what: 'added client <b>' + H.esc(biz) + '</b>' });
-          BIX.recompute();
-          BIX.closeModal();
-          BIX.app.go('clients');
-          BIX.app.refreshChrome();
-          BIX.toast(biz + ' added');
         });
       }
     });
@@ -476,10 +491,19 @@
         w.querySelectorAll('[data-tick]').forEach(function (box) {
           box.addEventListener('change', function () {
             var i = Number(box.getAttribute('data-tick'));
-            p.checklist[i][1] = box.checked;
+            var row = p.checklist[i];
+            row[1] = box.checked;
             var done = p.checklist.filter(function (c) { return c[1]; }).length;
             p.percent = Math.round(done / p.checklist.length * 100);
-            BIX.toast(p.checklist[i][0] + (box.checked ? ' marked done' : ' reopened'));
+
+            /* checklist entries carry the phases-row id in slot 2. Without one
+               the deliverable exists only in this render and cannot be saved. */
+            if (!row[2]) { BIX.toast('This deliverable has no saved phase row'); return; }
+            BIX.api.setPhaseState(row[2], box.checked ? 'done' : 'todo').then(function (r) {
+              if (r.error) { BIX.toast(r.error.message); return; }
+              BIX.api.updateProject(p.id, { progress: p.percent });
+              BIX.toast(row[0] + (box.checked ? ' marked done' : ' reopened'));
+            });
           });
         });
       }

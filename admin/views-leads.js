@@ -183,18 +183,29 @@
   }
 
   /* ------------------------------ stage moves ------------------------------ */
+  /* Applied locally first, then persisted. A drag must not wait on a round
+     trip; if the write fails we say so and reload the truth. */
   function move(id, stageId, quiet) {
     var l = BIX.data.leads.filter(function (x) { return x.id === id; })[0];
     if (!l || l.stage === stageId) return null;
+    var name = stageOf(stageId).name;
+
     l.stage = stageId;
     l.touched = BIX.data.today;
-    l.log.unshift({ at: BIX.data.today, what: 'Moved to ' + stageOf(stageId).name });
-    BIX.data.activity.unshift({
-      at: BIX.data.today + 'T09:00:00', who: BIX.data.agency.founder,
-      what: 'moved <b>' + H.esc(l.business) + '</b> to ' + H.esc(stageOf(stageId).name)
-    });
+    l.log.unshift({ at: BIX.data.today, what: 'Moved to ' + name });
     BIX.recompute();
-    if (!quiet) BIX.toast(l.business + ' → ' + stageOf(stageId).name);
+
+    BIX.api.updateLead(id, { stage: stageId, touched: BIX.data.today }).then(function (r) {
+      if (r.error) {
+        BIX.toast('Could not save that move: ' + r.error.message);
+        BIX.refresh();
+        return;
+      }
+      BIX.api.addLeadEvent(id, 'Moved to ' + name);
+      BIX.api.log('moved <b>' + H.esc(l.business) + '</b> to ' + H.esc(name));
+    });
+
+    if (!quiet) BIX.toast(l.business + ' → ' + name);
     return l;
   }
 
@@ -354,12 +365,16 @@
           var ta = w.querySelector('#ldNote');
           var body = ta.value.trim();
           if (!body) { BIX.toast('Write something first'); return; }
-          l.notes.unshift({ at: BIX.data.today, by: BIX.data.agency.founder, body: body });
-          l.touched = BIX.data.today;
-          ta.value = '';
-          var host = w.querySelector('#ldNotes');
-          host.innerHTML = l.notes.map(noteHtml).join('');
-          BIX.toast('Note added');
+          var who = BIX.data.agency.founder;
+          BIX.api.addLeadNote(l.id, who, body).then(function (r) {
+            if (r.error) { BIX.toast(r.error.message); return; }
+            l.notes.unshift({ at: BIX.data.today, by: who, body: body });
+            l.touched = BIX.data.today;
+            ta.value = '';
+            w.querySelector('#ldNotes').innerHTML = l.notes.map(noteHtml).join('');
+            BIX.api.updateLead(l.id, { touched: BIX.data.today });
+            BIX.toast('Note added');
+          });
         });
 
         var msg = w.querySelector('#ldMsg');
@@ -375,40 +390,55 @@
       '<div class="bx-note2__b">' + H.esc(n.body) + '</div></div>';
   }
 
+  /* Converting is the onboarding path: it creates the auth account and sends
+     the invite email, so it needs a real address to send to. */
   function convert(l) {
     if (BIX.data.clients.some(function (c) { return c.business === l.business; })) {
       BIX.toast(l.business + ' is already a client');
       return;
     }
+    var hasEmail = l.email && l.email.indexOf('@') > -1;
+
     BIX.modal({
       title: 'Convert to client',
-      body: '<p class="bx-hero__s">' + H.esc(l.business) + ' moves to Won and opens as a client account. ' +
-        'Pick the plan they signed.</p>' +
+      body: '<p class="bx-hero__s">' + H.esc(l.business) + ' moves to Won and gets a portal account. ' +
+        'We email ' + (hasEmail ? H.esc(l.email) : 'them') + ' a link to set a password.</p>' +
+        (hasEmail ? '' : '<div class="bx-field"><label for="cvE">Email</label>' +
+          '<input id="cvE" type="email" placeholder="name@business.com" /></div>') +
         '<div class="bx-field"><label for="cvP">Plan</label><select id="cvP">' +
           '<option>Essential</option><option selected>Growth Care</option><option>Scale</option></select></div>' +
         '<div class="bx-field"><label for="cvM">Monthly retainer (USD)</label><input id="cvM" type="number" value="340" /></div>',
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
-            '<button class="bx-btn bx-btn--primary" id="cvGo">Convert</button>',
+            '<button class="bx-btn bx-btn--primary" id="cvGo">Convert &amp; invite</button>',
       mount: function (w) {
-        w.querySelector('#cvGo').addEventListener('click', function () {
-          l.stage = 'won';
-          l.touched = BIX.data.today;
-          BIX.data.clients.unshift({
-            id: 'c-' + l.id, business: l.business, industry: l.industry, contact: l.contact,
-            email: l.email, phone: l.phone, location: '—',
-            plan: w.querySelector('#cvP').value, mrr: Number(w.querySelector('#cvM').value) || 0,
-            status: 'Active', health: 100, since: BIX.data.today,
-            project: 'Onboarding', percent: 0
+        var btn = w.querySelector('#cvGo');
+        btn.addEventListener('click', function () {
+          var email = hasEmail ? l.email : (w.querySelector('#cvE').value || '').trim();
+          if (!email || email.indexOf('@') < 0) { BIX.toast('A valid email is needed to invite them'); return; }
+
+          btn.disabled = true; btn.textContent = 'Inviting…';
+          BIX.api.inviteClient({
+            email: email,
+            full_name: l.contact && l.contact !== '—' ? l.contact : l.business,
+            business: l.business,
+            industry: l.industry !== '—' ? l.industry : null,
+            phone: l.phone !== '—' ? l.phone : null,
+            plan: w.querySelector('#cvP').value,
+            plan_price: Number(w.querySelector('#cvM').value) || 0
+          }).then(function (r) {
+            btn.disabled = false; btn.textContent = 'Convert & invite';
+            if (r.error) {
+              BIX.toast(r.error.already ? email + ' already has an account' : r.error.message);
+              return;
+            }
+            BIX.api.updateLead(l.id, { stage: 'won', touched: BIX.data.today });
+            BIX.api.addLeadEvent(l.id, 'Converted to client · invite sent to ' + email);
+            BIX.api.log('converted <b>' + H.esc(l.business) + '</b> to a client');
+            BIX.closeModal(); BIX.closeDrawer();
+            BIX.refresh('Invite sent to ' + email);
+            BIX.app.go('clients');
+            if (r.data && r.data.warning) BIX.toast(r.data.warning);
           });
-          BIX.data.activity.unshift({
-            at: BIX.data.today + 'T09:00:00', who: BIX.data.agency.founder,
-            what: 'converted <b>' + H.esc(l.business) + '</b> to a client'
-          });
-          BIX.recompute();
-          BIX.closeModal(); BIX.closeDrawer();
-          BIX.app.go('clients');
-          BIX.app.refreshChrome();
-          BIX.toast(l.business + ' is now a client');
         });
       }
     });
@@ -441,26 +471,31 @@
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
             '<button class="bx-btn bx-btn--primary" id="alSave">Add lead</button>',
       mount: function (w) {
-        w.querySelector('#alSave').addEventListener('click', function () {
+        var btn = w.querySelector('#alSave');
+        btn.addEventListener('click', function () {
           var biz = w.querySelector('#alB').value.trim();
           if (!biz) { BIX.toast('Give the lead a business name'); return; }
           var src = w.querySelector('#alS').value;
-          d.leads.unshift({
-            id: 'l-' + Date.now(), business: biz,
-            contact: w.querySelector('#alC').value.trim() || '—',
-            email: w.querySelector('#alE').value.trim() || '—', phone: '—',
-            industry: w.querySelector('#alI').value.trim() || 'General',
-            source: src, value: Number(w.querySelector('#alV').value) || 0,
-            stage: 'new', temp: w.querySelector('#alT').value,
-            owner: w.querySelector('#alO').value, touched: d.today,
-            notes: [], log: [{ at: d.today, what: 'Lead created from ' + src }]
+          btn.disabled = true;
+          BIX.api.createLead({
+            business: biz,
+            contact: w.querySelector('#alC').value.trim() || null,
+            email: w.querySelector('#alE').value.trim() || null,
+            industry: w.querySelector('#alI').value.trim() || null,
+            source: src,
+            value: Number(w.querySelector('#alV').value) || 0,
+            stage: 'new',
+            temp: w.querySelector('#alT').value,
+            owner: w.querySelector('#alO').value,
+            touched: d.today
+          }).then(function (r) {
+            btn.disabled = false;
+            if (r.error) { BIX.toast(r.error.message); return; }
+            BIX.api.addLeadEvent(r.data.id, 'Lead created from ' + src);
+            BIX.api.log('added lead <b>' + H.esc(biz) + '</b>');
+            BIX.closeModal();
+            BIX.refresh(biz + ' added to New');
           });
-          d.activity.unshift({ at: d.today + 'T09:00:00', who: d.agency.founder, what: 'added lead <b>' + H.esc(biz) + '</b>' });
-          BIX.recompute();
-          BIX.closeModal();
-          BIX.app.go('leads');
-          BIX.app.refreshChrome();
-          BIX.toast(biz + ' added to New');
         });
       }
     });
