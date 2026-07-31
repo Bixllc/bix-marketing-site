@@ -295,7 +295,8 @@
             '<div class="bx-dl">' +
               '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Plan</span><span class="bx-dl__v">' + H.esc(c.plan) + '</span></div>' +
               '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Next charge</span><span class="bx-dl__v">' + H.date(c.nextBilling) + '</span></div>' +
-              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Card</span><span class="bx-dl__v">•••• ' + H.esc(BIX.data.paymentMethod.last4) + '</span></div>' +
+              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Paid by</span><span class="bx-dl__v">' +
+                H.esc(BIX.data.payTo.method) + ' · ' + H.esc(BIX.data.payTo.handle) + '</span></div>' +
               '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Billing email</span><span class="bx-dl__v">' + H.esc(c.email) + '</span></div>' +
             '</div>' +
             '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">' +

@@ -168,7 +168,6 @@
           '<div class="bx-meta"><div class="bx-mono bx-meta__k">Launched</div><div class="bx-meta__v">' + H.date(p.launched) + '</div></div>' +
           '<div class="bx-meta"><div class="bx-mono bx-meta__k">Phase</div><div class="bx-meta__v">' + H.esc(p.phase) + '</div></div>' +
           '<div class="bx-meta"><div class="bx-mono bx-meta__k">Stack</div><div class="bx-meta__v">' + H.esc(p.stack) + '</div></div>' +
-          '<div class="bx-meta"><div class="bx-mono bx-meta__k">Last updated</div><div class="bx-meta__v">' + H.date(p.lastUpdated) + '</div></div>' +
         '</div>' +
       '</div>' +
 

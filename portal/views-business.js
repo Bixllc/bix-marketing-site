@@ -220,7 +220,7 @@
   /* =============================== INVOICES ============================== */
   BIX.views.invoices = {
     render: function () {
-      var d = BIX.data, pm = d.paymentMethod;
+      var d = BIX.data, pay = d.payTo;
       var due = d.invoices.filter(function (i) { return i.status !== 'Paid'; });
 
       return '' +
@@ -231,19 +231,19 @@
           '<div class="bx-mini__s" style="margin-top:5px">' +
             (due.length ? 'across ' + due.length + ' invoice' + (due.length === 1 ? '' : 's') : 'nothing due') + '</div>' +
           '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">' +
-            (d.outstanding ? '<button class="bx-btn bx-btn--primary" id="invPay">Pay now</button>' : '') +
+
             '<button class="bx-btn bx-btn--ghost" data-go="subscription">Care plan</button>' +
           '</div>' +
           '<div class="bx-mono bx-faint" style="margin-top:14px">Next charge ' + H.date(d.client.nextBilling) + ' · ' + H.money(d.client.planPrice) + '</div>' +
         '</div>' +
         '<div>' +
-          '<div class="bx-mono bx-faint">Payment method</div>' +
-          '<div style="display:flex;align-items:center;gap:12px;margin-top:12px">' +
-            '<span class="bx-card__brand">' + H.esc(pm.brand) + '</span>' +
-            '<div><div class="bx-mini__t">•••• ' + H.esc(pm.last4) + '</div>' +
-            '<div class="bx-mini__s">Expires ' + H.esc(pm.exp) + '</div></div>' +
+          '<div class="bx-mono bx-faint">How to pay</div>' +
+          '<div class="bx-mini__t" style="margin-top:12px">' + H.esc(pay.method) + '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">' +
+            '<span class="bx-mini__s">' + H.esc(pay.handle) + '</span>' +
+            '<button class="bx-iconbtn" id="invCopy" aria-label="Copy the payment address">' + I('copy') + '</button>' +
           '</div>' +
-          '<button class="bx-btn bx-btn--ghost bx-btn--sm" id="invCard" style="margin-top:14px">Update</button>' +
+          '<div class="bx-mini__s" style="margin-top:12px">Please put the invoice number in the memo so we can match it up.</div>' +
         '</div>' +
       '</div>' +
 
@@ -276,52 +276,12 @@
         }).join('') + '</div></div></div>';
     },
     mount: function (el) {
-      var pay = el.querySelector('#invPay');
-      if (pay) pay.addEventListener('click', function () {
         var d = BIX.data;
-        BIX.modal({
-          title: 'Pay outstanding balance',
-          body: '<p class="bx-hero__s">You are paying <b>' + H.money(d.outstanding, 2) + '</b> with ' +
-                'Visa •••• ' + H.esc(d.paymentMethod.last4) + '.</p>' +
-                '<div class="bx-stack" style="margin-top:14px">' +
-                d.invoices.filter(function (i) { return i.status !== 'Paid'; }).map(function (i) {
-                  return '<div class="bx-mini"><div><div class="bx-mini__t">' + H.esc(i.no) + '</div>' +
-                    '<div class="bx-mini__s">' + H.esc(i.desc) + '</div></div>' +
-                    '<span class="bx-num" style="font-weight:600">' + H.money(i.amount, 2) + '</span></div>';
-                }).join('') + '</div>',
-          foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
-                '<button class="bx-btn bx-btn--primary" id="payGo">Pay ' + H.money(d.outstanding) + '</button>',
-          mount: function (w) {
-            w.querySelector('#payGo').addEventListener('click', function () {
-              BIX.api.payAll().then(function (res) {
-                if (res.error) { BIX.toast(res.error.message); return; }
-                return BIX.api.loadFor(BIX.api.viewingId).then(function () {
-                  BIX.closeModal();
-                  BIX.app.rerender();
-                  BIX.toast('Payment received — thank you');
-                });
-              });
-            });
-          }
-        });
-      });
-
-      var upd = el.querySelector('#invCard');
-      if (upd) upd.addEventListener('click', function () {
-        BIX.modal({
-          title: 'Update payment method',
-          body: '<div class="bx-field"><label for="pmN">Card number</label><input id="pmN" placeholder="0000 0000 0000 0000" /></div>' +
-                '<div class="bx-row2"><div class="bx-field"><label for="pmE">Expiry</label><input id="pmE" placeholder="MM / YY" /></div>' +
-                '<div class="bx-field"><label for="pmC">CVC</label><input id="pmC" placeholder="123" /></div></div>' +
-                '<p class="bx-field__hint bx-mono">Demo only — nothing is sent anywhere.</p>',
-          foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
-                '<button class="bx-btn bx-btn--primary" id="pmSave">Save card</button>',
-          mount: function (w) {
-            w.querySelector('#pmSave').addEventListener('click', function () {
-              BIX.closeModal(); BIX.toast('Payment method updated');
-            });
-          }
-        });
+      var copyBtn = el.querySelector('#invCopy');
+      if (copyBtn) copyBtn.addEventListener('click', function () {
+        var handle = BIX.data.payTo.handle;
+        if (navigator.clipboard) navigator.clipboard.writeText(handle);
+        BIX.toast(handle + ' copied');
       });
 
       el.querySelectorAll('[data-inv]').forEach(function (b) {
@@ -370,20 +330,13 @@
 
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Close</button>' +
             '<button class="bx-btn bx-btn--ghost" id="invDl">Download PDF</button>' +
-            (v.status !== 'Paid' ? '<button class="bx-btn bx-btn--primary" id="invPayOne">Pay ' + H.money(v.amount) + '</button>' : ''),
+            (v.status !== 'Paid'
+              ? '<span class="bx-mono bx-faint">Pay by ' + H.esc(BIX.data.payTo.method) + ' to ' + H.esc(BIX.data.payTo.handle) + '</span>'
+              : ''),
 
       mount: function (w) {
         w.querySelector('#invDl').addEventListener('click', function () {
           BIX.toast('Downloading ' + v.no + '.pdf');
-        });
-        var pay = w.querySelector('#invPayOne');
-        if (pay) pay.addEventListener('click', function () {
-          BIX.api.payAll().then(function (res) {
-            if (res.error) { BIX.toast(res.error.message); return; }
-            return BIX.api.loadFor(BIX.api.viewingId).then(function () {
-              BIX.closeModal(); BIX.app.rerender(); BIX.toast('Payment received — thank you');
-            });
-          });
         });
       }
     });
@@ -537,52 +490,56 @@
     wide: true,
     render: function () {
       var w = BIX.data.website;
+      /* Only what we can actually evidence: the live site, its address and
+         who hosts it. Uptime, load time, SSL expiry, backup dates, region and
+         deploy history were placeholder values with no source behind them —
+         a client reading "99.9% uptime" would reasonably believe it was
+         measured. */
+      var url = w.url || ('https://' + w.domain);
+
       return '' +
-      '<div class="bx-card bx-hero">' +
-        BIX.ring(w.score, 'Health') +
-        '<div class="bx-hero__body">' +
-          '<div class="bx-hero__t">Your site is healthy</div>' +
-          '<div class="bx-hero__s">Checked continuously. Last full backup ' + H.date(w.backup) + '.</div>' +
-        '</div>' +
-      '</div>' +
-
-      '<div class="bx-sec bx-stats">' +
-        stat('green', 'zap',    'Uptime',      w.uptime) +
-        stat('blue',  'clock',  'Load time',   w.load) +
-        stat('green', 'shield', 'SSL',         w.ssl,   '<div class="bx-stat__d">until ' + H.date(w.sslUntil) + '</div>') +
-        stat('purple','folder', 'Last backup', H.date(w.backup)) +
-      '</div>' +
-
       '<div class="bx-sec bx-split">' +
-        '<div class="bx-card"><div class="bx-card__head"><h3>Live preview</h3>' +
-          '<div class="bx-card__head-r"><a class="bx-btn bx-btn--ghost bx-btn--sm" href="https://' + H.esc(w.domain) + '" target="_blank" rel="noopener">Visit site →</a></div></div>' +
+        '<div class="bx-card"><div class="bx-card__head"><h3>Your site</h3>' +
+          '<div class="bx-card__head-r"><a class="bx-btn bx-btn--ghost bx-btn--sm" href="' + H.esc(url) + '" target="_blank" rel="noopener">Visit site →</a></div></div>' +
           '<div class="bx-card__body"><div class="bx-browser">' +
             '<div class="bx-browser__bar">' +
               '<span class="bx-browser__dot" style="background:#ff5f57"></span>' +
               '<span class="bx-browser__dot" style="background:#febc2e"></span>' +
               '<span class="bx-browser__dot" style="background:#28c840"></span>' +
               '<span class="bx-browser__url">' + H.esc(w.domain) + '</span></div>' +
-            '<img class="bx-browser__shot" src="' + H.esc(w.shot) + '" alt="Screenshot of ' + H.esc(w.domain) + '" loading="lazy" />' +
+            '<img class="bx-browser__shot" src="' + H.esc(w.shot) + '" ' +
+              'data-alt-src="' + H.esc(w.shotAlt || '') + '" ' +
+              'alt="Screenshot of ' + H.esc(w.domain) + '" loading="lazy" />' +
           '</div></div></div>' +
 
         '<div class="bx-stack">' +
           '<div class="bx-card"><div class="bx-card__head"><h3>Hosting</h3></div>' +
             '<div class="bx-card__body"><div class="bx-dl">' +
-              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Plan</span><span class="bx-dl__v">' + H.esc(w.host) + '</span></div>' +
-              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Region</span><span class="bx-dl__v">' + H.esc(w.region) + '</span></div>' +
+              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Managed by</span><span class="bx-dl__v">Bix LLC</span></div>' +
               '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Domain</span><span class="bx-dl__v">' + H.esc(w.domain) + '</span></div>' +
-              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Renews</span><span class="bx-dl__v">' + H.date(w.domainExpiry) + '</span></div>' +
+              '<div class="bx-dl__row"><span class="bx-mono bx-dl__k">Subscription</span><span class="bx-dl__v">' + H.esc(w.host) + '</span></div>' +
             '</div></div></div>' +
 
-          '<div class="bx-card"><div class="bx-card__head"><h3>Recent deploys</h3></div>' +
-            '<div class="bx-card__body"><ul class="bx-feed">' + w.deploys.map(function (dp) {
-              return '<li><div class="bx-feed__t"><b>' + H.esc(dp.what) + '</b></div>' +
-                '<div class="bx-feed__w">' + H.date(dp.on) + ' · ' + H.esc(dp.by) + '</div></li>';
-            }).join('') + '</ul></div></div>' +
+          '<div class="bx-card"><div class="bx-card__head"><h3>Something wrong?</h3></div>' +
+            '<div class="bx-card__body">' +
+              '<p class="bx-hero__s">If the site is down or something looks off, raise it and we will pick it up.</p>' +
+              '<button class="bx-btn bx-btn--primary bx-btn--sm" data-go="requests">Request a change</button>' +
+            '</div></div>' +
         '</div>' +
       '</div>';
     },
-    mount: function (el) { BIX.animateRing(el); }
+  };
+
+  /* One retry against the other service. Without this a screenshot provider
+     having a bad minute leaves the client staring at a broken image. */
+  BIX.views.website.mount = function (el) {
+    var img = el.querySelector('.bx-browser__shot');
+    if (!img) return;
+    img.addEventListener('error', function once() {
+      img.removeEventListener('error', once);
+      var alt = img.getAttribute('data-alt-src');
+      if (alt) img.src = alt;
+    });
   };
 
   /* ============================= SUBSCRIPTION ============================ */

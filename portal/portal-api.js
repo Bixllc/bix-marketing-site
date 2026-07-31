@@ -29,6 +29,13 @@ window.BIX = window.BIX || {};
 
   /* projects.status is a constrained vocabulary in the database. Map it to the
      label the pills expect — H.tone() then colours it correctly. */
+  /* The board vocabulary in one place. `phase` is a free-text column that is
+     often unset, so the authoritative source is `status`. */
+  var STATUS_PHASE = {
+    discovery: 'Discovery', design: 'Design', development: 'Build',
+    review: 'QA', launched: 'Launched'
+  };
+
   var STATUS_LABEL = {
     discovery:   'Discovery',
     design:      'Design',
@@ -209,13 +216,7 @@ window.BIX = window.BIX || {};
       });
     },
 
-    payAll: function () {
-      return sb.from('invoices')
-        .update({ status: 'Paid' })
-        .eq('client_id', api.viewingId)
-        .neq('status', 'Paid')
-        .select();
-    },
+
 
     saveProfile: function (patch) {
       return sb.from('profiles').update(patch).eq('id', api.viewingId).select().single();
@@ -227,6 +228,11 @@ window.BIX = window.BIX || {};
      expect. Empty tables produce empty arrays, and every view has an empty
      state, so a fresh account renders rather than breaks. */
   function shape(prof, project, phases, requests, invoices, payments, files, meetings, activity, tickets) {
+    /* The live address comes from the project first, then the client record.
+       Both are optional, so every consumer must tolerate an empty string. */
+    var url = (project && project.live_url) || prof.website || '';
+    var domain = String(url).replace(/^https?:\/\//, '').replace(/\/$/, '');
+
     var name = prof.full_name || 'there';
 
     var d = {
@@ -249,7 +255,7 @@ window.BIX = window.BIX || {};
         name: project.name,
         url: project.live_url || '',
         status: STATUS_LABEL[project.status] || project.status || 'In progress',
-        phase: project.phase || 'Discovery',
+        phase: STATUS_PHASE[project.status] || project.phase || 'Discovery',
         nextMilestone: project.next_milestone || 'To be scheduled',
         launched: iso(project.launched) || iso(project.start_date) || today(),
         stack: project.stack || '—',
@@ -297,7 +303,8 @@ window.BIX = window.BIX || {};
         return { on: iso(p.paid_on), method: p.method || 'Card', amount: Number(p.amount), ref: p.invoice_no || '' };
       }),
 
-      paymentMethod: { brand: 'VISA', last4: '••••', exp: '—' },
+      /* Invoices are settled by Zelle, so there is no stored card. */
+      payTo: { method: 'Zelle', handle: 'admin@bixllc.net' },
 
       files: files.map(function (f) {
         return {
@@ -322,13 +329,16 @@ window.BIX = window.BIX || {};
       }),
 
       website: {
-        score: Number((project && project.health_score) || 0),
-        uptime: (project && project.uptime) || '—',
-        load: (project && project.load_time) || '—',
-        ssl: 'Valid', sslUntil: today(), backup: today(),
-        host: 'Bix managed hosting', region: '—',
-        domain: (project && project.live_url || '').replace(/^https?:\/\//, '').replace(/\/$/, '') || '—',
-        domainExpiry: today(), shot: '', deploys: []
+        /* A live render of the actual page, not a stored image, so it stays
+           current as the site changes. thum.io needs no key; microlink is the
+           fallback the view swaps to if thum.io fails to load. (WordPress
+           mShots was the first choice and returns 403 to server callers.) */
+        shot: 'https://image.thum.io/get/width/1200/crop/900/' + (url || ('https://' + domain)),
+        shotAlt: 'https://api.microlink.io/?url=' + encodeURIComponent(url || ('https://' + domain)) +
+                 '&screenshot=true&meta=false&embed=screenshot.url',
+        url: url,
+        domain: domain,
+        host: prof.plan_includes || prof.plan || 'Bix managed hosting'
       },
 
       analytics: {

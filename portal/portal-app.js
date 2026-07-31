@@ -76,7 +76,7 @@ BIX.isHidden = id => BIX.hidden.indexOf(id) > -1;
     { label: 'Business', items: [
       { id: 'invoices',     name: 'Invoices',     icon: 'card',  sub: 'Billing and payments' },
       { id: 'subscription', name: 'Subscription', icon: 'crown', sub: 'Your care plan' },
-      { id: 'website',      name: 'Website',      icon: 'globe', sub: 'Health, hosting and deploys' }
+      { id: 'website',      name: 'Website',      icon: 'globe', sub: 'Your live site and hosting' }
     ]},
     { label: 'Growth', items: [
       { id: 'analytics', name: 'Analytics', icon: 'chart', sub: 'Traffic, leads and revenue' },
