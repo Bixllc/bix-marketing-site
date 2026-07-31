@@ -264,6 +264,45 @@ select grantee, privilege_type from information_schema.role_table_grants
 where table_schema='public' and table_name='profiles' order by 1;
 ```
 
+---
+
+## RX-12 · A "dry run" that wasn't — real emails sent to real clients
+
+**Symptom** A run described as a preview sent four live invoice emails to four
+real clients, dated four weeks in the past.
+
+**Cause** Two failures compounding.
+
+1. **The dry-run mode did not exist.** The function reported a `dryRun` field,
+   but it only meant *"no API key was found, so nothing could be sent"*. The
+   moment a key was configured, the same call sent for real. A flag that
+   describes a missing dependency was read as a safety mode.
+2. **No billing window.** It billed `current month` regardless of the date, so
+   running on the 31st raised invoices dated the 1st, due the 3rd — instantly
+   overdue, and one scheduled run away from sending late-payment chasers.
+
+**Fix** An explicit `{dry:true}` that changes nothing and reports what it
+*would* do, plus a billing window (days 1–3, `force` to override) so a
+mid-month run cannot backfill a period already underway.
+
+**Check** Before any job that can reach a customer:
+```bash
+# must report intent and change nothing
+curl -s -X POST "$FN" -H "Authorization: Bearer $KEY" -d '{"dry":true}'
+# then confirm nothing was written
+select count(*) from invoices where sent_at > now() - interval '5 minutes';
+```
+
+**Lessons**
+
+- **Never describe a run as safe unless a code path enforces it.** Check the
+  flag actually gates the side effect; do not infer it from its name.
+- **A side-effecting job needs a dry mode before it needs a schedule.**
+- **Test against an address you own first.** Real client addresses are not
+  where you discover a mode does not exist.
+- Date-driven jobs must assert *when* they are allowed to run. "What month is
+  it" is not the same question as "should I bill today".
+
 ## Pre-flight checklist
 
 Run these before calling any feature done.

@@ -79,10 +79,33 @@ serve(async (req) => {
 
   const today = new Date().toISOString().slice(0, 10)
   const period = today.slice(0, 8) + '01'
-  const out = { raised: 0, aged: 0, sent: 0, reminded: 0, errors: [] as string[], dryRun: !RESEND }
+  const dayOfMonth = Number(today.slice(8, 10))
+
+  const url = new URL(req.url)
+  let body: Record<string, unknown> = {}
+  try { body = await req.json() } catch { /* empty body is fine */ }
+
+  /* A real dry run: report what would happen and change nothing. Previously
+     the only "dry" behaviour was the absence of an API key, which meant the
+     moment a key existed the job sent for real. */
+  const dry = url.searchParams.get('dry') === '1' || body.dry === true
+  /* Invoices are raised at the start of the month, never backfilled into one
+     already underway — running on the 31st must not produce an invoice dated
+     the 1st that is instantly four weeks overdue. `force` is for a deliberate
+     catch-up after a missed schedule. */
+  const BILLING_WINDOW = 3
+  const force = body.force === true
+  const inWindow = dayOfMonth <= BILLING_WINDOW || force
+
+  const out = {
+    dry, willSend: !!RESEND && !dry, period, dayOfMonth, inWindow,
+    raised: 0, aged: 0, sent: 0, reminded: 0, skipped: [] as string[], errors: [] as string[],
+  }
+  if (!inWindow) out.skipped.push(`day ${dayOfMonth} is outside the 1–${BILLING_WINDOW} billing window; no invoices raised`)
 
   async function send(to: string, subject: string, html: string) {
-    if (!RESEND) return true            // no key: do the bookkeeping, skip the send
+    if (dry) { out.skipped.push(`would email ${to}: ${subject}`); return false }
+    if (!RESEND) { out.errors.push('RESEND_API_KEY not set — nothing sent'); return false }
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND}`, 'Content-Type': 'application/json' },
@@ -94,15 +117,23 @@ serve(async (req) => {
   }
 
   try {
-    // 1. raise this month's invoices (no-op unless it is the 1st or later)
-    const { data: raised, error: raiseErr } = await db.rpc('raise_monthly_invoices', { p_period: period })
-    if (raiseErr) out.errors.push('raise: ' + raiseErr.message)
-    else out.raised = raised?.[0]?.created ?? 0
+    // 1. raise this month's invoices, only inside the billing window
+    if (inWindow && !dry) {
+      const { data: raised, error: raiseErr } = await db.rpc('raise_monthly_invoices', { p_period: period })
+      if (raiseErr) out.errors.push('raise: ' + raiseErr.message)
+      else out.raised = raised?.[0]?.created ?? 0
+    } else if (inWindow && dry) {
+      const { count } = await db.from('profiles').select('id', { count: 'exact', head: true })
+        .eq('role', 'client').eq('status', 'Active').gt('plan_price', 0)
+      out.skipped.push(`would raise ${count ?? 0} invoice(s) for ${period}`)
+    }
 
     // 2. age anything past its due date
-    const { data: aged, error: ageErr } = await db.rpc('age_invoices')
-    if (ageErr) out.errors.push('age: ' + ageErr.message)
-    else out.aged = aged?.[0]?.marked ?? 0
+    if (!dry) {
+      const { data: aged, error: ageErr } = await db.rpc('age_invoices')
+      if (ageErr) out.errors.push('age: ' + ageErr.message)
+      else out.aged = aged?.[0]?.marked ?? 0
+    }
 
     // 3. email the drafts, then mark them Outstanding — in that order, so a
     //    failed send leaves the invoice re-sendable rather than silently owed

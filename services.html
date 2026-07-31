@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Services — Bix LLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+/* ===== TOKENS ===== */
+:root {
+  --purple: #442061;
+  --purple-mid: #5c2d82;
+  --purple-light: #f3eef8;
+  --gold: #C49669;
+  --gold-light: #f7f0e8;
+  --charcoal: #1a1a1f;
+  --ink: #2d2d36;
+  --muted: #6b6b7a;
+  --soft: #a0a0ae;
+  --border: rgba(68,32,97,0.10);
+  --border-light: rgba(68,32,97,0.06);
+  --surface: #fafaf9;
+  --white: #ffffff;
+  --emerald: #2e8b57;
+  --lavender: #8a7db5;
+  --blue: #2E89E6;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --nav-h: 68px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+
+/* ===== NAV ===== */
+.nav-shell {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border-light);
+  transition: box-shadow .3s;
+}
+.nav-shell.scrolled { box-shadow: 0 2px 24px rgba(68,32,97,0.08); }
+.nav {
+  max-width: 1160px; margin: 0 auto; padding: 0 28px;
+  display: flex; align-items: center; height: var(--nav-h); gap: 36px;
+}
+.nav-logo { text-decoration: none; display: flex; align-items: center; }
+.nav-mark {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--charcoal);
+  display: block;
+  position: relative;
+}
+.nav-mark::after {
+  content: '';
+  position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border-radius: 3px;
+  background: var(--gold);
+}
+.nav-links { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.nav-link {
+  font-size: 14px; font-weight: 500; color: var(--ink);
+  text-decoration: none; padding: 8px 14px; border-radius: var(--radius-sm);
+  transition: background .18s, color .18s;
+  position: relative; background: none; border: none; cursor: pointer;
+  font-family: 'Poppins', sans-serif; letter-spacing: -.01em;
+}
+.nav-link:hover { background: var(--purple-light); color: var(--purple); }
+.nav-link--active { color: var(--purple); }
+.nav-link--active::after {
+  content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 2px; border-radius: 2px; background: var(--purple);
+}
+.dot { display:none; }
+.nav-cta {
+  margin-left: 12px;
+  display: flex; align-items: center; gap: 7px;
+  background: var(--charcoal); color: #fff;
+  font-size: 13px; font-weight: 600; letter-spacing: .01em;
+  padding: 10px 20px; border-radius: 100px; text-decoration: none;
+  transition: background .2s, transform .2s;
+}
+.nav-cta:hover { background: var(--purple); transform: translateY(-1px); }
+.nav-cta .arrow { flex-shrink: 0; }
+
+/* Dropdown */
+.nav-item { position: relative; }
+.nav-caret { display: inline-block; margin-left: 3px; transition: transform .2s; vertical-align: middle; }
+.nav-item--open .nav-caret { transform: rotate(180deg); }
+.nav-dropdown {
+  position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(68,32,97,.12), 0 2px 8px rgba(0,0,0,.04);
+  padding: 8px; min-width: 240px;
+  opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(6px);
+  transition: opacity .2s, transform .2s;
+}
+.nav-item--open .nav-dropdown {
+  opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0);
+}
+.nav-dd-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  text-decoration: none; color: var(--ink);
+  padding: 10px 12px; border-radius: 10px;
+  transition: background .15s;
+}
+.nav-dd-item:hover { background: var(--purple-light); }
+.nav-dd-i {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--purple);
+}
+.nav-dd-text { display: flex; flex-direction: column; gap: 2px; }
+.nav-dd-text strong { font-size: 13.5px; font-weight: 600; }
+.nav-dd-text small { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+/* ===== HERO ===== */
+.svc-hero {
+  padding: calc(var(--nav-h) + 100px) 0 100px;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.svc-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 0%, rgba(68,32,97,.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+/* Subtle grid texture */
+.svc-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(68,32,97,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(68,32,97,.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
+  pointer-events: none;
+}
+.svc-hero-inner {
+  position: relative; z-index: 1;
+  max-width: 760px; margin: 0 auto;
+}
+.svc-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--purple);
+  background: var(--purple-light);
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 24px;
+}
+.svc-hero-eyebrow::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--purple);
+}
+.svc-hero h1 {
+  font-size: clamp(40px, 5.5vw, 68px);
+  font-weight: 600; line-height: 1.05; letter-spacing: -.035em;
+  color: var(--charcoal);
+  margin-bottom: 24px;
+}
+.svc-hero h1 em { font-style: italic; color: var(--purple); font-weight: 500; }
+.svc-hero-sub {
+  font-size: 17px; color: var(--muted); line-height: 1.75;
+  max-width: 540px; margin: 0 auto 36px;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--charcoal); color: #fff;
+  font-size: 14px; font-weight: 600; padding: 13px 26px;
+  border-radius: 100px; text-decoration: none;
+  transition: background .2s, transform .2s;
+}
+.btn-primary:hover { background: var(--purple); transform: translateY(-1px); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--ink); font-size: 14px; font-weight: 500;
+  padding: 13px 20px; border-radius: 100px;
+  text-decoration: none; border: 1px solid var(--border);
+  transition: border-color .2s, color .2s, background .2s;
+}
+.btn-ghost:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-light); }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* Hero trust row */
+.hero-trust-row {
+  display: flex; align-items: center; justify-content: center; gap: 28px;
+  margin-top: 52px; padding-top: 40px;
+  border-top: 1px solid var(--border-light);
+}
+.htr-stat { text-align: center; }
+.htr-v {
+  font-size: 24px; font-weight: 700; color: var(--charcoal);
+  font-family: 'Montserrat', sans-serif; letter-spacing: -.02em;
+  display: block;
+}
+.htr-l { font-size: 11px; color: var(--soft); font-weight: 500; letter-spacing: .04em; text-transform: uppercase; margin-top: 4px; }
+.htr-div { width: 1px; height: 32px; background: var(--border); }
+
+/* unused visual styles kept for safety */
+.svc-hero-visual { display: none; }
+.hero-vis-stack { position: relative; height: 420px; }
+.hv-card {
+  position: absolute;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(68,32,97,.08), 0 2px 8px rgba(0,0,0,.04);
+  padding: 18px 20px;
+  font-size: 13px;
+}
+.hv-main {
+  top: 0; left: 0; right: 0;
+  background: var(--charcoal); color: #fff;
+  border-color: transparent;
+  padding: 22px 24px;
+}
+.hv-main-head {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; opacity: .5;
+  margin-bottom: 18px;
+}
+.hv-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.3); }
+.hv-services-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hv-svc-item {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px; padding: 10px 12px;
+}
+.hv-svc-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: rgba(196,150,105,.18);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--gold);
+}
+.hv-svc-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.9); line-height: 1.3; }
+.hv-svc-sub { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 1px; }
+
+.hv-float-1 {
+  bottom: 80px; right: -20px; width: 200px;
+  animation: floatA 5s ease-in-out infinite;
+}
+.hv-float-2 {
+  bottom: 0; left: -10px; width: 180px;
+  animation: floatB 6s ease-in-out infinite;
+}
+@keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+.hv-float-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.hv-stat { font-size: 22px; font-weight: 600; color: var(--charcoal); font-family: 'Montserrat', sans-serif; }
+.hv-delta { font-size: 11px; color: var(--emerald); font-weight: 500; margin-top: 2px; }
+.hv-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 100px;
+}
+.hv-badge-purple { background: var(--purple-light); color: var(--purple); }
+.hv-badge-gold { background: var(--gold-light); color: #8a6430; }
+.hv-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+
+/* ===== SECTION SHARED ===== */
+.section { padding: 80px 0; }
+.section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 14px; display: block;
+}
+.section-h {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 600; letter-spacing: -.03em; line-height: 1.15;
+  color: var(--charcoal);
+}
+.section-h em { font-style: italic; color: var(--purple); font-weight: 500; }
+.section-sub {
+  font-size: 15px; color: var(--muted); line-height: 1.7;
+  max-width: 520px; margin-top: 14px;
+}
+.section-head {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 40px; align-items: end;
+  margin-bottom: 52px;
+}
+
+/* ===== SERVICE CATEGORIES — REDESIGNED ===== */
+.svc-cats { padding: 80px 0; background: var(--white); position: relative; overflow: hidden; }
+.svc-cats::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 10% 10%, rgba(68,32,97,.04) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 90% 90%, rgba(196,150,105,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.svc-cats .section-head { position: relative; z-index: 1; }
+.svc-cats .section-label { color: var(--gold); }
+.svc-cats .section-h { color: var(--charcoal); }
+.svc-cats .section-h em { color: var(--purple); }
+.svc-cats .section-sub { color: var(--muted); }
+
+.cats-grid { display: flex; flex-direction: column; gap: 2px; position: relative; z-index: 1; }
+
+/* Each card is a wide horizontal panel */
+.cat-card {
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: flex .5s cubic-bezier(.4,0,.2,1);
+}
+.cats-grid .cat-card:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.cats-grid .cat-card:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+
+/* accordion-style: collapsed by default, expanded when .is-open */
+.cat-card .cat-body { max-height: 0; overflow: hidden; transition: max-height .5s cubic-bezier(.4,0,.2,1); }
+.cat-card.is-open .cat-body { max-height: 700px; }
+
+/* Header row — always visible */
+.cat-header {
+  display: flex; align-items: center; gap: 20px;
+  padding: 28px 40px;
+  position: relative; z-index: 1;
+  transition: padding .3s;
+}
+.cat-card.is-open .cat-header { padding-bottom: 0; }
+
+.cat-num-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,.3);
+  width: 32px; flex-shrink: 0;
+}
+.cat-icon-pill {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 12px;
+  flex-shrink: 0;
+  transition: transform .3s;
+}
+.cat-card:hover .cat-icon-pill { transform: scale(1.08); }
+.cat-header-title {
+  flex: 1;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600; letter-spacing: -.02em;
+  color: #fff;
+}
+.cat-header-sub {
+  font-size: 13px; color: rgba(255,255,255,.4);
+  margin-left: auto; white-space: nowrap;
+  font-weight: 400;
+}
+.cat-toggle {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: rgba(255,255,255,.5);
+  transition: background .25s, border-color .25s, transform .35s, color .25s;
+}
+.cat-card.is-open .cat-toggle {
+  background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.3);
+  transform: rotate(45deg); color: #fff;
+}
+
+/* Body — expanded content */
+.cat-body-inner {
+  display: grid; grid-template-columns: 1fr 380px;
+  gap: 48px; align-items: start;
+  padding: 28px 40px 36px;
+}
+
+.cat-desc {
+  font-size: 15px; color: rgba(255,255,255,.6); line-height: 1.75;
+  margin-bottom: 28px;
+}
+.cat-includes-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(255,255,255,.25);
+  margin-bottom: 14px;
+}
+.cat-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-tag {
+  font-size: 12px; font-weight: 500;
+  padding: 5px 13px; border-radius: 100px;
+  transition: background .2s, color .2s;
+}
+
+/* CTA link inside card */
+.cat-cta-row { margin-top: 28px; }
+.cat-cta-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+  padding: 10px 20px; border-radius: 100px;
+  text-decoration: none;
+  transition: opacity .2s, transform .2s, gap .2s;
+}
+.cat-cta-link:hover { opacity: .85; transform: translateX(3px); }
+
+/* ---- Per-card color themes ---- */
+
+/* Card 1 — Web: purple */
+.cat-card--web {
+  background: linear-gradient(135deg, #1e0f2e 0%, #2a1444 50%, #1a0f28 100%);
+  border: 1px solid rgba(196,150,105,.12);
+}
+.cat-card--web .cat-icon-pill { background: rgba(196,150,105,.18); color: var(--gold); }
+.cat-card--web .cat-tag { background: rgba(196,150,105,.12); color: rgba(255,255,255,.75); border: 1px solid rgba(196,150,105,.2); }
+.cat-card--web .cat-tag:hover { background: rgba(196,150,105,.25); }
+.cat-card--web .cat-cta-link { background: var(--gold); color: var(--charcoal); }
+.cat-card--web .cat-glow {
+  position: absolute; top: -60px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,150,105,.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Card 2 — App: deep blue-purple */
+.cat-card--app {
+  background: linear-gradient(135deg, #0d1a2e 0%, #162240 50%, #0d1525 100%);
+  border: 1px solid rgba(46,137,230,.12);
+}
+.cat-card--app .cat-icon-pill { background: rgba(46,137,230,.18); color: #5aabff; }
+.cat-card--app .cat-tag { background: rgba(46,137,230,.1); color: rgba(255,255,255,.75); border: 1px solid rgba(46,137,230,.2); }
+.cat-card--app .cat-tag:hover { background: rgba(46,137,230,.2); }
+.cat-card--app .cat-cta-link { background: #2E89E6; color: #fff; }
+.cat-card--app .cat-glow {
+  position: absolute; top: -60px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,137,230,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Card 3 — Automation: emerald-dark */
+.cat-card--auto {
+  background: linear-gradient(135deg, #0b1f17 0%, #102a1e 50%, #0a1a12 100%);
+  border: 1px solid rgba(46,139,87,.12);
+}
+.cat-card--auto .cat-icon-pill { background: rgba(46,139,87,.2); color: #4ecf88; }
+.cat-card--auto .cat-tag { background: rgba(46,139,87,.1); color: rgba(255,255,255,.75); border: 1px solid rgba(46,139,87,.2); }
+.cat-card--auto .cat-tag:hover { background: rgba(46,139,87,.2); }
+.cat-card--auto .cat-cta-link { background: #2e8b57; color: #fff; }
+.cat-card--auto .cat-glow {
+  position: absolute; top: -60px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,139,87,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* ===== LIVE MINI MOCKS inside each card ===== */
+.cat-mock {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.07);
+  font-size: 12px;
+}
+
+/* Web mock — browser-style site preview */
+.cat-mock--web {
+  background: #0f0a18;
+}
+.cmw-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.cmw-dot { width: 7px; height: 7px; border-radius: 50%; }
+.cmw-url {
+  flex: 1; height: 18px; background: rgba(255,255,255,.06);
+  border-radius: 4px; margin-left: 6px;
+  font-size: 9px; color: rgba(255,255,255,.2);
+  display: flex; align-items: center; padding: 0 8px; font-family: 'JetBrains Mono', monospace;
+}
+.cmw-body { padding: 16px; }
+.cmw-hero-block {
+  background: linear-gradient(135deg, rgba(68,32,97,.5), rgba(196,150,105,.2));
+  border-radius: 8px; padding: 16px 14px; margin-bottom: 10px;
+}
+.cmw-hero-line1 { height: 10px; background: rgba(255,255,255,.6); border-radius: 3px; width: 70%; margin-bottom: 7px; }
+.cmw-hero-line2 { height: 7px; background: rgba(255,255,255,.25); border-radius: 3px; width: 50%; margin-bottom: 12px; }
+.cmw-hero-btn { display: inline-block; background: var(--gold); border-radius: 100px; height: 20px; width: 80px; }
+.cmw-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.cmw-card { background: rgba(255,255,255,.05); border-radius: 6px; padding: 8px; border: 1px solid rgba(255,255,255,.07); }
+.cmw-card-line { height: 6px; background: rgba(255,255,255,.15); border-radius: 2px; margin-bottom: 5px; }
+.cmw-card-line:last-child { width: 60%; background: rgba(255,255,255,.08); }
+.cmw-metrics { display: flex; gap: 6px; margin-top: 10px; }
+.cmw-metric { flex: 1; background: rgba(196,150,105,.1); border: 1px solid rgba(196,150,105,.15); border-radius: 6px; padding: 7px 8px; }
+.cmw-metric-v { font-size: 13px; font-weight: 700; color: var(--gold); font-family: 'Montserrat', monospace; }
+.cmw-metric-l { font-size: 9px; color: rgba(255,255,255,.3); margin-top: 2px; letter-spacing: .04em; }
+
+/* App mock — mobile phone frame */
+.cat-mock--app {
+  background: #080f1a;
+  display: flex; justify-content: center; padding: 14px;
+}
+.cma-phone {
+  width: 140px;
+  background: #0d1a2e;
+  border-radius: 18px;
+  border: 1.5px solid rgba(46,137,230,.2);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.cma-notch {
+  width: 40px; height: 6px; background: rgba(255,255,255,.1); border-radius: 3px;
+  margin: 8px auto 10px;
+}
+.cma-screen { padding: 0 8px 10px; }
+.cma-stat-row { display: flex; gap: 5px; margin-bottom: 8px; }
+.cma-stat { flex: 1; background: rgba(46,137,230,.12); border: 1px solid rgba(46,137,230,.2); border-radius: 7px; padding: 7px 6px; text-align: center; }
+.cma-stat-v { font-size: 13px; font-weight: 700; color: #5aabff; font-family: 'Montserrat', monospace; }
+.cma-stat-l { font-size: 8px; color: rgba(255,255,255,.3); margin-top: 2px; }
+.cma-chart-wrap { background: rgba(255,255,255,.04); border-radius: 7px; padding: 8px; margin-bottom: 7px; }
+.cma-chart-wrap svg { width: 100%; height: 36px; display: block; }
+.cma-rows { display: flex; flex-direction: column; gap: 4px; }
+.cma-row { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,.04); border-radius: 5px; padding: 5px 6px; }
+.cma-row-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.cma-row-text { font-size: 8.5px; color: rgba(255,255,255,.5); flex: 1; }
+.cma-row-val { font-size: 8px; color: rgba(255,255,255,.25); font-family: 'JetBrains Mono', monospace; }
+
+/* Automation mock — workflow diagram */
+.cat-mock--auto { background: #081510; padding: 16px 14px; }
+.cmauto-label { font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.25); margin-bottom: 12px; }
+.cmauto-flow { display: flex; flex-direction: column; gap: 0; }
+.cmauto-step {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 10px; position: relative;
+}
+.cmauto-step:not(:last-child)::before {
+  content: ''; position: absolute; left: 13px; top: 26px; bottom: 0;
+  width: 1px; background: rgba(78,207,136,.2);
+}
+.cmauto-step-icon {
+  width: 26px; height: 26px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; z-index: 1;
+}
+.cmauto-step-text { font-size: 11px; color: rgba(255,255,255,.7); font-weight: 500; flex: 1; }
+.cmauto-step-badge {
+  font-size: 9px; font-weight: 600; padding: 2px 7px;
+  border-radius: 100px;
+}
+.cmauto-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+.cmauto-metric { background: rgba(46,139,87,.1); border: 1px solid rgba(46,139,87,.2); border-radius: 7px; padding: 8px 10px; }
+.cmauto-metric-v { font-size: 16px; font-weight: 700; color: #4ecf88; font-family: 'Montserrat', monospace; }
+.cmauto-metric-l { font-size: 9px; color: rgba(255,255,255,.3); margin-top: 3px; }
+
+/* ===== PROCESS ===== */
+.svc-process { padding: 80px 0; }
+.process-steps {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 0; position: relative;
+  margin-top: 52px;
+}
+.process-steps::before {
+  content: '';
+  position: absolute; top: 24px; left: 12.5%; right: 12.5%;
+  height: 1px; background: var(--border);
+}
+.process-step { text-align: center; padding: 0 20px; }
+.ps-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--white); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: var(--purple);
+  font-family: 'JetBrains Mono', monospace;
+  margin: 0 auto 20px; position: relative; z-index: 1;
+  transition: background .2s, border-color .2s;
+}
+.process-step:hover .ps-num {
+  background: var(--purple); color: #fff;
+  border-color: var(--purple);
+}
+.ps-title {
+  font-size: 15px; font-weight: 600; color: var(--charcoal);
+  margin-bottom: 10px;
+}
+.ps-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ===== CTA ===== */
+.svc-cta {
+  padding: 80px 0; background: var(--white);
+}
+.cta-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 56px 64px;
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 48px; align-items: center;
+}
+.cta-inner::before {
+  content: '';
+  position: absolute; top: -60px; left: -40px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(68,32,97,.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cta-h {
+  font-size: clamp(24px, 2.8vw, 36px);
+  font-weight: 600; letter-spacing: -.03em; line-height: 1.2;
+  color: var(--charcoal); margin-bottom: 12px;
+}
+.cta-h em { font-style: italic; color: var(--purple); font-weight: 500; }
+.cta-sub { font-size: 15px; color: var(--muted); line-height: 1.6; }
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--charcoal); color: #fff;
+  font-size: 14px; font-weight: 700; padding: 14px 28px;
+  border-radius: 100px; text-decoration: none; white-space: nowrap;
+  transition: background .2s, transform .2s;
+}
+.btn-gold:hover { background: var(--purple); transform: translateY(-1px); }
+
+/* ===== REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
+.reveal.in { opacity: 1; transform: none; }
+.delay-1 { transition-delay: .1s; }
+.delay-2 { transition-delay: .2s; }
+.delay-3 { transition-delay: .3s; }
+.delay-4 { transition-delay: .4s; }
+
+/* ===== MARQUEE ===== */
+.marquee {
+  overflow: hidden; padding: 16px 0;
+  background: var(--purple-light);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.marquee-track { display: flex; }
+.marquee-row {
+  display: flex; align-items: center; gap: 0;
+  white-space: nowrap; animation: marquee 28s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.m-item { font-size: 12px; font-weight: 500; color: var(--purple); padding: 0 20px; }
+.m-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--purple); opacity: .3; flex-shrink: 0; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .svc-hero-inner { grid-template-columns: 1fr; }
+  .svc-hero-visual { display: none; }
+  .section-head { grid-template-columns: 1fr; }
+  .cat-body-inner { grid-template-columns: 1fr; }
+  .cat-mock--app { display: none; }
+  .process-steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .process-steps::before { display: none; }
+  .cta-inner { grid-template-columns: 1fr; }
+  .cat-header-sub { display: none; }
+}
+@media (max-width: 600px) {
+  .process-steps { grid-template-columns: 1fr; }
+  .cat-header { padding: 20px 20px; }
+  .cat-body-inner { padding: 20px 20px 28px; }
+  .cat-header-title { font-size: 16px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav-shell" id="navShell">
+  <nav class="nav" aria-label="Primary">
+    <a href="index.html" class="nav-logo" aria-label="Bix LLC home">
+      <span class="nav-mark" aria-hidden="true"></span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-item nav-item--has-dropdown">
+        <button class="nav-link nav-link-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Solutions
+          <svg class="nav-caret" width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="dot"></span>
+        </button>
+        <div class="nav-dropdown" role="menu">
+          <a class="nav-dd-item" href="services.html" role="menuitem">
+            <span class="nav-dd-i">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 7h15" stroke="currentColor" stroke-width="1.3"/></svg>
+            </span>
+            <span class="nav-dd-text">
+              <strong>Services</strong>
+              <small>Web, apps, and custom system solutions</small>
+            </span>
+          </a>
+          <a class="nav-dd-item" href="products.html" role="menuitem">
+            <span class="nav-dd-i">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 6l7-3 7 3-7 3-7-3z M3 6v8l7 3 7-3V6 M10 9v8" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="nav-dd-text">
+              <strong>Products</strong>
+              <small>BIX Booking and other Bix&#8209;built platforms</small>
+            </span>
+          </a>
+        </div>
+      </div>
+      <a class="nav-link" href="index.html#work">Projects<span class="dot"></span></a>
+      <a class="nav-link" href="index.html#about">About<span class="dot"></span></a>
+    </div>
+    <a href="index.html#contact" class="nav-cta">
+      Start a Project
+      <svg class="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="svc-hero">
+  <div class="wrap svc-hero-inner reveal">
+    <div class="svc-hero-eyebrow">Services</div>
+    <h1>
+      Built for brands that<br/>
+      want more than a<br/>
+      <em>pretty website.</em>
+    </h1>
+    <p class="svc-hero-sub">
+      We design and build websites, apps, and operational systems that help ambitious businesses run smarter — from the first impression to the backend infrastructure behind it.
+    </p>
+    <div class="hero-btns">
+      <a href="index.html#contact" class="btn-primary">
+        Book a Free Call
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#categories" class="btn-ghost">Explore Services</a>
+    </div>
+    <div class="hero-trust-row reveal delay-2">
+      <div class="htr-stat">
+        <span class="htr-v">40+</span>
+        <div class="htr-l">Projects delivered</div>
+      </div>
+      <div class="htr-div"></div>
+      <div class="htr-stat">
+        <span class="htr-v">3</span>
+        <div class="htr-l">Service categories</div>
+      </div>
+      <div class="htr-div"></div>
+      <div class="htr-stat">
+        <span class="htr-v">4+</span>
+        <div class="htr-l">Countries served</div>
+      </div>
+      <div class="htr-div"></div>
+      <div class="htr-stat">
+        <span class="htr-v">100%</span>
+        <div class="htr-l">Custom builds</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-row">
+      <span class="m-item">Web Design</span><span class="m-dot"></span>
+      <span class="m-item">App Development</span><span class="m-dot"></span>
+      <span class="m-item">Business Automation</span><span class="m-dot"></span>
+      <span class="m-item">Client Portals</span><span class="m-dot"></span>
+      <span class="m-item">Booking Systems</span><span class="m-dot"></span>
+      <span class="m-item">Ecommerce</span><span class="m-dot"></span>
+      <span class="m-item">SaaS Platforms</span><span class="m-dot"></span>
+      <span class="m-item">Payment Flows</span><span class="m-dot"></span>
+      <span class="m-item">CRM Systems</span><span class="m-dot"></span>
+      <span class="m-item">Mobile Apps</span><span class="m-dot"></span>
+      <span class="m-item">Web Design</span><span class="m-dot"></span>
+      <span class="m-item">App Development</span><span class="m-dot"></span>
+      <span class="m-item">Business Automation</span><span class="m-dot"></span>
+      <span class="m-item">Client Portals</span><span class="m-dot"></span>
+      <span class="m-item">Booking Systems</span><span class="m-dot"></span>
+      <span class="m-item">Ecommerce</span><span class="m-dot"></span>
+      <span class="m-item">SaaS Platforms</span><span class="m-dot"></span>
+      <span class="m-item">Payment Flows</span><span class="m-dot"></span>
+      <span class="m-item">CRM Systems</span><span class="m-dot"></span>
+      <span class="m-item">Mobile Apps</span><span class="m-dot"></span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE CATEGORIES -->
+<section class="svc-cats" id="categories">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <span class="section-label">01 / What We Offer</span>
+        <h2 class="section-h">Three service categories.<br/><em>One integrated studio.</em></h2>
+      </div>
+      <p class="section-sub">Every engagement is designed to deliver infrastructure, not just deliverables. We build things that work for your business long after launch.</p>
+    </div>
+
+    <div class="cats-grid reveal">
+
+      <!-- ===== Card 1: Web Design ===== -->
+      <article class="cat-card cat-card--web is-open">
+        <div class="cat-glow"></div>
+        <div class="cat-header">
+          <span class="cat-num-badge">01</span>
+          <div class="cat-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 8h20M7 13h4M7 16h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <span class="cat-header-title">Web Design &amp; Development</span>
+          <span class="cat-header-sub">Sites that convert</span>
+          <div class="cat-toggle">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-body-inner">
+            <div>
+              <p class="cat-desc">We design and develop modern, high-performing websites built to elevate your brand, improve customer experience, and drive conversions. From landing pages to full-scale business websites, every build is optimized for performance, scalability, and long-term growth.</p>
+              <div class="cat-includes-label">Includes</div>
+              <div class="cat-tags">
+                <span class="cat-tag">Business websites</span>
+                <span class="cat-tag">Ecommerce</span>
+                <span class="cat-tag">Custom frontend</span>
+                <span class="cat-tag">CMS integrations</span>
+                <span class="cat-tag">Mobile optimization</span>
+                <span class="cat-tag">Conversion design</span>
+                <span class="cat-tag">SEO foundations</span>
+                <span class="cat-tag">Backend &amp; API integrations</span>
+              </div>
+              <div class="cat-cta-row">
+                <a href="index.html#contact" class="cat-cta-link">
+                  Start a web project
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+            <!-- Web live mock -->
+            <div class="cat-mock cat-mock--web">
+              <div class="cmw-bar">
+                <span class="cmw-dot" style="background:#ff5f56"></span>
+                <span class="cmw-dot" style="background:#ffbd2e"></span>
+                <span class="cmw-dot" style="background:#27c93f"></span>
+                <div class="cmw-url">yourbrand.com</div>
+              </div>
+              <div class="cmw-body">
+                <div class="cmw-hero-block">
+                  <div class="cmw-hero-line1"></div>
+                  <div class="cmw-hero-line2"></div>
+                  <div class="cmw-hero-btn"></div>
+                </div>
+                <div class="cmw-cards">
+                  <div class="cmw-card"><div class="cmw-card-line"></div><div class="cmw-card-line"></div><div class="cmw-card-line"></div></div>
+                  <div class="cmw-card"><div class="cmw-card-line"></div><div class="cmw-card-line"></div><div class="cmw-card-line"></div></div>
+                  <div class="cmw-card"><div class="cmw-card-line"></div><div class="cmw-card-line"></div><div class="cmw-card-line"></div></div>
+                </div>
+                <div class="cmw-metrics">
+                  <div class="cmw-metric"><div class="cmw-metric-v">94</div><div class="cmw-metric-l">Perf score</div></div>
+                  <div class="cmw-metric"><div class="cmw-metric-v">3.2x</div><div class="cmw-metric-l">CVR lift</div></div>
+                  <div class="cmw-metric"><div class="cmw-metric-v">0.8s</div><div class="cmw-metric-l">Load time</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== Card 2: App Design ===== -->
+      <article class="cat-card cat-card--app">
+        <div class="cat-glow"></div>
+        <div class="cat-header">
+          <span class="cat-num-badge">02</span>
+          <div class="cat-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 6h6M10 18h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <span class="cat-header-title">App Design &amp; Development</span>
+          <span class="cat-header-sub">Products that scale</span>
+          <div class="cat-toggle">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-body-inner">
+            <div>
+              <p class="cat-desc">We create intuitive, scalable web and mobile applications designed around real business workflows and user experiences. Whether you're building a customer-facing platform or an internal business tool, we help turn ideas into functional products.</p>
+              <div class="cat-includes-label">Includes</div>
+              <div class="cat-tags">
+                <span class="cat-tag">Web applications</span>
+                <span class="cat-tag">Mobile app development</span>
+                <span class="cat-tag">SaaS platforms</span>
+                <span class="cat-tag">UI/UX design</span>
+                <span class="cat-tag">Dashboard systems</span>
+                <span class="cat-tag">MVP development</span>
+                <span class="cat-tag">Product strategy</span>
+                <span class="cat-tag">API &amp; database architecture</span>
+              </div>
+              <div class="cat-cta-row">
+                <a href="index.html#contact" class="cat-cta-link">
+                  Build your app
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+            <!-- App live mock — phone frame -->
+            <div class="cat-mock cat-mock--app">
+              <div class="cma-phone">
+                <div class="cma-notch"></div>
+                <div class="cma-screen">
+                  <div class="cma-stat-row">
+                    <div class="cma-stat"><div class="cma-stat-v">2.4k</div><div class="cma-stat-l">Users</div></div>
+                    <div class="cma-stat"><div class="cma-stat-v">98%</div><div class="cma-stat-l">Uptime</div></div>
+                  </div>
+                  <div class="cma-chart-wrap">
+                    <svg viewBox="0 0 124 36" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="appArea" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#2E89E6" stop-opacity=".3"/>
+                          <stop offset="100%" stop-color="#2E89E6" stop-opacity="0"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M0 28 L14 22 L28 24 L42 16 L56 18 L70 10 L84 14 L98 8 L112 10 L124 6 L124 36 L0 36Z" fill="url(#appArea)"/>
+                      <path d="M0 28 L14 22 L28 24 L42 16 L56 18 L70 10 L84 14 L98 8 L112 10 L124 6" stroke="#5aabff" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="cma-rows">
+                    <div class="cma-row"><span class="cma-row-dot" style="background:#5aabff"></span><span class="cma-row-text">New signup</span><span class="cma-row-val">now</span></div>
+                    <div class="cma-row"><span class="cma-row-dot" style="background:#4ecf88"></span><span class="cma-row-text">Payment done</span><span class="cma-row-val">$240</span></div>
+                    <div class="cma-row"><span class="cma-row-dot" style="background:var(--gold)"></span><span class="cma-row-text">Feature shipped</span><span class="cma-row-val">v2.4</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== Card 3: Automation ===== -->
+      <article class="cat-card cat-card--auto">
+        <div class="cat-glow"></div>
+        <div class="cat-header">
+          <span class="cat-num-badge">03</span>
+          <div class="cat-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6h6v6H4zM14 6h6v6h-6zM4 14h6v6H4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M17 14v6M14 17h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <span class="cat-header-title">Business Automation &amp; Ops Systems</span>
+          <span class="cat-header-sub">Systems that run themselves</span>
+          <div class="cat-toggle">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-body-inner">
+            <div>
+              <p class="cat-desc">We build custom systems that help businesses reduce manual work, streamline operations, and manage everything in one place. From booking workflows to internal dashboards and client portals, we create infrastructure that helps businesses operate smarter.</p>
+              <div class="cat-includes-label">Includes</div>
+              <div class="cat-tags">
+                <span class="cat-tag">Booking systems</span>
+                <span class="cat-tag">Client portals</span>
+                <span class="cat-tag">Internal dashboards</span>
+                <span class="cat-tag">Workflow automation</span>
+                <span class="cat-tag">CRM systems</span>
+                <span class="cat-tag">Payment &amp; invoicing</span>
+                <span class="cat-tag">Scheduling tools</span>
+                <span class="cat-tag">Custom business platforms</span>
+              </div>
+              <div class="cat-cta-row">
+                <a href="index.html#contact" class="cat-cta-link">
+                  Automate your ops
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+            <!-- Automation workflow mock -->
+            <div class="cat-mock cat-mock--auto">
+              <div class="cmauto-label">Live workflow</div>
+              <div class="cmauto-flow">
+                <div class="cmauto-step">
+                  <div class="cmauto-step-icon" style="background:rgba(196,150,105,.15);color:var(--gold)">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  </div>
+                  <span class="cmauto-step-text">Client books online</span>
+                  <span class="cmauto-step-badge" style="background:rgba(196,150,105,.15);color:var(--gold)">Trigger</span>
+                </div>
+                <div class="cmauto-step">
+                  <div class="cmauto-step-icon" style="background:rgba(46,137,230,.15);color:#5aabff">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5l6 4 6-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  </div>
+                  <span class="cmauto-step-text">Confirmation sent</span>
+                  <span class="cmauto-step-badge" style="background:rgba(46,137,230,.15);color:#5aabff">Auto</span>
+                </div>
+                <div class="cmauto-step">
+                  <div class="cmauto-step-icon" style="background:rgba(68,32,97,.25);color:#c98fff">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M5 10h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  </div>
+                  <span class="cmauto-step-text">Invoice &amp; payment</span>
+                  <span class="cmauto-step-badge" style="background:rgba(68,32,97,.25);color:#c98fff">Stripe</span>
+                </div>
+                <div class="cmauto-step">
+                  <div class="cmauto-step-icon" style="background:rgba(46,139,87,.2);color:#4ecf88">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <span class="cmauto-step-text">Job assigned &amp; done</span>
+                  <span class="cmauto-step-badge" style="background:rgba(46,139,87,.2);color:#4ecf88">Done</span>
+                </div>
+              </div>
+              <div class="cmauto-metrics">
+                <div class="cmauto-metric"><div class="cmauto-metric-v">-82%</div><div class="cmauto-metric-l">Manual tasks</div></div>
+                <div class="cmauto-metric"><div class="cmauto-metric-v">3.1x</div><div class="cmauto-metric-l">Faster ops</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="svc-process section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <span class="section-label">02 / How It Works</span>
+        <h2 class="section-h">From first call to<br/><em>live in production.</em></h2>
+      </div>
+      <p class="section-sub">A clear, collaborative process designed to move fast without sacrificing quality. Every step is structured so you always know what's happening and why.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal delay-1">
+        <div class="ps-num">01</div>
+        <div class="ps-title">Discovery Call</div>
+        <p class="ps-desc">We learn your goals, constraints, and what success looks like. No pitch — just alignment.</p>
+      </div>
+      <div class="process-step reveal delay-2">
+        <div class="ps-num">02</div>
+        <div class="ps-title">Strategy & Scope</div>
+        <p class="ps-desc">We map the solution, define the build plan, and lock in a timeline and investment before anything starts.</p>
+      </div>
+      <div class="process-step reveal delay-3">
+        <div class="ps-num">03</div>
+        <div class="ps-title">Design & Build</div>
+        <p class="ps-desc">Iterative builds with your feedback baked in. You see progress, not surprises.</p>
+      </div>
+      <div class="process-step reveal delay-4">
+        <div class="ps-num">04</div>
+        <div class="ps-title">Launch & Handoff</div>
+        <p class="ps-desc">Clean delivery, full documentation, and ongoing support options so it keeps running well.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="svc-cta">
+  <div class="wrap">
+    <div class="cta-inner reveal">
+      <div>
+        <h2 class="cta-h">
+          Ready to build something<br/>
+          <em>that actually works?</em>
+        </h2>
+        <p class="cta-sub">Book a free discovery call. We'll talk through your goals, recommend the right approach, and show you what's possible.</p>
+      </div>
+      <div>
+        <a href="index.html#contact" class="btn-gold">
+          Book a Free Call
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m0 0L6 2m4 4L6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Nav scroll
+const navShell = document.getElementById('navShell');
+window.addEventListener('scroll', () => {
+  navShell.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// Reveal on scroll
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+requestAnimationFrame(() => {
+  document.querySelectorAll('.reveal').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('in');
+  });
+});
+
+// Service card accordion
+document.querySelectorAll('.cat-card').forEach(card => {
+  card.querySelector('.cat-header').addEventListener('click', () => {
+    const isOpen = card.classList.contains('is-open');
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('is-open'));
+    if (!isOpen) card.classList.add('is-open');
+  });
+});
+
+// Dropdown
+document.querySelectorAll('.nav-item--has-dropdown').forEach(item => {
+  const trigger = item.querySelector('.nav-link-trigger');
+  if (!trigger) return;
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = item.classList.toggle('nav-item--open');
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+});
+document.addEventListener('click', () => {
+  document.querySelectorAll('.nav-item--open').forEach(item => {
+    item.classList.remove('nav-item--open');
+    const t = item.querySelector('.nav-link-trigger');
+    if (t) t.setAttribute('aria-expanded', 'false');
+  });
+});
+</script>
+</body>
+</html>
