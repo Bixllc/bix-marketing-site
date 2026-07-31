@@ -5,6 +5,10 @@
    file knows whether it is reading a database or a fixture. Replaces
    admin-data.js; the derived totals are recomputed here after every write.
    ========================================================================== */
+/* This file loads before admin-app.js, so it cannot assume the namespace
+   already exists — admin-data.js used to create it and no longer does. */
+window.BIX = window.BIX || {};
+
 (function () {
   'use strict';
 
@@ -382,7 +386,14 @@
     var leadsPrev = d.leads.filter(function (l) { return monthOf(l.created) === lastMonth; }).length;
 
     d.deltas = {
-      mrr: pctChange(thisRev, lastRev),
+      /* No MRR history is stored, so there is nothing honest to compare a
+         recurring figure against. Comparing it to collected cash — which is
+         what this used to do — describes a different number than the one it
+         sits under. A missing delta renders as nothing at all. */
+      mrr: null,
+      /* Collected cash does have a prior month, and this is where that
+         comparison actually belongs. */
+      collected: pctChange(thisRev, lastRev),
       clients: pctChange(d.clients.length, priorClients),
       leads: pctChange(leadsNow, leadsPrev),
       pipeline: null,

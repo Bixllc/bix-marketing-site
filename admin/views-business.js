@@ -84,7 +84,6 @@
         '<div class="bx-rhero__m">' +
           '<div class="bx-rhero__k bx-mono">Monthly recurring</div>' +
           '<div class="bx-rhero__v">' + BIX.money0(t.mrr) + '</div>' +
-          H.delta(d.deltas.mrr) +
         '</div>' +
         '<div class="bx-rhero__s">' +
           '<div class="bx-rhero__k bx-mono">Outstanding</div>' +
@@ -95,7 +94,8 @@
         '<div class="bx-rhero__s">' +
           '<div class="bx-rhero__k bx-mono">Collected this month</div>' +
           '<div class="bx-rhero__n">' + BIX.money0(t.collected) + '</div>' +
-          '<div class="bx-mono bx-faint">' + H.date(d.today, 'mon') + ' to date</div>' +
+          (H.delta(d.deltas.collected) ||
+            '<div class="bx-mono bx-faint">' + H.date(d.today, 'mon') + ' to date</div>') +
         '</div>' +
       '</div>' +
 
@@ -341,7 +341,14 @@
   }
 
   /* =============================== CALENDAR =============================== */
-  var cal = { ym: BIX.data.today.slice(0, 7), pick: BIX.data.today };
+  /* Initialised on first render, not at module load: BIX.data does not exist
+     until the API resolves, and this file is parsed long before that. */
+  var cal = { ym: null, pick: null };
+  function calInit() {
+    if (cal.ym) return;
+    cal.ym = BIX.data.today.slice(0, 7);
+    cal.pick = BIX.data.today;
+  }
 
   function ymShift(ym, n) {
     var y = Number(ym.slice(0, 4)), m = Number(ym.slice(5, 7)) - 1 + n;
@@ -352,6 +359,7 @@
   BIX.views.calendar = {
     wide: true,
     render: function () {
+      calInit();
       var d = BIX.data;
       var y = Number(cal.ym.slice(0, 4)), m = Number(cal.ym.slice(5, 7)) - 1;
       var first = new Date(y, m, 1), lead = first.getDay();
@@ -427,6 +435,7 @@
   };
 
   BIX.actions.meeting = function () {
+    calInit();
     var d = BIX.data;
     BIX.modal({
       title: 'Schedule',
