@@ -137,6 +137,28 @@ window.BIX = window.BIX || {};
       });
     },
 
+    /* Billing is always a deliberate action from the console — there is no
+       schedule. Every call names its action, and { dry: true } reports intent
+       without sending or writing anything. */
+    billing: function (payload) {
+      return sb.auth.getSession().then(function (s) {
+        var token = s.data && s.data.session && s.data.session.access_token;
+        if (!token) return { error: { message: 'Session expired — sign in again' } };
+        return sb.functions.invoke('run-billing', {
+          body: payload, headers: { Authorization: 'Bearer ' + token }
+        }).then(function (r) {
+          if (!r.error) return { data: r.data };
+          var ctx = r.error.context;
+          if (ctx && typeof ctx.json === 'function') {
+            return ctx.json().then(function (b) {
+              return { error: { message: b.error || r.error.message } };
+            }, function () { return { error: { message: r.error.message } }; });
+          }
+          return { error: { message: r.error.message } };
+        });
+      });
+    },
+
     updateClient: function (id, patch) {
       return sb.from('profiles').update(patch).eq('id', id).select().single();
     },

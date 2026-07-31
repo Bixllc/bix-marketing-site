@@ -576,3 +576,6 @@
 .bx-note2__h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 
 @media (max-width: 820px) { .bx-cm__cols { grid-template-columns: 1fr; } }
+.bx-billbar { display: inline-flex; gap: 8px; align-items: center; }
+.bx-iconbtn--go { background: var(--bx-purple-soft); border-color: rgba(68,32,97,.2); color: var(--bx-purple); }
+.bx-iconbtn--go:hover { background: rgba(68,32,97,.16); }

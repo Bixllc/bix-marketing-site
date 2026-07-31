@@ -124,10 +124,13 @@
       '</div>' +
 
       '<div class="bx-sec"><div class="bx-sec__h">' +
-        '<div class="bx-chips">' + ['All', 'Outstanding', 'Overdue', 'Paid'].map(function (s) {
+        '<div class="bx-chips">' + ['All', 'Draft', 'Outstanding', 'Overdue', 'Paid'].map(function (s) {
           return '<button class="bx-chip' + (s === invFilter ? ' is-on' : '') + '" data-inv="' + H.esc(s) + '">' + H.esc(s) + '</button>';
         }).join('') + '</div>' +
-        '<button class="bx-btn bx-btn--primary bx-btn--sm" data-act="invoice">' + I('plus') + ' New invoice</button>' +
+        '<span class="bx-billbar">' +
+          '<button class="bx-btn bx-btn--ghost bx-btn--sm" id="rvRaise">' + I('doc') + ' Raise this month</button>' +
+          '<button class="bx-btn bx-btn--primary bx-btn--sm" data-act="invoice">' + I('plus') + ' New invoice</button>' +
+        '</span>' +
       '</div>' +
       (rows.length ? '<div class="bx-table__wrap"><table class="bx-table">' +
         '<thead><tr><th scope="col">Invoice</th><th scope="col">Client</th>' +
@@ -146,7 +149,9 @@
               '<button class="bx-iconbtn bx-iconbtn--xs" data-view="' + H.esc(i.id) + '" aria-label="View ' + H.esc(i.id) + '">' + I('doc') + '</button>' +
               (i.status === 'Paid' ? '' :
                 '<button class="bx-iconbtn bx-iconbtn--xs" data-paid="' + H.esc(i.id) + '" aria-label="Mark ' + H.esc(i.id) + ' paid">' + I('check') + '</button>' +
-                '<button class="bx-iconbtn bx-iconbtn--xs" data-resend="' + H.esc(i.id) + '" aria-label="Resend ' + H.esc(i.id) + '">' + I('send') + '</button>') +
+                (i.status === 'Draft'
+                  ? '<button class="bx-iconbtn bx-iconbtn--xs bx-iconbtn--go" data-send="' + H.esc(i.rowId) + '" data-num="' + H.esc(i.id) + '" data-client="' + H.esc(i.client) + '" aria-label="Send ' + H.esc(i.id) + '">' + I('send') + '</button>'
+                  : '<button class="bx-iconbtn bx-iconbtn--xs" data-remind="' + H.esc(i.rowId) + '" data-num="' + H.esc(i.id) + '" data-client="' + H.esc(i.client) + '" aria-label="Send a reminder for ' + H.esc(i.id) + '">' + I('bell') + '</button>')) +
             '</span></td></tr>';
         }).join('') + '</tbody></table></div>'
         : H.empty('money', 'No invoices match', 'Try another status filter.')) +
@@ -167,11 +172,20 @@
       el.querySelectorAll('[data-paid]').forEach(function (b) {
         b.addEventListener('click', function () { markPaid(b.getAttribute('data-paid')); });
       });
-      el.querySelectorAll('[data-resend]').forEach(function (b) {
+      el.querySelectorAll('[data-send]').forEach(function (b) {
         b.addEventListener('click', function () {
-          BIX.toast(b.getAttribute('data-resend') + ' resent');
+          confirmSend('send', b.getAttribute('data-send'),
+            b.getAttribute('data-num'), b.getAttribute('data-client'));
         });
       });
+      el.querySelectorAll('[data-remind]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          confirmSend('remind', b.getAttribute('data-remind'),
+            b.getAttribute('data-num'), b.getAttribute('data-client'));
+        });
+      });
+      var raise = el.querySelector('#rvRaise');
+      if (raise) raise.addEventListener('click', raiseMonth);
       var chase = el.querySelector('#rvChase');
       if (chase) chase.addEventListener('click', function () {
         var od = BIX.data.invoices.filter(function (i) { return i.status === 'Overdue'; });
@@ -340,6 +354,69 @@
     var d = new Date(BIX.data.today + 'T12:00:00');
     d.setDate(d.getDate() + 14);
     return d.toISOString().slice(0, 10);
+  }
+
+  /* Raising only creates Drafts. Nothing reaches a client until the Draft is
+     sent explicitly from the row, so there is always a review step. */
+  function raiseMonth() {
+    BIX.api.billing({ action: 'raise', dry: true }).then(function (pre) {
+      if (pre.error) { BIX.toast(pre.error.message); return; }
+      var lines = (pre.data && pre.data.done) || [];
+      BIX.modal({
+        title: 'Raise this month\u2019s invoices',
+        body: '<p class="bx-hero__s">This creates drafts for ' + H.date(pre.data.period, 'long') +
+              '. <strong>Nothing is emailed</strong> — you send each one yourself.</p>' +
+              (lines.length
+                ? '<div class="bx-notes2">' + lines.map(function (l) {
+                    return '<div class="bx-note2"><div class="bx-note2__b">' + H.esc(l.replace(/^would raise /, '')) + '</div></div>';
+                  }).join('') + '</div>'
+                : '<p class="bx-faint">No active clients with a monthly amount.</p>'),
+        foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
+              (lines.length ? '<button class="bx-btn bx-btn--primary" id="rmGo">Create ' + lines.length + ' draft' + (lines.length === 1 ? '' : 's') + '</button>' : ''),
+        mount: function (w) {
+          var go = w.querySelector('#rmGo');
+          if (!go) return;
+          go.addEventListener('click', function () {
+            go.disabled = true;
+            BIX.api.billing({ action: 'raise' }).then(function (r) {
+              go.disabled = false;
+              if (r.error) { BIX.toast(r.error.message); return; }
+              if (r.data.errors && r.data.errors.length) { BIX.toast(r.data.errors[0]); return; }
+              BIX.api.log('raised <b>' + r.data.raised + ' draft invoice(s)</b>');
+              BIX.closeModal();
+              BIX.refresh(r.data.raised + ' draft' + (r.data.raised === 1 ? '' : 's') + ' created');
+            });
+          });
+        }
+      });
+    });
+  }
+
+  /* Every send names the invoice and the recipient before it goes. */
+  function confirmSend(action, rowId, number, client) {
+    var isSend = action === 'send';
+    BIX.modal({
+      title: isSend ? 'Send ' + number : 'Send a reminder',
+      body: '<p class="bx-hero__s">This emails <strong>' + H.esc(client) + '</strong> about ' +
+            H.esc(number) + ' right now.' +
+            (isSend ? ' It will be marked Outstanding once sent.' : '') + '</p>',
+      foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
+            '<button class="bx-btn bx-btn--primary" id="csGo">' + (isSend ? 'Send invoice' : 'Send reminder') + '</button>',
+      mount: function (w) {
+        var go = w.querySelector('#csGo');
+        go.addEventListener('click', function () {
+          go.disabled = true; go.textContent = 'Sending\u2026';
+          BIX.api.billing({ action: action, id: rowId }).then(function (r) {
+            go.disabled = false;
+            if (r.error) { BIX.toast(r.error.message); return; }
+            if (r.data.errors && r.data.errors.length) { BIX.toast(r.data.errors[0]); return; }
+            BIX.api.log((isSend ? 'sent invoice <b>' : 'sent a reminder for <b>') + H.esc(number) + '</b> to ' + H.esc(client));
+            BIX.closeModal();
+            BIX.refresh(isSend ? number + ' sent to ' + client : 'Reminder sent to ' + client);
+          });
+        });
+      }
+    });
   }
 
   /* =============================== CALENDAR =============================== */
