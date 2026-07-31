@@ -579,3 +579,7 @@
 .bx-billbar { display: inline-flex; gap: 8px; align-items: center; }
 .bx-iconbtn--go { background: var(--bx-purple-soft); border-color: rgba(68,32,97,.2); color: var(--bx-purple); }
 .bx-iconbtn--go:hover { background: rgba(68,32,97,.16); }
+
+/* portal.css styles these as inline spans, so a name and its sub-line ran
+   together wherever both appear in one cell. */
+.bx-table__name, .bx-table__sub { display: block; }

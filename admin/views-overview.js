@@ -210,10 +210,6 @@
 
       '<div class="bx-sec"><div class="bx-sec__h">' +
         '<div class="bx-chips">' +
-          plans.map(function (p) {
-            return '<button class="bx-chip' + (p === clientFilter.plan ? ' is-on' : '') + '" data-plan="' + H.esc(p) + '">' + H.esc(p) + '</button>';
-          }).join('') +
-          '<span class="bx-chips__sep"></span>' +
           statuses.map(function (s) {
             return '<button class="bx-chip' + (s === clientFilter.status ? ' is-on' : '') + '" data-status="' + H.esc(s) + '">' + H.esc(s) + '</button>';
           }).join('') +
@@ -224,8 +220,8 @@
       (rows.length ? '<div class="bx-table__wrap"><table class="bx-table">' +
         '<thead><tr>' +
           '<th scope="col">Business</th><th scope="col" class="c-ind">Industry</th>' +
-          '<th scope="col" class="c-con">Contact</th><th scope="col">Plan</th>' +
-          '<th scope="col" class="num">MRR</th><th scope="col" class="c-st">Status</th>' +
+          '<th scope="col" class="c-con">Contact</th><th scope="col">Subscription</th>' +
+          '<th scope="col" class="c-st">Status</th>' +
           '<th scope="col" class="c-pr">Projects</th>' +
         '</tr></thead><tbody>' +
         rows.map(function (c) {
@@ -236,8 +232,8 @@
               (c.website ? '<span class="bx-table__sub bx-mono">' + H.esc(shortUrl(c.website)) + '</span>' : '') + '</td>' +
             '<td class="c-ind">' + H.esc(c.industry) + '</td>' +
             '<td class="c-con">' + H.esc(c.contact) + '</td>' +
-            '<td><span class="bx-pill bx-pill--purple">' + H.esc(c.plan) + '</span></td>' +
-            '<td class="num bx-mono">' + BIX.money0(c.mrr) + '</td>' +
+            '<td><span class="bx-table__name">' + BIX.money0(c.mrr) + '/mo</span>' +
+              (c.includes ? '<span class="bx-table__sub">' + H.esc(c.includes) + '</span>' : '') + '</td>' +
             '<td class="c-st">' + H.pill(c.status) + '</td>' +
             '<td class="c-pr bx-mono">' + mine.length + (live ? ' · ' + live + ' active' : '') + '</td>' +
           '</tr>';
@@ -286,8 +282,8 @@
           '<div class="bx-dhero">' +
             '<div><div class="bx-dhero__k bx-mono">Monthly</div>' +
               '<div class="bx-dhero__v">' + BIX.money0(c.mrr) + '</div></div>' +
-            '<div><div class="bx-dhero__k bx-mono">Plan</div>' +
-              '<div class="bx-dhero__v is-plan">' + H.esc(c.plan) + '</div></div>' +
+            '<div><div class="bx-dhero__k bx-mono">Subscription</div>' +
+              '<div class="bx-dhero__v is-plan">' + H.esc(c.includes || c.plan) + '</div></div>' +
             '<div><div class="bx-dhero__k bx-mono">Status</div>' +
               '<div class="bx-dhero__v is-plan">' + H.pill(c.status) + '</div></div>' +
           '</div>' +
@@ -473,11 +469,13 @@
         '<div class="bx-field"><label for="ecI">Industry</label>' +
           '<input id="ecI" value="' + H.esc(c.industry === '—' ? '' : c.industry) + '" /></div>' +
         '<div class="bx-row2">' +
-          '<div class="bx-field"><label for="ecPl">Plan</label>' +
+          '<div class="bx-field"><label for="ecPl">Subscription name</label>' +
             '<input id="ecPl" value="' + H.esc(c.plan) + '" /></div>' +
           '<div class="bx-field"><label for="ecM">Monthly (USD)</label>' +
             '<input id="ecM" type="number" value="' + c.mrr + '" /></div>' +
         '</div>' +
+        '<div class="bx-field"><label for="ecInc">What it includes</label>' +
+          '<textarea id="ecInc" rows="2">' + H.esc(c.includes || '') + '</textarea></div>' +
         '<div class="bx-field"><label for="ecS">Status</label><select id="ecS">' +
           ['Active', 'Upcoming', 'Paused', 'At risk'].map(function (s) {
             return '<option' + (s === c.status ? ' selected' : '') + '>' + s + '</option>';
@@ -494,7 +492,8 @@
             phone: w.querySelector('#ecP').value.trim() || null,
             website: w.querySelector('#ecW').value.trim() || null,
             industry: w.querySelector('#ecI').value.trim() || null,
-            plan: w.querySelector('#ecPl').value.trim() || null,
+            plan: w.querySelector('#ecPl').value.trim() || 'Custom',
+            plan_includes: w.querySelector('#ecInc').value.trim() || null,
             plan_price: Number(w.querySelector('#ecM').value) || 0,
             status: w.querySelector('#ecS').value
           }).then(function (r) {
@@ -539,13 +538,15 @@
         '</div>' +
         '<div class="bx-row2">' +
           '<div class="bx-field"><label for="ncI">Industry</label><input id="ncI" placeholder="e.g. Med spa" /></div>' +
-          '<div class="bx-field"><label for="ncP">Plan</label><select id="ncP">' +
-            '<option>Essential</option><option selected>Growth Care</option><option>Scale</option></select></div>' +
+          '<div class="bx-field"><label for="ncP">Subscription name</label>' +
+            '<input id="ncP" value="Custom" /></div>' +
         '</div>' +
         '<div class="bx-row2">' +
-          '<div class="bx-field"><label for="ncM">Monthly retainer (USD)</label><input id="ncM" type="number" value="340" /></div>' +
+          '<div class="bx-field"><label for="ncM">Monthly amount (USD)</label><input id="ncM" type="number" value="0" /></div>' +
           '<div class="bx-field"><label for="ncW">Website</label><input id="ncW" placeholder="https://" /></div>' +
-        '</div>',
+        '</div>' +
+        '<div class="bx-field"><label for="ncInc">What it includes</label>' +
+          '<textarea id="ncInc" rows="2" placeholder="e.g. Website maintenance + hosting"></textarea></div>',
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
             '<button class="bx-btn bx-btn--primary" id="ncSave">Add &amp; invite</button>',
       mount: function (w) {
@@ -562,7 +563,8 @@
             full_name: w.querySelector('#ncC').value.trim() || biz,
             business: biz,
             industry: w.querySelector('#ncI').value.trim() || null,
-            plan: w.querySelector('#ncP').value,
+            plan: w.querySelector('#ncP').value.trim() || 'Custom',
+            plan_includes: w.querySelector('#ncInc').value.trim() || null,
             plan_price: Number(w.querySelector('#ncM').value) || 0,
             website: w.querySelector('#ncW').value.trim() || null
           }).then(function (r) {

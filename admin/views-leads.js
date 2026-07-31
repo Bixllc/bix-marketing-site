@@ -405,9 +405,9 @@
         'We email ' + (hasEmail ? H.esc(l.email) : 'them') + ' a link to set a password.</p>' +
         (hasEmail ? '' : '<div class="bx-field"><label for="cvE">Email</label>' +
           '<input id="cvE" type="email" placeholder="name@business.com" /></div>') +
-        '<div class="bx-field"><label for="cvP">Plan</label><select id="cvP">' +
-          '<option>Essential</option><option selected>Growth Care</option><option>Scale</option></select></div>' +
-        '<div class="bx-field"><label for="cvM">Monthly retainer (USD)</label><input id="cvM" type="number" value="340" /></div>',
+        '<div class="bx-field"><label for="cvInc">What the subscription includes</label>' +
+          '<textarea id="cvInc" rows="2" placeholder="e.g. Website maintenance + hosting"></textarea></div>' +
+        '<div class="bx-field"><label for="cvM">Monthly amount (USD)</label><input id="cvM" type="number" value="0" /></div>',
       foot: '<button class="bx-btn bx-btn--ghost" data-close>Cancel</button>' +
             '<button class="bx-btn bx-btn--primary" id="cvGo">Convert &amp; invite</button>',
       mount: function (w) {
@@ -423,7 +423,8 @@
             business: l.business,
             industry: l.industry !== '—' ? l.industry : null,
             phone: l.phone !== '—' ? l.phone : null,
-            plan: w.querySelector('#cvP').value,
+            plan: 'Custom',
+            plan_includes: w.querySelector('#cvInc').value.trim() || null,
             plan_price: Number(w.querySelector('#cvM').value) || 0
           }).then(function (r) {
             btn.disabled = false; btn.textContent = 'Convert & invite';
