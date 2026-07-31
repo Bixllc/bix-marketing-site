@@ -17,9 +17,16 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
 
   try {
+    /* Newer projects expose the privileged key as SUPABASE_SECRET_KEY; older
+       ones as SUPABASE_SERVICE_ROLE_KEY. Falling back matters because a
+       missing key does not throw — createClient just builds an unprivileged
+       client, RLS then hides the profiles row, and the admin check below
+       fails for a genuine admin. */
+    const secretKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ??
+                      Deno.env.get('SUPABASE_SECRET_KEY') ?? ''
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      secretKey,
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
 
@@ -32,9 +39,20 @@ serve(async (req) => {
     const { data: { user } } = await admin.auth.getUser(token)
     if (!user) return json({ error: 'Invalid session' }, 401)
 
-    const { data: profile } = await admin
+    const { data: profile, error: profileLookupErr } = await admin
       .from('profiles').select('role').eq('id', user.id).single()
-    if (profile?.role !== 'admin') return json({ error: 'Unauthorized' }, 403)
+    if (profile?.role !== 'admin') {
+      /* Report what was actually seen. This is the caller's own identity, so
+         it leaks nothing, and it separates "you are not an admin" from "the
+         function could not read your row at all". */
+      return json({
+        error: 'Unauthorized',
+        seenUserId: user.id,
+        seenRole: profile?.role ?? null,
+        lookupError: profileLookupErr?.message ?? null,
+        privileged: secretKey.length > 0,
+      }, 403)
+    }
 
     const body = await req.json()
     const { email, full_name, business } = body
