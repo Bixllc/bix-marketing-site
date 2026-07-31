@@ -71,6 +71,13 @@
 .bx-founder .bx-pop { display: none; bottom: calc(100% + 8px); top: auto; right: 0; left: auto; }
 .bx-founder .bx-pop.is-open { display: block; }
 
+/* portal.css leaves .bx-scrim permanently visible and hides it by toggling the
+   `hidden` attribute from JS. The console drives its drawer from a body class
+   instead, so without this the scrim sat over the whole page at every width,
+   dimming it and swallowing every click. Default off; the ≤820 rule turns it
+   on with the drawer. */
+.bx-scrim { opacity: 0; pointer-events: none; transition: opacity 220ms var(--bx-ease); }
+
 .bx-bell { position: relative; }
 .bx-bell__dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%;
   background: var(--bx-red); border: 1.5px solid var(--bx-surface); }

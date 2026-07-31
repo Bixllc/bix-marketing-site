@@ -191,6 +191,39 @@ Always confirm what the *server* returns before debugging further:
 
 ---
 
+---
+
+## RX-10 · Whole page dimmed and unclickable
+
+**Symptom** Every page greyed out; no button responds. Looks like a stuck
+modal, but no modal is open.
+
+**Cause** `portal.css` defines `.bx-scrim` as a permanently-visible full-screen
+fixed layer and hides it by toggling the `hidden` **attribute from JS**. The
+admin console reused the markup but drives its drawer from a body class, and
+only ever set the scrim *on* — never off. It sat over everything at every
+width, dimming the page and swallowing clicks.
+
+**Fix** Default the scrim off in CSS (`opacity: 0; pointer-events: none`) and
+let the `≤820px` drawer rule turn it on.
+
+**Check** The element under the middle of the screen should be content, never a
+scrim:
+```js
+document.elementFromPoint(innerWidth/2, innerHeight/2).className
+```
+More generally — list any full-screen layer that is capturing clicks:
+```js
+[...document.querySelectorAll('body *')].filter(e => {
+  const s = getComputedStyle(e), r = e.getBoundingClientRect();
+  return s.position === 'fixed' && r.width >= innerWidth*0.9
+      && r.height >= innerHeight*0.9 && s.pointerEvents !== 'none';
+}).map(e => e.id || e.className);
+```
+
+**Lesson** When borrowing markup from another app, check *how* the original
+hides it. A shared stylesheet can carry an assumption its JS enforces.
+
 ## Pre-flight checklist
 
 Run these before calling any feature done.
@@ -221,5 +254,8 @@ errs;
 // 6. empty-state maths (RX-04)
 JSON.stringify(BIX.data.totals);   // no NaN
 
-// 7. mobile has content (RX-08) — in a 390px iframe
+// 7. nothing full-screen is eating clicks (RX-10)
+document.elementFromPoint(innerWidth/2, innerHeight/2).className;
+
+// 8. mobile has content (RX-08) — in a 390px iframe
 ```
